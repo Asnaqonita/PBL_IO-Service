@@ -1,0 +1,1260 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>I/O Service — PNJ (Admin)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,500..700;1,8..60,500..700&family=Source+Sans+3:ital,wght@0,400..700;1,400..600&display=swap" rel="stylesheet">
+<style>
+/* ============ TOKENS ============ */
+:root{
+  --t50:#F2FBFB; --t100:#E3F6F6; --t200:#BFECEC; --t300:#85DADB; --t400:#4FB9BC;
+  --t500:#2A9A9E; --t600:#0B7E82; --t700:#0A5F63; --t800:#07474B; --t900:#052F32;
+  --y:#F6CF4A; --y2:#FFE794; --slate:#C9D1DA; --slate2:#B6C0CB;
+  --ink:#0B2A2D; --muted:#4F7477; --red:#C23A4B;
+  --serif:'Source Serif 4',Georgia,'Times New Roman',serif;
+  --sans:'Source Sans 3','Segoe UI',system-ui,Arial,sans-serif;
+  --ease:cubic-bezier(.7,0,.2,1);
+  --c-ok:#0792A0; --c-wait:#C48400; --c-no:#C23A4B;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);color:var(--ink);background:#F8FDFD;min-height:100vh;overflow-x:hidden;line-height:1.5}
+body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background-image:linear-gradient(var(--t100) 1px,transparent 1px),linear-gradient(90deg,var(--t100) 1px,transparent 1px);
+  background-size:52px 52px;opacity:.6;-webkit-mask-image:linear-gradient(180deg,#000,transparent 80%);mask-image:linear-gradient(180deg,#000,transparent 80%)}
+button{font-family:inherit;cursor:pointer}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--y);outline-offset:2px}
+.mono{font-family:var(--sans)}
+
+/* ============ TOP BAR ============ */
+.top{position:sticky;top:0;z-index:50;display:flex;align-items:stretch;min-height:84px;background:rgba(255,255,255,.94);backdrop-filter:blur(8px);border-bottom:1px dashed var(--t300)}
+.brand{position:relative;isolation:isolate;flex:0 0 auto;width:276px;display:flex;align-items:center;padding-left:34px;text-decoration:none;
+  font-family:var(--serif);font-size:31px;font-weight:700;color:var(--t700);letter-spacing:0;
+  background:var(--t400);clip-path:polygon(0 0,100% 0,89% 100%,0 100%)}
+.brand::before{content:"";position:absolute;inset:2px 0 2px 2px;z-index:-1;background:linear-gradient(115deg,#fff,var(--t100));clip-path:polygon(0 0,100% 0,88.6% 100%,0 100%)}
+.brand b{font-weight:700}
+.brand i{font-style:normal;font-weight:700;padding:0 2px;color:#F2B705;-webkit-text-stroke:.7px #B98A00;paint-order:stroke fill}
+.brand span{margin-left:8px;font-weight:600}
+.nav{display:flex;align-items:center;margin-left:34px;flex:1}
+.nav ul{display:flex;align-items:center;list-style:none}
+.nav li{display:flex;align-items:center}
+.nav li+li::before{content:"/";font-family:var(--serif);font-size:24px;color:var(--t300)}
+.nav a{position:relative;display:block;padding:12px 22px;margin:0 2px;font-family:var(--serif);font-size:19.5px;font-weight:600;color:var(--t500);text-decoration:none;isolation:isolate;transition:color .25s}
+.nav a::before,.nav a::after{content:"";position:absolute;inset:7px 0;transform:skewX(-18deg)}
+.nav a::before{border:1.5px solid var(--t400);opacity:0;transform:skewX(-18deg) scale(.88);transition:opacity .25s,transform .3s var(--ease);z-index:-1}
+.nav a::after{background:var(--t100);transform:skewX(-18deg) scaleX(0);transform-origin:left;transition:transform .4s var(--ease),background .25s;z-index:-2}
+.nav a:hover{color:var(--t700)}
+.nav a:hover::before{opacity:1;transform:skewX(-18deg) scale(1)}
+.nav a:hover::after{transform:skewX(-18deg) scaleX(1)}
+.nav a:active::after{background:var(--t200)}
+.nav a.active{color:var(--t900)}
+.nav a.active::before{opacity:1;transform:skewX(-18deg) scale(1);border-color:var(--t500)}
+.nav a.active::after{background:var(--t300);transform:skewX(-18deg) scaleX(1)}
+.tools{display:flex;align-items:stretch;gap:18px;padding:0;margin-left:auto}
+.tools .lang{align-self:center}
+.lang{display:flex;border:1.5px solid var(--t400)}
+.lang button{border:0;background:transparent;padding:7px 12px;font:500 13px var(--sans);color:var(--t600);transition:.2s}
+.lang button:hover{background:var(--t100)}
+.lang button.on{background:var(--t600);color:#fff}
+.burger{width:84px;border:0;border-left:1px dashed var(--t300);background:transparent;display:grid;place-content:center;gap:6px;transition:background .25s;position:relative}
+.burger span{display:block;width:22px;height:2px;background:var(--t600);transition:.3s var(--ease)}
+.burger span:nth-child(2){width:15px;margin-left:auto}
+.burger:hover{background:var(--t100)}
+.burger:hover span:nth-child(2){width:22px}
+.burger.dot::after{content:"";position:absolute;top:22px;right:20px;width:11px;height:11px;background:var(--y);border:2px solid #fff}
+
+/* ============ DRAWER ============ */
+.scrim{position:fixed;inset:0;background:rgba(5,47,50,.5);backdrop-filter:blur(2px);opacity:0;pointer-events:none;transition:.3s;z-index:80}
+.scrim.on{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(370px,92vw);background:#fff;z-index:90;border-left:2px solid var(--t400);transform:translateX(102%);transition:transform .45s var(--ease);display:flex;flex-direction:column;box-shadow:-14px 0 0 -4px var(--t200)}
+.drawer.open{transform:none}
+.d-head{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;border-bottom:1px dashed var(--t300);font:500 13px var(--sans);color:var(--t600);letter-spacing:.14em;text-transform:uppercase}
+.x{width:36px;height:36px;border:1.5px solid var(--t300);background:#fff;font-size:16px;color:var(--t700);display:grid;place-items:center;transition:.2s}
+.x:hover{background:var(--t600);color:#fff;border-color:var(--t600)}
+.user{display:flex;gap:16px;align-items:center;padding:26px 22px;background:linear-gradient(135deg,var(--t100),#fff 70%);border-bottom:1px solid var(--t200)}
+.avatar{width:62px;height:62px;display:grid;place-items:center;background:var(--t600);color:#fff;font:600 26px var(--serif);clip-path:polygon(14% 0,100% 0,86% 100%,0 100%);flex:0 0 auto}
+.user b{display:block;font:600 22px/1.15 var(--serif);color:var(--t800)}
+.user small{font:400 13px var(--sans);color:var(--muted)}
+.d-menu{padding:12px 0;flex:1;overflow:auto}
+.d-menu button{width:100%;display:flex;align-items:center;gap:14px;padding:14px 22px;border:0;background:transparent;text-align:left;font:500 15px var(--sans);color:var(--ink);position:relative;transition:.25s}
+.d-menu button i{font:500 12px var(--sans);font-style:normal;color:var(--t500);border:1px solid var(--t300);padding:3px 6px;transition:.25s}
+.d-menu button::before{content:"";position:absolute;left:0;top:0;bottom:0;width:0;background:var(--y);transition:width .25s}
+.d-menu button:hover{background:var(--t50);padding-left:30px}
+.d-menu button:hover::before{width:5px}
+.d-menu button:hover i{background:var(--t600);color:#fff;border-color:var(--t600)}
+.badge{margin-left:auto;background:var(--y);color:var(--ink);font:600 12px var(--sans);padding:2px 8px}
+.d-foot{padding:18px 22px 24px;border-top:1px dashed var(--t300)}
+.d-foot .btn{width:100%}
+
+/* ============ BUTTONS ============ */
+.btn{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:14px 28px;border:1.5px solid transparent;font:600 13px var(--sans);letter-spacing:.1em;text-transform:uppercase;transition:.25s;isolation:isolate;overflow:hidden;white-space:nowrap}
+.btn::before{content:"";position:absolute;inset:0;transform:translateX(-135%) skewX(-18deg);transition:transform .4s var(--ease);z-index:-1}
+.btn:hover::before{transform:translateX(0) skewX(-18deg) scaleX(1.3)}
+.btn.slate{background:var(--slate);color:var(--ink)}
+.btn.slate::before{background:var(--t600)}
+.btn.slate:not(:hover)::before{transform:translateX(-101%) skewX(-18deg)}
+.btn.slate:hover{color:#fff}
+.btn.main{background:linear-gradient(120deg,var(--t600),var(--t500));color:#fff;box-shadow:4px 4px 0 var(--y)}
+.btn.main::before{background:var(--t800)}
+.btn.main:hover{box-shadow:6px 6px 0 var(--y);transform:translate(-1px,-1px)}
+.btn.main:active{transform:translate(3px,3px);box-shadow:1px 1px 0 var(--y)}
+.btn.ghost{background:#fff;color:var(--t700);border-color:var(--t300)}
+.btn.ghost::before{background:var(--t100)}
+.btn.ghost:hover{border-color:var(--t500)}
+.btn.danger{background:#fff;color:var(--red);border-color:#E7B6BD}
+.btn.danger::before{background:#FBE9EC}
+
+/* ============ PAGES ============ */
+.page{display:none}
+.page.active{display:block;animation:pageIn .55s var(--ease) both}
+@keyframes pageIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.wrap{max-width:1120px;margin:0 auto;padding:44px 28px 80px}
+
+/* ---- Home (Hero & Slides) ---- */
+.hero{display:grid;grid-template-columns:minmax(300px,390px) minmax(0,1fr);align-items:center;gap:0;padding:56px 0 40px clamp(28px,7vw,112px);position:relative;overflow:hidden}
+.hero-l{position:relative;z-index:2;padding-right:20px}
+.hero h1{font:700 60px/1 var(--serif);color:#0A1E20;position:relative;display:inline-block;margin-bottom:22px}
+.hero h1::after{content:"";position:absolute;left:-6px;right:-10px;bottom:2px;height:14px;background:var(--y);opacity:.75;z-index:-1;transform:skewX(-18deg)}
+.lead{font:400 18px/1.65 var(--sans);color:var(--t800);max-width:34ch;margin-bottom:30px}
+.hero-r{position:relative;min-width:0}
+.band{padding:26px 0 26px 70px;background:
+  repeating-linear-gradient(115deg,transparent 0 14px,rgba(255,255,255,.28) 14px 15px),
+  linear-gradient(90deg,rgba(255,255,255,0) 0%,var(--t200) 46%,var(--t300) 100%)}
+/* galeri geser */
+.track{position:relative;display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;overscroll-behavior-x:contain}
+.track::-webkit-scrollbar{display:none}
+.slide{position:relative;flex:0 0 clamp(250px,26vw,340px);height:clamp(190px,18vw,236px);background:#fff;padding:8px;scroll-snap-align:start;overflow:hidden;cursor:pointer;outline-offset:-3px}
+.slide .pic{position:relative;width:100%;height:100%;background-image:var(--img,none),var(--bg);background-size:cover;background-position:center;overflow:hidden}
+.slide .pic:not([style*="--img"])::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(115deg,transparent 0 16px,rgba(255,255,255,.1) 16px 17px)}
+.p1{--bg:linear-gradient(135deg,var(--t600),var(--t300))}
+.p2{--bg:linear-gradient(135deg,var(--t800),var(--t500))}
+.p3{--bg:linear-gradient(135deg,var(--t500),var(--t200))}
+.p4{--bg:linear-gradient(135deg,var(--t700),var(--t400))}
+.p5{--bg:linear-gradient(135deg,var(--t900),var(--t600))}
+.slide figcaption{position:absolute;left:8px;right:8px;bottom:8px;padding:14px 16px 16px;background:rgba(5,47,50,.96);text-shadow:0 1px 2px rgba(0,0,0,.45);color:#fff;transform:translateY(calc(100% + 10px));transition:transform .45s var(--ease)}
+.slide figcaption b{display:block;font:700 22px/1.1 var(--serif);margin-bottom:4px}
+.slide figcaption span{font-size:12.5px;line-height:1.45;color:#D9F3F3;display:block}
+.slide::after{content:"+";position:absolute;right:16px;bottom:16px;width:26px;height:26px;display:grid;place-items:center;background:var(--y);color:var(--ink);font:600 17px var(--sans);box-shadow:0 0 0 2px #fff;transition:opacity .25s,transform .3s var(--ease)}
+.slide:hover figcaption,.slide:focus-visible figcaption,.slide.open figcaption{transform:none;box-shadow:0 -14px 22px -6px rgba(5,47,50,.55)}
+.slide:hover::after,.slide:focus-visible::after,.slide.open::after{opacity:0;transform:scale(.4)}
+.gctl{display:flex;align-items:center;gap:10px;padding:16px 28px 0 70px}
+.gctl button{width:40px;height:40px;display:grid;place-items:center;border:1.5px solid var(--t400);background:#fff;color:var(--t700);transition:.2s}
+.gctl button:hover{background:var(--t600);color:#fff;border-color:var(--t600)}
+.gctl .cnt{font:500 13px var(--sans);color:var(--t700);margin-left:10px}
+.gctl .bar{flex:1;max-width:160px;height:0;border-top:2px dashed var(--t300);margin-left:6px}
+
+/* Ticker */
+.ticker{overflow:hidden;border-block:1px dashed var(--t300);background:#fff;margin-top:34px}
+.tk{display:flex;gap:40px;width:max-content;padding:11px 0;font:500 13px var(--sans);letter-spacing:.18em;color:var(--t600);animation:tick 38s linear infinite}
+.tk span::after{content:"◆";margin-left:40px;color:var(--y)}
+@keyframes tick{to{transform:translateX(-50%)}}
+
+/* Layanan (Cards) */
+.svc{max-width:1120px;margin:0 auto;padding:56px 28px 0}
+.sec-title{font:700 38px/1.1 var(--serif);color:var(--t800);margin-bottom:34px}
+.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.card{position:relative;background:#fff;border:0;text-align:left;padding:24px 22px 20px;min-height:250px;display:flex;flex-direction:column;transition:transform .35s var(--ease),box-shadow .35s var(--ease);cursor:pointer}
+.card::after{content:"";position:absolute;inset:8px;border:1px dashed var(--t300);pointer-events:none;transition:.3s}
+.card:hover{transform:translateY(-8px);box-shadow:8px 8px 0 var(--t500)}
+.card:hover::after{border-color:var(--t500);inset:6px}
+.card .big{font:600 56px/1 var(--serif);color:transparent;-webkit-text-stroke:1.2px var(--t400);margin-bottom:auto}
+.card h3{font:700 28px/1.1 var(--serif);color:var(--t800);margin:22px 0 8px}
+.card p{font-size:15px;color:var(--muted);line-height:1.55}
+.card .go{margin-top:16px;font:600 13px var(--sans);color:var(--t600);display:flex;align-items:center;gap:8px;letter-spacing:.05em}
+.card .go::after{content:"";height:1.5px;width:18px;background:var(--t600);transition:width .3s var(--ease)}
+.card:hover .go::after{width:44px}
+.card.y .big{-webkit-text-stroke-color:#D9A91F}
+
+.bdg{padding:2px 10px;background:#FFF1B8;color:#6B5000;font:700 10.5px var(--sans);letter-spacing:.07em;text-transform:uppercase;transform:skewX(-10deg);display:inline-block}
+
+/* KPI & Panels */
+.kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;margin:30px 0}
+.kpi{position:relative;background:#fff;border:1.5px solid var(--t200);padding:22px 24px 20px 30px}
+.kpi::before{content:"";position:absolute;left:-1.5px;top:-1.5px;bottom:-1.5px;width:6px;background:var(--t400)}
+.kpi:nth-child(2)::before{background:var(--y)}
+.kpi:nth-child(3)::before{background:var(--t700)}
+.k-l{display:block;font:600 13px var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.k-v{display:block;font:700 44px/1.05 var(--sans);color:var(--t900);margin:8px 0 2px}
+.k-s{display:block;font:500 15px var(--sans);color:var(--t800)}
+
+.panels{display:grid;grid-template-columns:repeat(auto-fit,minmax(310px,1fr));gap:20px;margin-bottom:24px}
+.panel{position:relative;background:#fff;border:1.5px solid var(--t200);padding:28px 26px 24px;min-width:0}
+.panel::before{content:"";position:absolute;left:-1.5px;top:-1.5px;width:56px;height:6px;background:var(--y)}
+.panel>h3{font:700 23px/1.15 var(--serif);color:var(--t800);margin-bottom:20px;padding-bottom:14px;border-bottom:1px dashed var(--t300)}
+
+.donut{width:min(100%,200px);margin:4px auto 16px}
+.donut svg{display:block;width:100%;height:auto;overflow:visible}
+.donut .ring{fill:none;stroke:var(--t50);stroke-width:26}
+.donut .arc{fill:none;stroke-width:26;transition:opacity .2s,stroke-width .2s;cursor:pointer}
+.donut .arc:hover{stroke-width:30}
+.dn{font:700 44px var(--sans);fill:var(--t900);text-anchor:middle}
+.dl{font:600 12px var(--sans);letter-spacing:.14em;fill:var(--muted);text-anchor:middle}
+.lg{list-style:none}
+.lgr{display:grid;grid-template-columns:14px minmax(0,1fr) auto auto;align-items:center;gap:10px;width:100%;text-align:left;border-bottom:1px dashed var(--t200);padding:10px 4px;font:500 15px var(--sans);color:var(--ink)}
+.lgr i{width:13px;height:13px;display:block}
+.lgr b{font:700 16px var(--sans)}
+.lgr em{font:500 13.5px var(--sans);font-style:normal;color:var(--muted);min-width:44px;text-align:right}
+
+.rank{list-style:none;display:grid;gap:8px}
+.rk{display:grid;grid-template-columns:24px minmax(0,1fr);gap:12px;width:100%;text-align:left;padding:6px 4px;align-items:start}
+.rk-n{width:24px;height:24px;display:grid;place-items:center;background:var(--t100);color:var(--t700);font:700 12px var(--sans)}
+.rk-name{display:block;font:600 15px var(--sans);color:var(--ink);margin-bottom:6px}
+.rk-bar{display:flex;align-items:center;gap:9px}
+.rk-bar i{display:block;height:12px;background:var(--c-ok);min-width:6px}
+.rk-bar b{font:700 14px var(--sans);color:var(--t800)}
+
+.hl{position:relative;overflow:hidden;background:linear-gradient(135deg,var(--t800),var(--t600));color:#fff;padding:24px 24px 22px;margin-bottom:18px}
+.hl::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(115deg,transparent 0 16px,rgba(255,255,255,.06) 16px 17px);pointer-events:none}
+.hl-m{display:flex;align-items:center;gap:8px;font:600 13px var(--sans);letter-spacing:.12em;color:var(--y2)}
+.hl-n{display:block;font:700 56px/1 var(--sans);margin:8px 0 4px}
+.hl-c{font:500 14.5px var(--sans);color:var(--t100)}
+.nw{border:1px dashed var(--t400);background:var(--t50);padding:16px 18px}
+.nw b{display:block;font:700 18px/1.25 var(--serif);color:var(--t900);margin:6px 0 8px}
+.nw p{display:flex;align-items:center;gap:8px;font:500 14px var(--sans);color:var(--t800);margin-bottom:4px}
+.nw p svg{width:15px;height:15px;color:var(--t500)}
+
+/* Status Chip */
+.st{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;font:600 13px var(--sans);white-space:nowrap}
+.st.g-proses{background:#FFF1C7;color:#5E4200}
+.st.g-disetujui{background:#D7F1F2;color:#07474B}
+.st.g-ditolak{background:#FBE5E8;color:#7F1F2E}
+
+/* Forms & Tables */
+.crumb{font:400 13px var(--sans);color:var(--muted);margin-bottom:14px}
+.crumb a{color:var(--t600);text-decoration:none}
+.crumb a:hover{text-decoration:underline}
+.crumb b{color:var(--t800);font-weight:600}
+.fhead{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap;margin-bottom:24px}
+.ftitle{font:700 44px/1.05 var(--serif);color:var(--t700);letter-spacing:-.01em}
+.ftitle em{font:italic 600 44px var(--serif);color:var(--t400);margin-left:10px}
+.fsub{width:100%;font:400 17px/1.55 var(--sans);color:var(--t800);max-width:62ch;margin-top:-8px}
+
+.tbox{position:relative;background:#fff;border:2px solid var(--t400);margin-bottom:30px}
+.tbox::before{content:"";position:absolute;left:-2px;top:-2px;width:86px;height:12px;background:var(--y);z-index:1}
+.twrap{overflow-x:auto}
+.ptbl{width:100%;border-collapse:collapse;min-width:850px}
+.ptbl th{padding:16px 16px 14px;text-align:left;font:700 13px var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--t700);background:var(--t50);border-bottom:2px solid var(--t300);white-space:nowrap}
+.ptbl td{padding:16px 16px;vertical-align:middle;border-bottom:1px dashed var(--t200);font:400 15px/1.4 var(--sans);color:var(--ink)}
+.ptbl tbody tr:hover td{background:var(--t50)}
+
+.shell{position:relative;background:#fff;border:2px solid var(--t400);padding:36px 36px 30px}
+.shell::before{content:"";position:absolute;left:-2px;top:-2px;width:86px;height:12px;background:var(--y)}
+.sec{display:flex;align-items:center;gap:14px;margin:4px 0 20px}
+.sec .num{width:36px;height:36px;display:grid;place-items:center;background:var(--t600);color:#fff;font:700 15px var(--sans)}
+.sec h3{font:700 21px/1.2 var(--serif);color:var(--t900);white-space:nowrap}
+.sec .dash{flex:1;border-top:2px dashed var(--t300);height:0}
+
+.f{display:flex;flex-direction:column;gap:7px;position:relative;margin-bottom:18px}
+.f label{font:600 13px var(--sans);letter-spacing:.04em;text-transform:uppercase;color:var(--t800)}
+.f input:not([type=file]):not([type=checkbox]),.f select,.f textarea{
+  width:100%;padding:12px 16px;border:1.5px solid var(--t200);background:var(--t50);font:400 15.5px var(--sans);color:var(--ink);outline:0;transition:border-color .2s,box-shadow .2s,background .2s}
+.f textarea{min-height:96px;resize:vertical;line-height:1.5}
+.f input:hover,.f select:hover,.f textarea:hover{border-color:var(--t400)}
+.f input:focus,.f select:focus,.f textarea:focus{border-color:var(--t600);background:#fff;box-shadow:4px 4px 0 var(--t200)}
+
+/* FAQ */
+.qa{border:1.5px solid var(--t200);background:#fff;margin-bottom:14px;transition:.25s}
+.qa[open]{border-color:var(--t500);box-shadow:6px 6px 0 var(--t200)}
+.qa summary{list-style:none;cursor:pointer;padding:18px 22px;font:600 19px/1.3 var(--serif);color:var(--t800);display:flex;justify-content:space-between;align-items:center;gap:14px}
+.qa summary::-webkit-details-marker{display:none}
+.qa summary::after{content:"+";font:500 26px var(--sans);color:var(--t500);transition:transform .3s var(--ease)}
+.qa[open] summary::after{transform:rotate(45deg);color:#D9A91F}
+.qa p{padding:0 22px 20px;color:var(--muted);font-size:15px;line-height:1.6}
+
+/* Modal */
+.modal{position:fixed;inset:0;display:none;place-items:center;background:rgba(5,47,50,.55);backdrop-filter:blur(3px);z-index:100;padding:20px}
+.modal.open{display:grid;animation:fade .25s}
+@keyframes fade{from{opacity:0}}
+.mbox{width:min(540px,100%);background:#fff;border:2px solid var(--t500);box-shadow:10px 10px 0 var(--y);padding:34px 34px 30px;position:relative;animation:pop .4s var(--ease)}
+@keyframes pop{from{opacity:0;transform:translateY(-12px) scale(.98)}}
+.mbox h3{font:700 28px/1.2 var(--serif);color:var(--t800);margin-bottom:6px}
+.mbox .x{position:absolute;right:16px;top:16px}
+.sum{border:1px dashed var(--t400);background:var(--t50);margin:16px 0 22px}
+.sum div{display:flex;justify-content:space-between;gap:12px;padding:10px 14px;font-size:14.5px;border-bottom:1px dashed var(--t200)}
+.sum div:last-child{border:0}
+.sum span{color:var(--muted)}
+.sum b{font-weight:600;color:var(--t800)}
+
+/* Toast */
+.toasts{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);z-index:120;display:grid;gap:10px;pointer-events:none}
+.toast{background:var(--t900);color:#fff;padding:13px 22px;font:500 14px var(--sans);border-left:6px solid var(--y);box-shadow:6px 6px 0 rgba(11,126,130,.35);animation:tin .35s var(--ease),tout .3s 2.8s forwards}
+.toast.warn{border-left-color:var(--red)}
+@keyframes tin{from{opacity:0;transform:translateY(16px)}}
+@keyframes tout{to{opacity:0;transform:translateY(8px)}}
+
+footer{border-top:1px dashed var(--t300);padding:26px 28px;text-align:center;font:400 13px var(--sans);color:var(--muted);background:#fff}
+footer b{color:var(--t600)}
+
+@media (max-width:960px){
+  .hero{grid-template-columns:1fr;padding-left:24px;padding-right:24px;gap:34px}
+  .band{padding-left:24px}
+  .gctl{padding-left:24px}
+  .cards,.kpis{grid-template-columns:1fr}
+  .nav{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- SVG SYMBOLS -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+<symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M3.5 12h17M12 3.5c3.2 3.2 3.2 13.8 0 17M12 3.5c-3.2 3.2-3.2 13.8 0 17" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+<symbol id="i-hourglass" viewBox="0 0 24 24"><path d="M7 4h10M7 20h10" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 4v3.5L12 12l4-4.5V4M8 20v-3.5L12 12l4 4.5V20" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+</defs></svg>
+
+<!-- ============ TOP BAR ============ -->
+<header class="top">
+  <a class="brand" href="#" onclick="switchTab('dashboard'); return false;">
+    <b>I<i>/</i>O</b><span>Service</span>
+  </a>
+  <nav class="nav" aria-label="Menu navigasi">
+    <ul>
+      <li><a href="#" onclick="switchTab('dashboard'); return false;" id="nav-dashboard" class="active">Beranda</a></li>
+      <li><a href="#" onclick="switchTab('outbound'); return false;" id="nav-outbound">Outbound</a></li>
+      <li><a href="#" onclick="switchTab('inbound'); return false;" id="nav-inbound">Inbound</a></li>
+      <li><a href="#" onclick="switchTab('pdln'); return false;" id="nav-pdln">PDLN</a></li>
+      <li><a href="#" onclick="switchTab('akun'); return false;" id="nav-akun">Data Akun</a></li>
+      <li><a href="#" onclick="switchTab('faq'); return false;" id="nav-faq">FAQ</a></li>
+      <li><a href="#" onclick="switchTab('loket'); return false;" id="nav-loket">Loket</a></li>
+    </ul>
+  </nav>
+  <div class="tools">
+    <div class="lang">
+      <button type="button" class="on">ID</button>
+      <button type="button">EN</button>
+    </div>
+    <button type="button" class="burger dot" onclick="toggleDrawer(true)" aria-label="Menu Akun">
+      <span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<main>
+
+  <!-- ===================================================================== -->
+  <!-- 1. DASHBOARD / BERANDA (PERSIS SCREENSHOT FIGMA / INDEX.HTML)         -->
+  <!-- ===================================================================== -->
+  <section class="page active" id="tab-dashboard">
+    <!-- HERO WELCOME -->
+    <div class="hero">
+      <div class="hero-l">
+        <h1>Welcome</h1>
+        <p class="lead">Satu pintu untuk urusan perjalanan dan kunjungan lintas negara civitas Politeknik Negeri Jakarta. Ajukan, pantau, dan ambil dokumen tanpa antre.</p>
+        <button type="button" class="btn slate" id="heroLogin" onclick="toggleDrawer(true)">LOGIN</button>
+      </div>
+      <div class="hero-r">
+        <div class="band">
+          <!-- GALERI GESER -->
+          <div class="track" id="galTrack">
+            <figure class="slide" tabindex="0">
+              <div class="pic p1" data-slot="1" style="--img:url('assets/images/opening_confe.jpeg')"></div>
+              <figcaption><b>Grand Opening</b><span>Pembukaan program kerja sama dengan mitra internasional.</span></figcaption>
+            </figure>
+            <figure class="slide" tabindex="0">
+              <div class="pic p2" data-slot="2" style="--img:url('assets/images/green_camp.jpeg')"></div>
+              <figcaption><b>Summer Camp</b><span>Pertukaran pelajar dalam program Green Summer Camp 2026.</span></figcaption>
+            </figure>
+            <figure class="slide" tabindex="0">
+              <div class="pic p3" data-slot="3" style="--img:url('assets/images/tech_pro.jpeg')"></div>
+              <figcaption><b>Future Tech Seminar</b><span>Seminar teknologi masa depan dengan berbagai tamu luar dan dalam negeri.</span></figcaption>
+            </figure>
+            <figure class="slide" tabindex="0">
+              <div class="pic p4" data-slot="4" style="--img:url('assets/images/international_cs.jpeg')"></div>
+              <figcaption><b>International Students</b><span>Kerja sama dengan perguruan tinggi global rumpun TIK.</span></figcaption>
+            </figure>
+            <figure class="slide" tabindex="0">
+              <div class="pic p5" data-slot="5" style="--img:url('assets/images/gse.jpeg')"></div>
+              <figcaption><b>Space Exhibition</b><span>Pameran dan klub penelitian luar angkasa global.</span></figcaption>
+            </figure>
+          </div>
+        </div>
+        <div class="gctl">
+          <button type="button" id="galPrev" aria-label="Previous"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M9 2L4 7l5 5" fill="none" stroke="currentColor" stroke-width="2"/></svg></button>
+          <button type="button" id="galNext" aria-label="Next"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M5 2l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2"/></svg></button>
+          <span class="cnt" id="galCnt">01 / 05</span>
+          <i class="bar"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- TICKER -->
+    <div class="ticker" aria-hidden="true">
+      <div class="tk" id="tk"></div>
+    </div>
+
+    <!-- LAYANAN SECTION -->
+    <div class="svc">
+      <h2 class="sec-title">Layanan</h2>
+      <div class="cards">
+        <button type="button" class="card" onclick="switchTab('outbound')">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start">
+            <span class="big">01</span>
+            <span class="bdg">5 Baru</span>
+          </div>
+          <h3>Outbound</h3>
+          <p>Civitas PNJ mengurus dokumen yang butuh izin negara: paspor, visa, dan surat izin keluar negeri.</p>
+          <span class="go">CEK OUTBOUND</span>
+        </button>
+        <button type="button" class="card y" onclick="switchTab('inbound')">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start">
+            <span class="big">02</span>
+            <span class="bdg" style="background:var(--t300)">3 Baru</span>
+          </div>
+          <h3>Inbound</h3>
+          <p>Pihak eksternal dan luar negeri mengajukan kunjungan, kolaborasi, atau kegiatan di PNJ.</p>
+          <span class="go">CEK INBOUND</span>
+        </button>
+        <button type="button" class="card" onclick="switchTab('pdln')">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start">
+            <span class="big">03</span>
+            <span class="bdg">2 Baru</span>
+          </div>
+          <h3>PDLN</h3>
+          <p>Pengajuan Perjalanan Dinas Luar Negeri untuk seminar, studi banding, pelatihan, dan riset.</p>
+          <span class="go">CEK PDLN</span>
+        </button>
+      </div>
+
+      <!-- KPI STATS -->
+      <div class="kpis">
+        <div class="kpi">
+          <span class="k-l">Total Pengajuan Masuk</span>
+          <b class="k-v">12</b>
+          <span class="k-s">Semester berjalan</span>
+        </div>
+        <div class="kpi">
+          <span class="k-l">Perlu Dicek Admin</span>
+          <b class="k-v" style="color:#C48400">5</b>
+          <span class="k-s" style="color:#92400E">Menunggu verifikasi berkas</span>
+        </div>
+        <div class="kpi">
+          <span class="k-l">Surat Selesai &amp; Siap Diambil</span>
+          <b class="k-v" style="color:var(--t600)">4</b>
+          <span class="k-s" style="color:var(--t700)">Tersedia PDF &amp; fisik di loket</span>
+        </div>
+      </div>
+
+      <!-- 3 VISUAL PANELS -->
+      <div class="panels">
+        <!-- Status Donut -->
+        <section class="panel">
+          <h3>Status Pengajuan</h3>
+          <div class="donut">
+            <svg viewBox="0 0 200 200" role="group">
+              <circle class="ring" cx="100" cy="100" r="70" />
+              <circle class="arc" cx="100" cy="100" r="70" stroke="var(--t600)" stroke-dasharray="146 294" stroke-dashoffset="0" />
+              <circle class="arc" cx="100" cy="100" r="70" stroke="var(--y)" stroke-dasharray="183 257" stroke-dashoffset="-146" />
+              <circle class="arc" cx="100" cy="100" r="70" stroke="var(--t300)" stroke-dasharray="73 367" stroke-dashoffset="-329" />
+              <circle class="arc" cx="100" cy="100" r="70" stroke="var(--red)" stroke-dasharray="38 402" stroke-dashoffset="-402" />
+              <text class="dn" x="100" y="106">12</text>
+              <text class="dl" x="100" y="126">BERKAS</text>
+            </svg>
+          </div>
+          <ul class="lg">
+            <li class="lgr"><i style="background:var(--t600)"></i><span>Selesai / Terbit</span><b>4</b><em>33%</em></li>
+            <li class="lgr"><i style="background:var(--y)"></i><span>Sedang Dicek</span><b>5</b><em>42%</em></li>
+            <li class="lgr"><i style="background:var(--t300)"></i><span>Proses TTD</span><b>2</b><em>17%</em></li>
+            <li class="lgr"><i style="background:var(--red)"></i><span>Perlu Revisi</span><b>1</b><em>8%</em></li>
+          </ul>
+        </section>
+
+        <!-- Rincian Layanan -->
+        <section class="panel">
+          <h3>Rincian per Layanan &amp; Akun</h3>
+          <ul class="rank">
+            <li class="rk">
+              <span class="rk-n">01</span>
+              <div style="flex:1">
+                <span class="rk-name">Outbound (Paspor/Visa/Izin)</span>
+                <div class="rk-bar">
+                  <i style="width:75%;background:var(--t600)"></i>
+                  <b>5</b>
+                </div>
+              </div>
+            </li>
+            <li class="rk">
+              <span class="rk-n">02</span>
+              <div style="flex:1">
+                <span class="rk-name">Inbound (Tamu &amp; Delegasi)</span>
+                <div class="rk-bar">
+                  <i style="width:45%;background:var(--t400)"></i>
+                  <b>3</b>
+                </div>
+              </div>
+            </li>
+            <li class="rk">
+              <span class="rk-n">03</span>
+              <div style="flex:1">
+                <span class="rk-name">PDLN (Dosen &amp; Tendik)</span>
+                <div class="rk-bar">
+                  <i style="width:60%;background:var(--y)"></i>
+                  <b>4</b>
+                </div>
+              </div>
+            </li>
+          </ul>
+          <div style="margin-top:18px;padding-top:14px;border-top:1px dashed var(--t300);font-size:13.5px;color:var(--muted)">
+            <b style="display:block;margin-bottom:6px;color:var(--t800);text-transform:uppercase;font-size:11px;letter-spacing:.08em">Terdaftar di Database:</b>
+            <div style="display:flex;justify-content:space-between;padding:3px 0"><span>Mahasiswa PNJ:</span><b style="color:var(--t900)">180 Akun</b></div>
+            <div style="display:flex;justify-content:space-between;padding:3px 0"><span>Sivitas Dosen/Tendik:</span><b style="color:var(--t900)">42 Akun</b></div>
+            <div style="display:flex;justify-content:space-between;padding:3px 0"><span>Pihak Eksternal/Luar:</span><b style="color:var(--t900)">26 Akun</b></div>
+          </div>
+        </section>
+
+        <!-- Pengajuan Terbaru Highlight -->
+        <section class="panel">
+          <h3>Pengajuan Terbaru</h3>
+          <div class="hl">
+            <span class="hl-m"><svg width="15" height="15"><use href="#i-hourglass"/></svg> Menunggu Dicek</span>
+            <b class="hl-n">5 Berkas</b>
+            <span class="hl-c">Segera periksa kelengkapan lampiran pemohon</span>
+          </div>
+          <div class="nw">
+            <span class="st g-proses" style="font-size:11px;padding:2px 7px">● BARU MASUK</span>
+            <b>Asna Qonita (Outbound)</b>
+            <p><svg><use href="#i-globe"/></svg> Rekomendasi Paspor &amp; Visa • Malaysia</p>
+            <button type="button" onclick="openCheckModal('Asna Qonita', 'Mahasiswa PNJ (NIM: 2507411018)', 'Outbound', 'Surat Rekomendasi Paspor &amp; Visa', 'Malaysia')" class="btn main" style="margin-top:12px;width:100%;font-size:11.5px;padding:9px 16px">
+              Periksa Sekarang &rarr;
+            </button>
+          </div>
+        </section>
+      </div>
+
+      <!-- SHORTCUTS -->
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px;margin-bottom:60px">
+        <div onclick="switchTab('loket')" style="background:#fff;border:1.5px solid var(--t200);padding:18px 22px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;transition:.25s" onmouseover="this.style.borderColor='var(--t600)';this.style.boxShadow='4px 4px 0 var(--t200)'" onmouseout="this.style.borderColor='var(--t200)';this.style.boxShadow='none'">
+          <div style="display:flex;align-items:center;gap:14px">
+            <span style="width:32px;height:32px;background:var(--t600);color:#fff;display:grid;place-items:center;font-weight:700">&gt;</span>
+            <div>
+              <h4 style="font:700 17px var(--serif);color:var(--t800)">Loket Pengambilan Surat Fisik</h4>
+              <span style="font-size:13px;color:var(--muted)">4 Surat selesai siap diambil pemohon</span>
+            </div>
+          </div>
+          <span class="btn ghost" style="padding:6px 14px;font-size:11px">Buka &rarr;</span>
+        </div>
+
+        <div onclick="switchTab('faq')" style="background:#fff;border:1.5px solid var(--t200);padding:18px 22px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;transition:.25s" onmouseover="this.style.borderColor='var(--t600)';this.style.boxShadow='4px 4px 0 var(--t200)'" onmouseout="this.style.borderColor='var(--t200)';this.style.boxShadow='none'">
+          <div style="display:flex;align-items:center;gap:14px">
+            <span style="width:32px;height:32px;background:var(--t600);color:#fff;display:grid;place-items:center;font-weight:700">&gt;</span>
+            <div>
+              <h4 style="font:700 17px var(--serif);color:var(--t800)">Kelola Pertanyaan Umum (FAQ)</h4>
+              <span style="font-size:13px;color:var(--muted)">Atur FAQ dan pertanyaan di landing page user</span>
+            </div>
+          </div>
+          <span class="btn ghost" style="padding:6px 14px;font-size:11px">Buka &rarr;</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- 2. TAB OUTBOUND                                                       -->
+  <!-- ===================================================================== -->
+  <section class="page" id="tab-outbound">
+    <div class="wrap">
+      <div class="crumb"><a href="#" onclick="switchTab('dashboard'); return false;">Beranda</a> / <b>Outbound</b></div>
+      <div class="fhead">
+        <div>
+          <h2 class="ftitle">Data<em>Outbound</em></h2>
+          <p class="fsub">Daftar civitas PNJ yang mengurus paspor, visa, dan surat izin keluar negeri.</p>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button type="button" class="btn main" style="padding:8px 16px;font-size:11.5px">Semua (5)</button>
+          <button type="button" class="btn ghost" style="padding:8px 16px;font-size:11.5px">Paspor</button>
+          <button type="button" class="btn ghost" style="padding:8px 16px;font-size:11.5px">Visa</button>
+          <button type="button" class="btn ghost" style="padding:8px 16px;font-size:11.5px">Surat Izin LN</button>
+        </div>
+      </div>
+
+      <div class="tbox">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 22px;border-bottom:1px dashed var(--t300)">
+          <div style="display:flex;align-items:center;gap:12px">
+            <div class="sec" style="margin:0"><span class="num">01</span></div>
+            <h3 style="font:700 19px var(--serif);color:var(--t900)">Daftar Pengajuan Outbound Masuk</h3>
+          </div>
+        </div>
+        <div class="twrap">
+          <table class="ptbl">
+            <thead>
+              <tr>
+                <th>Nama &amp; NIM</th>
+                <th>Jurusan / Prodi</th>
+                <th>Keperluan Dokumen</th>
+                <th>Negara Tujuan</th>
+                <th>Status</th>
+                <th style="text-align:right">Aksi</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <b style="color:var(--t900)">Asna Qonita</b>
+                  <small style="display:block;color:var(--muted);font-size:12.5px">2507411018</small>
+                </td>
+                <td>TIK / D4 Teknik Informatika</td>
+                <td><b>Rekomendasi Paspor &amp; Visa Exchange</b></td>
+                <td>Malaysia</td>
+                <td><span class="st g-proses">Sedang Dicek</span></td>
+                <td style="text-align:right">
+                  <button type="button" onclick="openCheckModal('Asna Qonita', 'Mahasiswa PNJ (NIM: 2507411018)', 'Outbound', 'Rekomendasi Paspor &amp; Visa Exchange', 'Malaysia')" class="btn main" style="padding:6px 14px;font-size:11.5px">Periksa</button>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <b style="color:var(--t900)">Reyfan Okta Firdaus</b>
+                  <small style="display:block;color:var(--muted);font-size:12.5px">2507411022</small>
+                </td>
+                <td>TIK / D4 Teknik Informatika</td>
+                <td><b>Surat Izin Keluar Negeri (Lomba)</b></td>
+                <td>Singapura</td>
+                <td><span class="st g-ditolak">Perlu Perbaikan</span></td>
+                <td style="text-align:right">
+                  <button type="button" onclick="openCheckModal('Reyfan Okta Firdaus', 'Mahasiswa PNJ (NIM: 2507411022)', 'Outbound', 'Surat Izin Keluar Negeri', 'Singapura')" class="btn main" style="padding:6px 14px;font-size:11.5px">Periksa</button>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <b style="color:var(--t900)">Annisa Azzahra</b>
+                  <small style="display:block;color:var(--muted);font-size:12.5px">2507411004</small>
+                </td>
+                <td>TIK / D4 Teknik Informatika</td>
+                <td><b>Pengantar Visa Studi</b></td>
+                <td>Korea Selatan</td>
+                <td><span class="st g-disetujui">Siap Diambil ✓</span></td>
+                <td style="text-align:right">
+                  <button type="button" onclick="openCheckModal('Annisa Azzahra', 'Mahasiswa PNJ (NIM: 2507411004)', 'Outbound', 'Pengantar Visa Studi', 'Korea Selatan')" class="btn ghost" style="padding:6px 14px;font-size:11.5px">Detail</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- 3. TAB INBOUND                                                        -->
+  <!-- ===================================================================== -->
+  <section class="page" id="tab-inbound">
+    <div class="wrap">
+      <div class="crumb"><a href="#" onclick="switchTab('dashboard'); return false;">Beranda</a> / <b>Inbound</b></div>
+      <div class="fhead">
+        <div>
+          <h2 class="ftitle">Data<em>Inbound</em></h2>
+          <p class="fsub">Pengajuan pihak eksternal dan luar negeri untuk kunjungan, kolaborasi, atau kegiatan di PNJ.</p>
+        </div>
+      </div>
+
+      <div class="tbox">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 22px;border-bottom:1px dashed var(--t300)">
+          <div style="display:flex;align-items:center;gap:12px">
+            <div class="sec" style="margin:0"><span class="num">02</span></div>
+            <h3 style="font:700 19px var(--serif);color:var(--t900)">Daftar Tamu &amp; Mitra Inbound</h3>
+          </div>
+        </div>
+        <div class="twrap">
+          <table class="ptbl">
+            <thead>
+              <tr>
+                <th>Nama Tamu &amp; Paspor</th>
+                <th>Institusi &amp; Asal Negara</th>
+                <th>Agenda di PNJ</th>
+                <th>Jadwal Kunjungan</th>
+                <th>Status</th>
+                <th style="text-align:right">Aksi</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <b style="color:var(--t900)">Kenji Takahashi</b>
+                  <small style="display:block;color:var(--muted);font-size:12.5px">Paspor: TK8891201</small>
+                </td>
+                <td>NIT Gunma College (Jepang)</td>
+                <td><b>Kunjungan Riset Lab TIK</b></td>
+                <td>01 Des 2026</td>
+                <td><span class="st g-proses">Baru Masuk</span></td>
+                <td style="text-align:right">
+                  <button type="button" onclick="openCheckModal('Kenji Takahashi', 'Eksternal (Paspor: TK8891201 - Jepang)', 'Inbound', 'Kunjungan Riset Lab TIK', 'Jepang')" class="btn main" style="padding:6px 14px;font-size:11.5px">Periksa</button>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <b style="color:var(--t900)">Sarah Jenkins, Ph.D.</b>
+                  <small style="display:block;color:var(--muted);font-size:12.5px">Paspor: US4410982</small>
+                </td>
+                <td>University of Melbourne (Australia)</td>
+                <td><b>Guest Lecture Energi Terbarukan</b></td>
+                <td>15 Jan 2027</td>
+                <td><span class="st g-disetujui">Disetujui ✓</span></td>
+                <td style="text-align:right">
+                  <button type="button" onclick="openCheckModal('Sarah Jenkins, Ph.D.', 'Eksternal (Australia)', 'Inbound', 'Guest Lecture Energi Terbarukan', 'Australia')" class="btn ghost" style="padding:6px 14px;font-size:11.5px">Detail</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- 4. TAB PDLN                                                           -->
+  <!-- ===================================================================== -->
+  <section class="page" id="tab-pdln">
+    <div class="wrap">
+      <div class="crumb"><a href="#" onclick="switchTab('dashboard'); return false;">Beranda</a> / <b>PDLN</b></div>
+      <div class="fhead">
+        <div>
+          <h2 class="ftitle">Data<em>PDLN</em></h2>
+          <p class="fsub">Pengajuan Perjalanan Dinas Luar Negeri dosen &amp; tendik untuk seminar, studi banding, dan riset.</p>
+        </div>
+      </div>
+
+      <div class="tbox">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 22px;border-bottom:1px dashed var(--t300)">
+          <div style="display:flex;align-items:center;gap:12px">
+            <div class="sec" style="margin:0"><span class="num">03</span></div>
+            <h3 style="font:700 19px var(--serif);color:var(--t900)">Daftar Pengajuan &amp; Laporan PDLN</h3>
+          </div>
+        </div>
+        <div class="twrap">
+          <table class="ptbl">
+            <thead>
+              <tr>
+                <th>Nama Dosen / Tendik &amp; NIP</th>
+                <th>Unit Kerja</th>
+                <th>Kegiatan PDLN</th>
+                <th>Negara Tujuan</th>
+                <th>Status</th>
+                <th style="text-align:right">Aksi</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <b style="color:var(--t900)">Dr. Ir. Hendra Wijaya</b>
+                  <small style="display:block;color:var(--muted);font-size:12.5px">NIP: 197804122005011002</small>
+                </td>
+                <td>Jurusan Teknik Elektro</td>
+                <td><b>Seminar Internasional IEEE</b></td>
+                <td>Jerman</td>
+                <td><span class="st g-proses">Proses TTD</span></td>
+                <td style="text-align:right">
+                  <button type="button" onclick="openCheckModal('Dr. Ir. Hendra Wijaya', 'Sivitas Dosen (NIP: 19780412...)', 'PDLN', 'Seminar Internasional IEEE', 'Jerman')" class="btn main" style="padding:6px 14px;font-size:11.5px">Periksa</button>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <b style="color:var(--t900)">Dr. Nurul Hidayati, M.T.</b>
+                  <small style="display:block;color:var(--muted);font-size:12.5px">NIP: 198209152008122001</small>
+                </td>
+                <td>Jurusan Teknik Mesin</td>
+                <td><b>Workshop Green Hydrogen Technology</b></td>
+                <td>Jepang</td>
+                <td><span class="st g-disetujui">SP Setneg Terbit ✓</span></td>
+                <td style="text-align:right">
+                  <button type="button" onclick="openCheckModal('Dr. Nurul Hidayati, M.T.', 'Sivitas Dosen', 'PDLN', 'Workshop Green Hydrogen', 'Jepang')" class="btn ghost" style="padding:6px 14px;font-size:11.5px">Detail</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- 5. TAB DATA AKUN                                                      -->
+  <!-- ===================================================================== -->
+  <section class="page" id="tab-akun">
+    <div class="wrap">
+      <div class="crumb"><a href="#" onclick="switchTab('dashboard'); return false;">Beranda</a> / <b>Data Akun</b></div>
+      <div class="fhead">
+        <div>
+          <h2 class="ftitle">Data<em>Akun Pengguna</em></h2>
+          <p class="fsub">Daftar pengguna berdasarkan 3 jenis profil: Mahasiswa PNJ, Sivitas (Dosen/Tendik), dan Pihak Eksternal.</p>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button type="button" onclick="filterUser('all')" class="btn main filter-user-btn" data-role="all" style="padding:8px 16px;font-size:11.5px">Semua</button>
+          <button type="button" onclick="filterUser('mhs')" class="btn ghost filter-user-btn" data-role="mhs" style="padding:8px 16px;font-size:11.5px">Mahasiswa PNJ</button>
+          <button type="button" onclick="filterUser('sivitas')" class="btn ghost filter-user-btn" data-role="sivitas" style="padding:8px 16px;font-size:11.5px">Sivitas (NIP)</button>
+          <button type="button" onclick="filterUser('eksternal')" class="btn ghost filter-user-btn" data-role="eksternal" style="padding:8px 16px;font-size:11.5px">Eksternal</button>
+        </div>
+      </div>
+
+      <div class="tbox">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 22px;border-bottom:1px dashed var(--t300)">
+          <div style="display:flex;align-items:center;gap:12px">
+            <div class="sec" style="margin:0"><span class="num">04</span></div>
+            <h3 style="font:700 19px var(--serif);color:var(--t900)">Tabel Pengguna Terdaftar</h3>
+          </div>
+        </div>
+        <div class="twrap">
+          <table class="ptbl">
+            <thead>
+              <tr>
+                <th>Nama Lengkap &amp; Email</th>
+                <th>Kategori Profil</th>
+                <th>Identitas Resmi (NIM / NIP / Paspor)</th>
+                <th>Jurusan / Unit / Instansi</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="u-row" data-role="mhs">
+                <td>
+                  <b style="color:var(--t900)">Asna Qonita</b>
+                  <small style="display:block;color:var(--muted);font-size:12.5px">asna.qonita.tik25@pnj.ac.id</small>
+                </td>
+                <td><span class="st g-disetujui">Mahasiswa PNJ</span></td>
+                <td><b>NIM: 2507411018</b></td>
+                <td>Teknik Informatika &amp; Komputer</td>
+              </tr>
+              <tr class="u-row" data-role="sivitas">
+                <td>
+                  <b style="color:var(--t900)">Dr. Ir. Hendra Wijaya</b>
+                  <small style="display:block;color:var(--muted);font-size:12.5px">hendra.wijaya@pnj.ac.id</small>
+                </td>
+                <td><span class="st g-proses">Sivitas PNJ</span></td>
+                <td><b>NIP: 197804122005011002</b></td>
+                <td>Jurusan Teknik Elektro</td>
+              </tr>
+              <tr class="u-row" data-role="eksternal">
+                <td>
+                  <b style="color:var(--t900)">Kenji Takahashi</b>
+                  <small style="display:block;color:var(--muted);font-size:12.5px">kenji@gunma.jp</small>
+                </td>
+                <td><span class="st g-ditolak">Eksternal</span></td>
+                <td><b>Paspor: TK8891201 (Jepang)</b></td>
+                <td>NIT Gunma College</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- 6. TAB FAQ                                                            -->
+  <!-- ===================================================================== -->
+  <section class="page" id="tab-faq">
+    <div class="wrap">
+      <div class="crumb"><a href="#" onclick="switchTab('dashboard'); return false;">Beranda</a> / <b>FAQ</b></div>
+      <div class="fhead">
+        <div>
+          <h2 class="ftitle">Kelola<em>FAQ &amp; Template</em></h2>
+          <p class="fsub">Kelola daftar tanya jawab yang tampil pada halaman landing page user.</p>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:28px;align-items:start">
+        <div>
+          <h3 style="font:700 22px var(--serif);color:var(--t800);margin-bottom:16px">Daftar FAQ Tampil di Beranda</h3>
+          <div id="faqList">
+            <details class="qa" open>
+              <summary>
+                <span><b style="color:var(--t500);margin-right:8px">01</b> Bagaimana cara mengajukan dokumen Outbound?</span>
+                <button type="button" onclick="this.closest('.qa').remove(); toast('FAQ dihapus', true);" style="background:none;border:none;color:var(--red);font-size:11px;font-weight:700;cursor:pointer;text-transform:uppercase">Hapus</button>
+              </summary>
+              <p>Masuk ke akun Anda, lengkapi profil, lalu pilih menu Outbound dan unggah dokumen syarat dalam format PDF.</p>
+            </details>
+
+            <details class="qa">
+              <summary>
+                <span><b style="color:var(--t500);margin-right:8px">02</b> Berapa lama proses verifikasi berkas di KUI?</span>
+                <button type="button" onclick="this.closest('.qa').remove(); toast('FAQ dihapus', true);" style="background:none;border:none;color:var(--red);font-size:11px;font-weight:700;cursor:pointer;text-transform:uppercase">Hapus</button>
+              </summary>
+              <p>Verifikasi memakan waktu 3–5 hari kerja. Anda akan mendapat notifikasi saat surat siap diambil di loket.</p>
+            </details>
+          </div>
+        </div>
+
+        <div class="shell">
+          <h3 style="font:700 24px var(--serif);color:var(--t900);margin-bottom:4px">Tambah FAQ Baru</h3>
+          <p style="font-size:13.5px;color:var(--muted);margin-bottom:20px">Pertanyaan yang ditambahkan akan langsung tersimpan dan aktif.</p>
+          <form onsubmit="handleFaqSubmit(event)">
+            <div class="f">
+              <label>Kategori Layanan</label>
+              <select id="faqKat" required>
+                <option value="Outbound">Outbound</option>
+                <option value="Inbound">Inbound</option>
+                <option value="PDLN">PDLN</option>
+                <option value="Umum">Umum &amp; Akun</option>
+              </select>
+            </div>
+            <div class="f">
+              <label>Pertanyaan</label>
+              <input type="text" id="faqQ" placeholder="Tuliskan pertanyaan baru..." required>
+            </div>
+            <div class="f">
+              <label>Jawaban Lengkap</label>
+              <textarea id="faqA" placeholder="Tuliskan jawaban penjelasan..." required></textarea>
+            </div>
+            <button type="submit" class="btn main" style="width:100%;margin-top:10px">Simpan FAQ Baru</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- 7. TAB LOKET                                                          -->
+  <!-- ===================================================================== -->
+  <section class="page" id="tab-loket">
+    <div class="wrap">
+      <div class="crumb"><a href="#" onclick="switchTab('dashboard'); return false;">Beranda</a> / <b>Loket</b></div>
+      <div class="fhead">
+        <div>
+          <h2 class="ftitle">Loket<em>Pengambilan Dokumen</em></h2>
+          <p class="fsub">Manajemen pengambilan dokumen fisik yang telah dicetak, ditandatangani, dan siap diambil di loket KUI.</p>
+        </div>
+      </div>
+
+      <div class="tbox">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 22px;border-bottom:1px dashed var(--t300)">
+          <div style="display:flex;align-items:center;gap:12px">
+            <div class="sec" style="margin:0"><span class="num">&#10003;</span></div>
+            <h3 style="font:700 19px var(--serif);color:var(--t900)">Daftar Dokumen Fisik di Meja Loket</h3>
+          </div>
+        </div>
+        <div class="twrap">
+          <table class="ptbl">
+            <thead>
+              <tr>
+                <th>Nama Pemohon</th>
+                <th>Surat yang Selesai</th>
+                <th>Status Ambil Fisik</th>
+                <th style="text-align:right">Aksi Petugas Loket</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <b style="color:var(--t900)">Annisa Azzahra</b>
+                  <small style="display:block;color:var(--muted);font-size:12.5px">NIM: 2507411004 (TIK)</small>
+                </td>
+                <td><b>Surat Pengantar Visa Studi (Korea Selatan)</b></td>
+                <td><span class="st g-proses status-ambil" data-status="pending">Belum Diambil</span></td>
+                <td style="text-align:right">
+                  <button type="button" onclick="toggleAmbil(this)" class="btn main" style="padding:6px 14px;font-size:11.5px">Tandai Sudah Diambil</button>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <b style="color:var(--t900)">Dr. Ir. Hendra Wijaya</b>
+                  <small style="display:block;color:var(--muted);font-size:12.5px">NIP: 197804122005011002</small>
+                </td>
+                <td><b>Surat Tugas &amp; Izin Setneg PDLN Jerman</b></td>
+                <td><span class="st g-disetujui status-ambil" data-status="done">Sudah Diambil ✓</span></td>
+                <td style="text-align:right">
+                  <button type="button" onclick="toggleAmbil(this)" class="btn ghost" style="padding:6px 14px;font-size:11.5px">Batal Ambil</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============ RIGHT DRAWER ============ -->
+<div class="scrim" id="scrim" onclick="toggleDrawer(false)"></div>
+<aside class="drawer" id="drawer" aria-hidden="true">
+  <div class="d-head">
+    <span>Akun Admin KUI</span>
+    <button type="button" class="x" onclick="toggleDrawer(false)" aria-label="Tutup Menu">✕</button>
+  </div>
+  <div class="user">
+    <div class="avatar">A</div>
+    <div>
+      <b>Admin I/O PNJ</b>
+      <small>admin.io@pnj.ac.id</small>
+    </div>
+  </div>
+  <div class="d-menu">
+    <button type="button" onclick="switchTab('dashboard'); toggleDrawer(false);">
+      <i>01</i> Dashboard Utama
+    </button>
+    <button type="button" onclick="switchTab('outbound'); toggleDrawer(false);">
+      <i>02</i> Pengajuan Outbound <span class="badge">5</span>
+    </button>
+    <button type="button" onclick="switchTab('inbound'); toggleDrawer(false);">
+      <i>03</i> Pengajuan Inbound <span class="badge">3</span>
+    </button>
+    <button type="button" onclick="switchTab('pdln'); toggleDrawer(false);">
+      <i>04</i> Pengajuan PDLN <span class="badge">2</span>
+    </button>
+    <button type="button" onclick="switchTab('akun'); toggleDrawer(false);">
+      <i>05</i> Data Akun Pengguna
+    </button>
+    <button type="button" onclick="switchTab('faq'); toggleDrawer(false);">
+      <i>06</i> Kelola FAQ
+    </button>
+    <button type="button" onclick="switchTab('loket'); toggleDrawer(false);">
+      <i>07</i> Loket Pengambilan <span class="badge">4</span>
+    </button>
+  </div>
+  <div class="d-foot">
+    <a href="index.html" class="btn slate" style="width:100%;text-align:center;display:block">LOGOUT</a>
+  </div>
+</aside>
+
+<!-- ============ MODAL PERIKSA BERKAS ============ -->
+<div class="modal" id="checkModal" onclick="if(event.target === this) closeCheckModal();">
+  <div class="mbox">
+    <button type="button" class="x" onclick="closeCheckModal()" aria-label="Tutup">✕</button>
+    <h3 id="mdl-title">Periksa Pengajuan</h3>
+    <p style="font-size:13.5px;color:var(--muted);margin-bottom:16px">Verifikasi dokumen lampiran dan perbarui tahap proses pemohon.</p>
+
+    <div class="sum">
+      <div><span>Nama Pemohon:</span><b id="mdl-name">Asna Qonita</b></div>
+      <div><span>Kategori / Profil:</span><b id="mdl-role" style="color:var(--t600)">Mahasiswa PNJ</b></div>
+      <div><span>Negara Tujuan:</span><b id="mdl-country">Malaysia</b></div>
+    </div>
+
+    <div style="margin-bottom:18px">
+      <label style="font:600 12px var(--sans);letter-spacing:.05em;text-transform:uppercase;color:var(--t800);display:block;margin-bottom:8px">
+        Dokumen yang Diunggah Pemohon:
+      </label>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:13px">
+        <div style="padding:10px 12px;border:1.5px solid var(--t200);background:var(--t50);display:flex;justify-content:space-between;align-items:center">
+          <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">1. Identitas_KTM.pdf</span>
+          <a href="#" onclick="alert('Membuka preview dokumen...'); return false;" style="color:var(--t600);font-weight:700;margin-left:8px">Lihat</a>
+        </div>
+        <div style="padding:10px 12px;border:1.5px solid var(--t200);background:var(--t50);display:flex;justify-content:space-between;align-items:center">
+          <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">2. Berkas_Syarat.pdf</span>
+          <a href="#" onclick="alert('Membuka preview dokumen...'); return false;" style="color:var(--t600);font-weight:700;margin-left:8px">Lihat</a>
+        </div>
+      </div>
+    </div>
+
+    <form onsubmit="handleCheckModalSubmit(event)">
+      <div class="f">
+        <label>Ubah Status / Alur Pengajuan</label>
+        <select required>
+          <option value="01">01. Isi Form (Baru Masuk)</option>
+          <option value="02" selected>02. Verifikasi Berkas (Sedang Dicek)</option>
+          <option value="rev">! Minta Perbaikan Dokumen Pemohon</option>
+          <option value="03">03. Proses Dokumen &amp; Penandatanganan</option>
+          <option value="04">04. Dokumen Selesai &amp; Siap Diambil di Loket</option>
+        </select>
+      </div>
+      <div class="f">
+        <label>Unggah Surat Selesai (Format PDF jika ada)</label>
+        <input type="file" accept=".pdf">
+      </div>
+      <div class="f">
+        <label>Catatan Petugas (Tampil di Notifikasi Akun User)</label>
+        <textarea placeholder="Contoh: Berkas telah lengkap. Silakan pantau status pengambilan fisik."></textarea>
+      </div>
+      <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:20px;padding-top:16px;border-top:1px dashed var(--t300)">
+        <button type="button" class="btn ghost" onclick="closeCheckModal()">Batal</button>
+        <button type="submit" class="btn main">Simpan Perubahan</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ============ TOAST CONTAINER ============ -->
+<div class="toasts" id="toasts"></div>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <b>I/O Service</b> — Kantor Urusan Internasional Politeknik Negeri Jakarta &copy; 2026.
+</footer>
+
+<!-- ============ JAVASCRIPT ============ -->
+<script>
+// Tab Switching
+function switchTab(key) {
+  document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
+  const target = document.getElementById('tab-' + key);
+  if (target) {
+    target.classList.add('active');
+  }
+
+  // Update navbar links active status
+  ['dashboard', 'outbound', 'inbound', 'pdln', 'akun', 'faq', 'loket'].forEach(k => {
+    const btn = document.getElementById('nav-' + k);
+    if (!btn) return;
+    if (k === key) {
+      btn.classList.add('active');
+    } else {
+      btn.classList.remove('active');
+    }
+  });
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Drawer Toggle
+function toggleDrawer(open) {
+  const drawer = document.getElementById('drawer');
+  const scrim = document.getElementById('scrim');
+  const isOpen = open !== undefined ? open : !drawer.classList.contains('open');
+  drawer.classList.toggle('open', isOpen);
+  scrim.classList.toggle('on', isOpen);
+  drawer.setAttribute('aria-hidden', !isOpen);
+}
+
+// Modal Check Handlers
+function openCheckModal(name, role, cat, title, country) {
+  document.getElementById('mdl-name').innerText = name;
+  document.getElementById('mdl-role').innerText = role;
+  document.getElementById('mdl-title').innerText = cat + ' — ' + title;
+  document.getElementById('mdl-country').innerText = country;
+  document.getElementById('checkModal').classList.add('open');
+}
+function closeCheckModal() {
+  document.getElementById('checkModal').classList.remove('open');
+}
+function handleCheckModalSubmit(e) {
+  e.preventDefault();
+  closeCheckModal();
+  toast('Status berkas berhasil diperbarui & notifikasi terkirim!');
+}
+
+// Gallery Carousel Logic
+(function initGallery() {
+  const tr = document.getElementById('galTrack');
+  if (!tr) return;
+  const slides = tr.querySelectorAll('.slide');
+  const n = slides.length;
+  const cnt = document.getElementById('galCnt');
+  if (!n) return;
+
+  const step = () => slides.length > 1 ? slides[1].offsetLeft - slides[0].offsetLeft : tr.clientWidth;
+  const atEnd = () => tr.scrollLeft + tr.clientWidth >= tr.scrollWidth - 6;
+  const pad = v => String(v).padStart(2, '0');
+  let paused = false;
+
+  function idx() { return Math.min(n - 1, Math.round(tr.scrollLeft / step())); }
+  function show() { if (cnt) cnt.textContent = pad(atEnd() ? n : idx() + 1) + ' / ' + pad(n); }
+  function to(i) { i = Math.max(0, Math.min(n - 1, i)); tr.scrollTo({ left: i * step(), behavior: 'smooth' }); }
+  function next() { if (atEnd()) tr.scrollTo({ left: 0, behavior: 'smooth' }); else to(idx() + 1); }
+  function prev() { if (tr.scrollLeft < 6) tr.scrollTo({ left: tr.scrollWidth, behavior: 'smooth' }); else to(idx() - 1); }
+
+  const nextBtn = document.getElementById('galNext');
+  const prevBtn = document.getElementById('galPrev');
+  if (nextBtn) nextBtn.onclick = next;
+  if (prevBtn) prevBtn.onclick = prev;
+
+  tr.addEventListener('scroll', show, { passive: true });
+  window.addEventListener('resize', show);
+  show();
+
+  slides.forEach(s => s.addEventListener('click', e => {
+    const was = s.classList.contains('open');
+    slides.forEach(x => x.classList.remove('open'));
+    if (!was) s.classList.add('open');
+    e.stopPropagation();
+  }));
+
+  slides.forEach(s => s.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); s.click(); }
+  }));
+  document.addEventListener('click', () => slides.forEach(x => x.classList.remove('open')));
+
+  ['mouseenter', 'focusin', 'touchstart'].forEach(ev => tr.addEventListener(ev, () => paused = true, { passive: true }));
+  ['mouseleave', 'focusout'].forEach(ev => tr.addEventListener(ev, () => paused = false));
+  setInterval(() => {
+    const dashTab = document.getElementById('tab-dashboard');
+    if (!paused && !document.hidden && dashTab && dashTab.classList.contains('active') && !tr.querySelector('.slide.open')) {
+      next();
+    }
+  }, 4500);
+})();
+
+// Build Ticker Text (Persis screenshot)
+(function buildTicker() {
+  const words = ['INTERNATIONAL PNJ', 'EXCHANGE', 'COLLABORATION', 'VISITS', 'RESEARCH'];
+  const row = words.map(x => `<span>${x}</span>`).join('');
+  const tk = document.getElementById('tk');
+  if (tk) tk.innerHTML = row.repeat(6);
+})();
+
+// Filter User in Data Akun Tab
+function filterUser(role) {
+  document.querySelectorAll('.u-row').forEach(row => {
+    row.style.display = (role === 'all' || row.dataset.role === role) ? '' : 'none';
+  });
+  document.querySelectorAll('.filter-user-btn').forEach(btn => {
+    if (btn.getAttribute('data-role') === role) {
+      btn.className = 'btn main filter-user-btn';
+    } else {
+      btn.className = 'btn ghost filter-user-btn';
+    }
+  });
+}
+
+// Add FAQ Form
+function handleFaqSubmit(e) {
+  e.preventDefault();
+  const kat = document.getElementById('faqKat').value;
+  const q = document.getElementById('faqQ').value.trim();
+  const a = document.getElementById('faqA').value.trim();
+  if (!q || !a) return;
+
+  const list = document.getElementById('faqList');
+  const count = list.querySelectorAll('.qa').length + 1;
+  const pad = String(count).padStart(2, '0');
+
+  const details = document.createElement('details');
+  details.className = 'qa';
+  details.open = true;
+  details.innerHTML = `
+    <summary>
+      <span><b style="color:var(--t500);margin-right:8px">${pad}</b> [${kat}] ${escapeHtml(q)}</span>
+      <button type="button" onclick="this.closest('.qa').remove(); toast('FAQ dihapus', true);" style="background:none;border:none;color:var(--red);font-size:11px;font-weight:700;cursor:pointer;text-transform:uppercase">Hapus</button>
+    </summary>
+    <p>${escapeHtml(a)}</p>
+  `;
+  list.prepend(details);
+  e.target.reset();
+  toast('FAQ baru berhasil ditambahkan!');
+}
+
+function escapeHtml(str) {
+  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+// Toggle Ambil Surat di Loket
+function toggleAmbil(btn) {
+  const row = btn.closest('tr');
+  const badge = row.querySelector('.status-ambil');
+  if (badge.dataset.status === 'done') {
+    badge.className = 'st g-proses status-ambil';
+    badge.textContent = 'Belum Diambil';
+    badge.dataset.status = 'pending';
+    btn.className = 'btn main';
+    btn.textContent = 'Tandai Sudah Diambil';
+    toast('Status diubah: Belum Diambil', true);
+  } else {
+    badge.className = 'st g-disetujui status-ambil';
+    badge.textContent = 'Sudah Diambil ✓';
+    badge.dataset.status = 'done';
+    btn.className = 'btn ghost';
+    btn.textContent = 'Batal Ambil';
+    toast('Dokumen ditandai telah diambil ✓');
+  }
+}
+
+// Toast Notification
+function toast(msg, warn = false) {
+  const wrap = document.getElementById('toasts');
+  const t = document.createElement('div');
+  t.className = 'toast' + (warn ? ' warn' : '');
+  t.textContent = msg;
+  wrap.appendChild(t);
+  setTimeout(() => t.remove(), 3200);
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Akun Saya — I/O Service PNJ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,500..700;1,8..60,500..700&family=Source+Sans+3:ital,wght@0,400..700;1,400..600&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Archivo:wdth,wght@100..125,400..800&family=JetBrains+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<!-- SVG SYMBOLS DEFINITION -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+<symbol id="i-send" viewBox="0 0 24 24"><path d="M21 4L10 14M21 4l-6.5 16-4.5-6-6-4.5z"/></symbol>
+<symbol id="i-pie" viewBox="0 0 24 24"><path d="M12 3v9h9"/><path d="M20.4 15.5A9 9 0 1 1 8.5 3.6"/></symbol>
+<symbol id="i-doc" viewBox="0 0 24 24"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M10 12h5M10 16h5"/></symbol>
+<symbol id="i-docok" viewBox="0 0 24 24"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M9.5 14l2 2 3.5-4"/></symbol>
+<symbol id="i-book" viewBox="0 0 24 24"><path d="M3.5 5.5C6.5 4 9.5 4.2 12 6.2c2.5-2 5.5-2.2 8.5-.7V19c-3-1.5-6-1.3-8.5.7-2.5-2-5.5-2.2-8.5-.7z"/><path d="M12 6.2v13.5"/></symbol>
+<symbol id="i-folder" viewBox="0 0 24 24"><path d="M3.5 6.5V19h17V9h-9L10 6.5z"/></symbol>
+<symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+<symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+<symbol id="i-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="6.5"/></symbol>
+<symbol id="i-hourglass" viewBox="0 0 24 24"><path d="M7 4h10M7 20h10"/><path d="M8 4v3.5L12 12l4-4.5V4M8 20v-3.5L12 12l4 4.5V20"/></symbol>
+<symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-4 3-6 7-6s7 2 7 6"/></symbol>
+<symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c3.2 3.2 3.2 13.8 0 17M12 3.5c-3.2 3.2-3.2 13.8 0 17"/></symbol>
+<symbol id="i-cal" viewBox="0 0 24 24"><rect x="4" y="5.5" width="16" height="14.5"/><path d="M4 10h16M8.5 3.5v4M15.5 3.5v4"/></symbol>
+<symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21v-6M8 4h8l-1.5 6 3 3H6.5l3-3z"/></symbol>
+<symbol id="i-ext" viewBox="0 0 24 24"><path d="M13.5 4.5H20V11M20 4.5L11 13.5M18 14.5V19H5V6h4.5"/></symbol>
+<symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><circle cx="12" cy="16" r="1.5"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></symbol>
+<symbol id="i-arrow-r" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+<symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3s7 3 7 8c0 5-7 10-7 10S5 16 5 11c0-5 7-8 7-8z"/></symbol>
+<symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></symbol>
+<symbol id="i-school" viewBox="0 0 24 24"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></symbol>
+</defs></svg>
+
+<!-- ===================================================================== -->
+<!-- HEADER IDENTIK SISTEM USER                                           -->
+<!-- ===================================================================== -->
+<header class="top">
+  <a class="brand" href="index.html#home" title="Kembali ke Beranda"><b>I</b><i>/</i><b>O</b><span>Service</span></a>
+  <nav class="nav" aria-label="Menu utama">
+    <ul>
+      <li><a href="index.html#home">Beranda</a></li>
+      <li><a href="index.html#outbound">Outbound</a></li>
+      <li><a href="index.html#inbound">Inbound</a></li>
+      <li><a href="index.html#pdln">PDLN</a></li>
+      <li><a href="index.html#faq">FAQ</a></li>
+    </ul>
+  </nav>
+  <div class="tools">
+    <div class="lang" role="group" aria-label="Language">
+      <button type="button" data-lang="id" class="on" onclick="setLanguage('id')">ID</button>
+      <button type="button" data-lang="en" onclick="setLanguage('en')">EN</button>
+    </div>
+    <button type="button" class="burger" id="burger" aria-label="Menu akun" aria-controls="drawer" onclick="openDrawer()">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<!-- ===================================================================== -->
+<!-- DRAWER AKUN KANAN (DRAWER SISTEM USER)                                -->
+<!-- ===================================================================== -->
+<div class="scrim" id="scrim" onclick="closeDrawer()"></div>
+<aside class="drawer" id="drawer" aria-hidden="true">
+  <div class="d-head">
+    <span>Akun</span>
+    <button type="button" class="x" id="drawerClose" aria-label="Close" onclick="closeDrawer()">✕</button>
+  </div>
+  <div class="user">
+    <div class="avatar" id="drawer-avatar">A</div>
+    <div>
+      <b id="drawer-user-name">Asna Qonita</b>
+      <small id="drawer-user-meta">2507411018 · Mahasiswa PNJ</small>
+    </div>
+  </div>
+  <div class="d-menu">
+    <button type="button" onclick="switchProfileTab('profil'); closeDrawer();"><i>01</i><span>Profil Saya</span></button>
+    <button type="button" onclick="switchProfileTab('pengajuan'); closeDrawer();"><i>02</i><span id="drawer-label-pengajuan">Riwayat Outbound</span><em class="badge" style="font-style:normal">1</em></button>
+    <button type="button" onclick="switchProfileTab('notifikasi'); closeDrawer();"><i>03</i><span>Notifikasi</span><em class="badge" style="font-style:normal">2</em></button>
+    <button type="button" onclick="switchProfileTab('pengaturan'); closeDrawer();"><i>04</i><span>Pengaturan Akun</span></button>
+  </div>
+  <div class="d-lang">
+    <span>Bahasa</span>
+    <div class="lang">
+      <button type="button" class="on">ID</button>
+      <button type="button">EN</button>
+    </div>
+  </div>
+  <div class="d-foot">
+    <button type="button" class="btn slate" onclick="alertLogout()" style="width:100%">Logout Akun</button>
+  </div>
+</aside>
+
+<!-- ===================================================================== -->
+<!-- MAIN CONTENT AREA                                                     -->
+<!-- ===================================================================== -->
+<main style="padding-bottom: 60px;">
+  <div class="wrap">
+    
+    <!-- Breadcrumb Navigasi -->
+    <div class="crumb">
+      <a href="index.html#home">Beranda</a> / 
+      <a href="profile.html">Portal Akun</a> / 
+      <b id="crumb-active-title">Profil Pengguna</b>
+    </div>
+
+    <!-- Header Halaman -->
+    <div class="fhead">
+      <div class="auth-kicker"><span class="bdg">MANAJEMEN AKUN &amp; IDENTITAS KUI</span></div>
+      <h2 class="ftitle">Profil<em>Pengguna</em></h2>
+      <p class="fsub">Kelola data identitas resmi sesuai database ERD KUI PNJ, pantau status dan riwayat dokumen internasional, serta atur preferensi akun Anda.</p>
+    </div>
+
+    <!-- Layout Grid Profil 2 Kolom -->
+    <div class="profile-grid">
+      
+      <!-- ============================================================= -->
+      <!-- KOLOM KIRI: KARTU IDENTITAS PENGGUNA & MENU AKUN              -->
+      <!-- ============================================================= -->
+      <aside>
+        <div class="shell profile-card">
+          
+          <!-- Avatar Poligon Khas Sistem User -->
+          <div class="profile-avatar-wrap">
+            <div class="profile-avatar" id="side-avatar">A</div>
+          </div>
+
+          <h3 class="profile-user-name" id="side-name">Asna Qonita</h3>
+          <p class="profile-user-email" id="side-email">snqnt1812@gmail.com</p>
+          
+          <div class="profile-role-badge">
+            <span id="side-badge">Mahasiswa PNJ</span>
+          </div>
+
+          <!-- Highlight Box ID Utama -->
+          <div class="profile-id-box">
+            <span class="id-label" id="side-id-label">Nomor Induk Mahasiswa (NIM)</span>
+            <span class="id-val" id="side-id-val">2507411018</span>
+          </div>
+
+          <!-- Menu Navigasi Vertikal Akun -->
+          <div class="profile-menu">
+            <button type="button" id="tab-btn-profil" class="active" onclick="switchProfileTab('profil')">
+              <i>01</i>
+              <span id="menu-txt-profil">Profil Pengguna</span>
+            </button>
+            <button type="button" id="tab-btn-pengajuan" onclick="switchProfileTab('pengajuan')">
+              <i>02</i>
+              <span id="menu-txt-pengajuan">Riwayat Outbound</span>
+              <span class="badge" id="menu-badge-pengajuan">1 Berkas</span>
+            </button>
+            <button type="button" id="tab-btn-notifikasi" onclick="switchProfileTab('notifikasi')">
+              <i>03</i>
+              <span>Pusat Notifikasi</span>
+              <span class="badge" id="menu-badge-notif">2 Baru</span>
+            </button>
+            <button type="button" id="tab-btn-pengaturan" onclick="switchProfileTab('pengaturan')">
+              <i>04</i>
+              <span>Pengaturan Akun</span>
+            </button>
+          </div>
+
+        </div>
+
+        <!-- Kartu Layanan Cepat & Bantuan KUI -->
+        <div class="kui-support-card">
+          <h4>
+            <svg width="16" height="16" style="fill:none;stroke:currentColor;stroke-width:2"><use href="#i-hourglass"/></svg>
+            Jam Operasional KUI
+          </h4>
+          <p>
+            <b>Senin – Kamis:</b> 08.00 – 15.30 WIB<br>
+            <b>Jumat:</b> 08.00 – 16.00 WIB<br>
+            <span style="color:var(--red);font-weight:600;font-size:12px;">Sabtu, Minggu &amp; Libur Nasional: TUTUP</span>
+          </p>
+          <a href="https://wa.me/6281234567890" target="_blank" class="btn-kui-wa">
+            <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.669-.699c.969.584 1.777.892 2.791.893h.001c3.181 0 5.768-2.586 5.768-5.766 0-3.18-2.587-5.779-5.769-5.779zm0 10.373c-.933 0-1.782-.267-2.545-.733l-.182-.109-1.58.414.421-1.539-.12-.191c-.512-.814-.829-1.637-.828-2.615.001-2.529 2.059-4.587 4.588-4.587 2.528 0 4.586 2.058 4.586 4.587 0 2.529-2.058 4.773-4.54 4.773z"/></svg>
+            <span>Bantuan WhatsApp KUI</span>
+          </a>
+        </div>
+
+      </aside>
+
+      <!-- ============================================================= -->
+      <!-- KOLOM KANAN: KONTEN TAB DINAMIS                               -->
+      <!-- ============================================================= -->
+      <div>
+
+        <!-- ========================================================= -->
+        <!-- TAB 1: FORM IDENTITAS PENGGUNA (PROFIL)                   -->
+        <!-- ========================================================= -->
+        <section id="pane-profil" class="profile-pane">
+          <div class="shell">
+            <div class="sec">
+              <span class="num">01</span>
+              <h3 id="pane-profil-sec-title">Informasi Identitas Mahasiswa (ERD)</h3>
+              <i class="dash"></i>
+            </div>
+
+            <form id="form-profile-main" onsubmit="saveProfileData(event)">
+              
+              <!-- 1. Form Mahasiswa PNJ (Atribut ERD: nim, nama, tempat_lahir, tgl_lahir, gender, jurusan, prodi, semester, kelas, ipk, no_hp, alamat, email) -->
+              <div id="form-fields-mahasiswa" class="grid role-form-section">
+                <div class="f">
+                  <div class="lrow"><label for="profMhsNim">NIM (Nomor Induk Mahasiswa)</label><span class="bdg">PRIMARY KEY</span></div>
+                  <input type="text" name="nim" id="profMhsNim" value="2507411018" readonly style="background:#F2FBFB;font-weight:700;">
+                </div>
+                <div class="f">
+                  <label for="profMhsNama">Nama Lengkap Mahasiswa</label>
+                  <input type="text" name="nama" id="profMhsNama" value="Asna Qonita" required>
+                </div>
+                <div class="f">
+                  <label for="profMhsEmail">Email Mahasiswa Aktif</label>
+                  <input type="email" name="email" id="profMhsEmail" value="asna.qonita.tik24@mhsw.pnj.ac.id" required>
+                </div>
+                <div class="f">
+                  <label for="profMhsWA">Nomor Handphone / WhatsApp</label>
+                  <input type="tel" name="no_hp" id="profMhsWA" value="081234567890" required>
+                </div>
+                <div class="f">
+                  <label for="profMhsTmpLahir">Tempat Lahir</label>
+                  <input type="text" name="tempat_lahir" id="profMhsTmpLahir" value="Jakarta" required>
+                </div>
+                <div class="f">
+                  <label for="profMhsTglLahir">Tanggal Lahir</label>
+                  <input type="date" name="tanggal_lahir" id="profMhsTglLahir" value="2004-12-18" required>
+                </div>
+                <div class="f">
+                  <label for="profMhsGender">Jenis Kelamin</label>
+                  <select name="jenis_kelamin" id="profMhsGender" required>
+                    <option value="Perempuan" selected>Perempuan</option>
+                    <option value="Laki-Laki">Laki-Laki</option>
+                  </select>
+                </div>
+                <div class="f">
+                  <label for="profMhsJurusan">Jurusan di PNJ</label>
+                  <input type="text" name="jurusan" id="profMhsJurusan" value="Teknik Informatika dan Komputer" required>
+                </div>
+                <div class="f">
+                  <label for="profMhsProdi">Program Studi</label>
+                  <input type="text" name="prodi" id="profMhsProdi" value="Teknik Informatika" required>
+                </div>
+                <div class="f">
+                  <label for="profMhsSemester">Semester Aktif</label>
+                  <input type="text" name="semester" id="profMhsSemester" value="Semester 5" required>
+                </div>
+                <div class="f">
+                  <label for="profMhsKelas">Kelas</label>
+                  <input type="text" name="kelas" id="profMhsKelas" value="TI-5A" required>
+                </div>
+                <div class="f">
+                  <label for="profMhsIpk">IPK Terakhir (Skala 4.00)</label>
+                  <input type="text" name="ipk" id="profMhsIpk" value="3.88" required>
+                </div>
+                <div class="f full">
+                  <label for="profMhsAlamat">Alamat Domisili Lengkap</label>
+                  <textarea name="alamat" id="profMhsAlamat" rows="2" required>Jl. Prof. DR. G.A. Siwabessy, Kampus UI Depok, Jawa Barat 16425</textarea>
+                </div>
+              </div>
+
+              <!-- 2. Form Civitas PNJ (Atribut ERD: nip, nama_lengkap [gelar_depan, nama, gelar_belakang], unit_kerja, jabatan, no_hp, email, alamat, jenis_kelamin) -->
+              <div id="form-fields-civitas" class="grid role-form-section" style="display:none;">
+                <div class="f">
+                  <div class="lrow"><label for="profCivNip">NIP / NIDN Pegawai</label><span class="bdg">PRIMARY KEY</span></div>
+                  <input type="text" name="nip" id="profCivNip" value="197804122005011002" readonly style="background:#F2FBFB;font-weight:700;">
+                </div>
+                <div class="f">
+                  <label for="profCivNama">Nama Lengkap (Tanpa Gelar)</label>
+                  <input type="text" name="nama" id="profCivNama" value="Hendra Wijaya" required>
+                </div>
+                <div class="f">
+                  <label for="profCivGelarDepan">Gelar Depan</label>
+                  <input type="text" name="gelar_depan" id="profCivGelarDepan" value="Dr.">
+                </div>
+                <div class="f">
+                  <label for="profCivGelarBelakang">Gelar Belakang</label>
+                  <input type="text" name="gelar_belakang" id="profCivGelarBelakang" value="S.T., M.T.">
+                </div>
+                <div class="f">
+                  <label for="profCivEmail">Email Resmi PNJ (@pnj.ac.id)</label>
+                  <input type="email" name="email" id="profCivEmail" value="hendra.wijaya@pnj.ac.id" required>
+                </div>
+                <div class="f">
+                  <label for="profCivWA">Nomor Handphone / WhatsApp</label>
+                  <input type="tel" name="no_hp" id="profCivWA" value="085678901234" required>
+                </div>
+                <div class="f">
+                  <label for="profCivJabatan">Jabatan Fungsional / Struktural</label>
+                  <select name="jabatan" id="profCivJabatan" required>
+                    <option value="Lektor Kepala" selected>Lektor Kepala</option>
+                    <option value="Lektor">Lektor</option>
+                    <option value="Asisten Ahli">Asisten Ahli</option>
+                    <option value="Guru Besar / Profesor">Guru Besar / Profesor</option>
+                    <option value="Tenaga Kependidikan">Tenaga Kependidikan (Tendik)</option>
+                  </select>
+                </div>
+                <div class="f">
+                  <label for="profCivUnit">Unit Kerja / Jurusan Asal</label>
+                  <input type="text" name="unit_kerja" id="profCivUnit" value="Jurusan Teknik Elektro" required>
+                </div>
+                <div class="f">
+                  <label for="profCivGender">Jenis Kelamin</label>
+                  <select name="jenis_kelamin" id="profCivGender" required>
+                    <option value="Laki-Laki" selected>Laki-Laki</option>
+                    <option value="Perempuan">Perempuan</option>
+                  </select>
+                </div>
+                <div class="f">
+                  <label for="profCivStatus">Status Kepegawaian</label>
+                  <input type="text" name="status" id="profCivStatus" value="PNS / Dosen Tetap" readonly style="background:#F2FBFB;">
+                </div>
+                <div class="f full">
+                  <label for="profCivAlamat">Alamat Domisili / Rumah</label>
+                  <textarea name="alamat" id="profCivAlamat" rows="2" required>Komp. Pesona Depok Estate Blok B2 No. 14, Depok, Jawa Barat</textarea>
+                </div>
+              </div>
+
+              <!-- 3. Form Mahasiswa Luar / Eksternal (Atribut ERD: no_paspor, nama, negara_asal, asal_instansi, jurusan_asal, prodi_tujuan, jenis_kelamin, tgl_lahir, no_telp, email, alamat) -->
+              <div id="form-fields-eksternal" class="grid role-form-section" style="display:none;">
+                <div class="f">
+                  <div class="lrow"><label for="profExtPaspor">Passport Number / ID Resmi</label><span class="bdg">PRIMARY KEY</span></div>
+                  <input type="text" name="no_paspor" id="profExtPaspor" value="TK8891201" readonly style="background:#F2FBFB;font-weight:700;">
+                </div>
+                <div class="f">
+                  <label for="profExtNama">Full Name (as in Passport)</label>
+                  <input type="text" name="nama" id="profExtNama" value="Kenji Takahashi" required>
+                </div>
+                <div class="f">
+                  <label for="profExtNegara">Country of Origin (Negara Asal)</label>
+                  <input type="text" name="negara_asal" id="profExtNegara" value="Japan" required>
+                </div>
+                <div class="f">
+                  <label for="profExtInstansi">Home Institution / University (Asal Instansi)</label>
+                  <input type="text" name="asal_instansi" id="profExtInstansi" value="National Institute of Technology (NIT), Gunma College" required>
+                </div>
+                <div class="f">
+                  <label for="profExtJurusanAsal">Department / Major in Home University (Jurusan Asal)</label>
+                  <input type="text" name="jurusan_asal" id="profExtJurusanAsal" value="Electronic &amp; Information Engineering" required>
+                </div>
+                <div class="f">
+                  <label for="profExtProdiTujuan">Host Department in PNJ (Prodi Tujuan di PNJ)</label>
+                  <input type="text" name="prodi_tujuan" id="profExtProdiTujuan" value="Teknik Informatika dan Komputer" required>
+                </div>
+                <div class="f">
+                  <label for="profExtGender">Gender (Jenis Kelamin)</label>
+                  <select name="jenis_kelamin" id="profExtGender" required>
+                    <option value="Male" selected>Male (Laki-Laki)</option>
+                    <option value="Female">Female (Perempuan)</option>
+                  </select>
+                </div>
+                <div class="f">
+                  <label for="profExtDOB">Date of Birth (Tanggal Lahir)</label>
+                  <input type="date" name="tgl_lahir" id="profExtDOB" value="1998-08-22" required>
+                </div>
+                <div class="f">
+                  <label for="profExtEmail">Active Email Address</label>
+                  <input type="email" name="email" id="profExtEmail" value="kenji.takahashi@gunma.ac.jp" required>
+                </div>
+                <div class="f">
+                  <label for="profExtPhone">Contact Number (WhatsApp with Country Code)</label>
+                  <input type="tel" name="no_telp" id="profExtPhone" value="+81 90 1234 5678" required>
+                </div>
+                <div class="f full">
+                  <label for="profExtAlamat">Current Address / Local Accommodation (Alamat)</label>
+                  <textarea name="alamat" id="profExtAlamat" rows="2" required>Dormitory Building 3, Gunma College / Guest House PNJ Depok</textarea>
+                </div>
+              </div>
+
+              <!-- Bagian Kontak Darurat & Pendamping -->
+              <div class="sec" style="margin-top:32px;">
+                <span class="num">02</span>
+                <h3 id="pane-profil-sec2-title">Kontak Darurat / Penanggung Jawab</h3>
+                <i class="dash"></i>
+              </div>
+
+              <div class="grid">
+                <div class="f">
+                  <label>Nama Kontak Darurat</label>
+                  <input type="text" id="profEmergencyName" value="Drs. H. Mulyadi (Orang Tua)" required>
+                </div>
+                <div class="f">
+                  <label>Hubungan</label>
+                  <input type="text" id="profEmergencyRel" value="Orang Tua / Wali" required>
+                </div>
+                <div class="f full">
+                  <label>Nomor Telepon Darurat (WhatsApp)</label>
+                  <input type="tel" id="profEmergencyPhone" value="081398765432" required>
+                </div>
+              </div>
+
+              <!-- Tombol Simpan Perubahan -->
+              <div style="margin-top:32px;padding-top:20px;border-top:1px dashed var(--t300);display:flex;justify-content:flex-end;">
+                <button type="submit" class="btn main">
+                  <span>SIMPAN PERUBAHAN PROFIL</span>
+                  <svg class="ic"><use href="#i-arrow-r"/></svg>
+                </button>
+              </div>
+            </form>
+          </div>
+        </section>
+
+        <!-- ========================================================= -->
+        <!-- TAB 2: RIWAYAT & PENGAJUAN SAYA (SESUAI ROLE ERD)         -->
+        <!-- ========================================================= -->
+        <section id="pane-pengajuan" class="profile-pane" style="display:none;">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px;">
+            <div class="shell" style="padding:28px 24px;display:flex;flex-direction:column;justify-content:space-between;">
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+                <div>
+                  <span class="bdg" id="dash-badge-status">STATUS DOKUMEN</span>
+                  <h4 style="font:700 28px/1.2 var(--serif);color:var(--t900);margin-top:8px;" id="dash-active-count">1 Berkas Aktif</h4>
+                  <p style="font-size:13px;color:var(--muted);margin-top:4px;" id="dash-active-desc">Dokumen permohonan sedang dalam proses verifikasi tim KUI PNJ.</p>
+                </div>
+                <div style="width:48px;height:48px;background:var(--t100);display:grid;place-items:center;border:1.5px solid var(--t400);color:var(--t700);">
+                  <svg width="24" height="24" style="fill:none;stroke:currentColor;stroke-width:2"><use href="#i-docok"/></svg>
+                </div>
+              </div>
+              <div style="margin-top:24px;">
+                <a id="btn-buat-pengajuan" href="index.html#outbound" class="btn main" style="width:100%;text-align:center;">
+                  + BUAT PENGAJUAN OUTBOUND
+                </a>
+              </div>
+            </div>
+
+            <!-- Virtual ID Card KUI PNJ -->
+            <div class="kui-card">
+              <div class="kui-card-top">
+                <span class="kui-card-brand">I<b>/</b>O <span>PNJ IDENTITY</span></span>
+                <span class="kui-card-badge" id="card-badge">MAHASISWA</span>
+              </div>
+              <div class="kui-card-mid">
+                <p class="kui-card-label">Nama Pemegang / Cardholder</p>
+                <p class="kui-card-name" id="card-name">ASNA QONITA</p>
+              </div>
+              <div class="kui-card-bot">
+                <div>
+                  <p class="kui-card-label" id="card-id-label">ID / NIM</p>
+                  <p class="kui-card-id" id="card-id-val">2507411018</p>
+                </div>
+                <div class="kui-card-status">
+                  <svg width="12" height="12" style="fill:currentColor"><circle cx="6" cy="6" r="5"/></svg>
+                  <span id="card-status-text">ACTIVE</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Daftar Riwayat Dokumen Sesuai Role ERD -->
+          <div class="shell">
+            <div class="sec">
+              <span class="num">02</span>
+              <h3 id="pane-history-title">Daftar Pengajuan Outbound Aktif</h3>
+              <i class="dash"></i>
+            </div>
+
+            <!-- 1. Riwayat Mahasiswa (Outbound) -->
+            <div id="history-items-mahasiswa" class="role-history-group">
+              <div class="profile-sub-item">
+                <div class="profile-sub-info">
+                  <div style="display:flex;gap:8px;align-items:center;">
+                    <span class="bdg" style="background:var(--y);color:var(--t900);">OUTBOUND</span>
+                    <span class="st g-proses" style="font-size:11.5px;">Sedang Dicek KUI</span>
+                  </div>
+                  <h4>Permohonan Rekomendasi Paspor &amp; Visa</h4>
+                  <p>Tujuan: Universiti Teknologi Malaysia (UTM) · Kategori: Student Mobility / IISMA · Tanggal Pengajuan: 10 Nov 2026</p>
+                </div>
+                <div style="display:flex;align-items:center;gap:12px;">
+                  <div style="text-align:right;">
+                    <span style="font-size:12px;color:var(--muted);display:block;">Progress</span>
+                    <b style="color:var(--t700);font-size:15px;">40%</b>
+                  </div>
+                  <button type="button" class="btn ghost" style="padding:8px 16px;font-size:11.5px;" onclick="toast('Membuka rincian pengajuan Outbound...')">Lihat Detail</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- 2. Riwayat Civitas (PDLN) -->
+            <div id="history-items-civitas" class="role-history-group" style="display:none;">
+              <div class="profile-sub-item">
+                <div class="profile-sub-info">
+                  <div style="display:flex;gap:8px;align-items:center;">
+                    <span class="bdg" style="background:var(--t600);color:#fff;">PDLN</span>
+                    <span class="st g-disetujui" style="font-size:11.5px;">Surat SP Terbit</span>
+                  </div>
+                  <h4>Izin Setneg: Seminar Internasional IEEE ICEEE</h4>
+                  <p>Tujuan: Berlin, Jerman · Jenis: Konferensi Ilmiah · No. SP: 241/SP-PDLN/PNJ/2026 · Sumber Biaya: DIPA PNJ</p>
+                </div>
+                <div style="display:flex;align-items:center;gap:12px;">
+                  <div style="text-align:right;">
+                    <span style="font-size:12px;color:var(--muted);display:block;">Progress</span>
+                    <b style="color:var(--t700);font-size:15px;">100%</b>
+                  </div>
+                  <button type="button" class="btn main" style="padding:8px 16px;font-size:11.5px;" onclick="toast('Mengunduh Surat Persetujuan (SP) PDF...')">Unduh SP PDF</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- 3. Riwayat Mahasiswa Luar (Inbound) -->
+            <div id="history-items-eksternal" class="role-history-group" style="display:none;">
+              <div class="profile-sub-item">
+                <div class="profile-sub-info">
+                  <div style="display:flex;gap:8px;align-items:center;">
+                    <span class="bdg" style="background:var(--t400);color:var(--t900);">INBOUND</span>
+                    <span class="st g-proses" style="font-size:11.5px;">Awaiting LoA Signature</span>
+                  </div>
+                  <h4>Joint Research Collaboration Visit</h4>
+                  <p>Host Department: PNJ TIK · Home University: NIT Gunma College (Japan) · Ref: INB-2026-089</p>
+                </div>
+                <div style="display:flex;align-items:center;gap:12px;">
+                  <div style="text-align:right;">
+                    <span style="font-size:12px;color:var(--muted);display:block;">Progress</span>
+                    <b style="color:var(--t700);font-size:15px;">60%</b>
+                  </div>
+                  <button type="button" class="btn ghost" style="padding:8px 16px;font-size:11.5px;" onclick="toast('Opening Inbound details...')">View Details</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========================================================= -->
+        <!-- TAB 3: PUSAT NOTIFIKASI (SESUAI ROLE ERD)                 -->
+        <!-- ========================================================= -->
+        <section id="pane-notifikasi" class="profile-pane" style="display:none;">
+          <div class="shell">
+            <div class="sec">
+              <span class="num">03</span>
+              <h3>Pemberitahuan Sistem &amp; Progres Berkas</h3>
+              <i class="dash"></i>
+            </div>
+
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;">
+              <span style="font-size:13px;color:var(--muted);font-weight:600;">Menampilkan notifikasi terbaru terkait verifikasi berkas:</span>
+              <button type="button" class="btn ghost" style="padding:6px 14px;font-size:11px;" onclick="toast('Semua notifikasi telah ditandai sudah dibaca.')">Tandai Semua Dibaca</button>
+            </div>
+
+            <!-- Notifikasi Mahasiswa -->
+            <div id="notif-items-mahasiswa" class="role-notif-group">
+              <div class="profile-notif-item unread">
+                <span class="profile-notif-dot"></span>
+                <div style="flex:1;">
+                  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+                    <b style="font-size:14.5px;color:var(--t900);">Verifikasi Berkas Outbound Sedang Berjalan</b>
+                    <span style="font-size:11.5px;color:var(--muted);">Hari ini, 10:45 WIB</span>
+                  </div>
+                  <p style="font-size:13px;color:var(--muted);margin:0;">Dokumen permohonan rekomendasi paspor &amp; visa Anda telah diterima dan saat ini sedang dalam proses review oleh validator KUI.</p>
+                </div>
+              </div>
+              <div class="profile-notif-item unread">
+                <span class="profile-notif-dot"></span>
+                <div style="flex:1;">
+                  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+                    <b style="font-size:14.5px;color:var(--t900);">Surat Rekomendasi Jurusan Divalidasi</b>
+                    <span style="font-size:11.5px;color:var(--muted);">Kemarin, 14:20 WIB</span>
+                  </div>
+                  <p style="font-size:13px;color:var(--muted);margin:0;">Surat persetujuan jurusan dan tanda tangan kaprodi telah diverifikasi keabsahannya.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Notifikasi Civitas -->
+            <div id="notif-items-civitas" class="role-notif-group" style="display:none;">
+              <div class="profile-notif-item unread">
+                <span class="profile-notif-dot"></span>
+                <div style="flex:1;">
+                  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+                    <b style="font-size:14.5px;color:var(--t900);">Surat Persetujuan (SP) Setneg Telah Terbit</b>
+                    <span style="font-size:11.5px;color:var(--muted);">Hari ini, 09:15 WIB</span>
+                  </div>
+                  <p style="font-size:13px;color:var(--muted);margin:0;">Surat persetujuan izin perjalanan dinas luar negeri dari Kemensetneg telah selesai diproses. Silakan unduh dokumen PDF pada menu Riwayat PDLN.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Notifikasi Mahasiswa Luar -->
+            <div id="notif-items-eksternal" class="role-notif-group" style="display:none;">
+              <div class="profile-notif-item unread">
+                <span class="profile-notif-dot"></span>
+                <div style="flex:1;">
+                  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+                    <b style="font-size:14.5px;color:var(--t900);">Letter of Acceptance (LoA) Under Review</b>
+                    <span style="font-size:11.5px;color:var(--muted);">Today, 11:30 WIB</span>
+                  </div>
+                  <p style="font-size:13px;color:var(--muted);margin:0;">Your inbound research visit request has been approved by the department. Formal Letter of Acceptance is being issued.</p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- ========================================================= -->
+        <!-- TAB 4: PENGATURAN AKUN & KEAMANAN                         -->
+        <!-- ========================================================= -->
+        <section id="pane-pengaturan" class="profile-pane" style="display:none;">
+          <div class="shell">
+            <div class="sec">
+              <span class="num">04</span>
+              <h3>Keamanan &amp; Kata Sandi</h3>
+              <i class="dash"></i>
+            </div>
+
+            <form onsubmit="handlePasswordChange(event)" style="max-width:540px;">
+              <div class="f" style="margin-bottom:14px;"><label>Kata Sandi Saat Ini</label><input type="password" id="oldPass" required placeholder="••••••••"></div>
+              <div class="f" style="margin-bottom:14px;"><label>Kata Sandi Baru</label><input type="password" id="newPass" required placeholder="Minimal 8 karakter"></div>
+              <div class="f" style="margin-bottom:20px;"><label>Ketik Ulang Kata Sandi Baru</label><input type="password" id="confirmPass" required placeholder="Ketik ulang kata sandi baru"></div>
+              <button type="submit" class="btn main"><span>SIMPAN KATA SANDI BARU</span><svg class="ic"><use href="#i-lock"/></svg></button>
+            </form>
+
+            <div class="sec" style="margin-top:36px;"><span class="num">05</span><h3>Preferensi Notifikasi &amp; Sesi</h3><i class="dash"></i></div>
+            <div style="display:grid;gap:14px;max-width:540px;margin-bottom:24px;">
+              <label class="custom-chk"><input type="checkbox" checked><span class="chk-box"></span><span class="chk-text">Kirim notifikasi status verifikasi ke email utama</span></label>
+              <label class="custom-chk"><input type="checkbox" checked><span class="chk-box"></span><span class="chk-text">Kirim notifikasi via WhatsApp untuk perubahan status pengajuan</span></label>
+            </div>
+
+            <div style="padding-top:20px;border-top:1px dashed var(--t300);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+              <div><b style="font-size:13.5px;color:var(--t900);display:block;">Sesi Aktif Perangkat</b><span style="font-size:12.5px;color:var(--muted);">Terakhir masuk: Browser Desktop (Chrome) · IP: 127.0.0.1</span></div>
+              <button type="button" class="btn slate" onclick="alertLogout()">KELUAR DARI SEMUA SESI</button>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<!-- ===================================================================== -->
+<!-- FOOTER IDENTIK SISTEM USER                                            -->
+<!-- ===================================================================== -->
+<footer>
+  <b>I/O Service</b> · <span>Layanan internasional terpadu Politeknik Negeri Jakarta</span>
+</footer>
+
+<!-- ===================================================================== -->
+<!-- TOAST CONTAINER                                                       -->
+<!-- ===================================================================== -->
+<div class="toasts" id="toasts" aria-live="polite"></div>
+
+<!-- ===================================================================== -->
+<!-- SCRIPT TERPADU SISTEM USER                                            -->
+<!-- ===================================================================== -->
+<script src="assets/script.js"></script>
+<script>
+// Sinkronkan tab awal saat dimuat
+window.addEventListener('DOMContentLoaded', () => {
+  initUserRole();
+  const hash = window.location.hash.replace('#', '');
+  if (['profil', 'pengajuan', 'notifikasi', 'pengaturan'].includes(hash)) {
+    switchProfileTab(hash);
+  }
+});
+</script>
+</body>
+</html>

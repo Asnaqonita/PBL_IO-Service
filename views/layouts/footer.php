@@ -1,0 +1,42 @@
+<?php
+if (!defined('BASE_URL')) {
+    $configFile = __DIR__ . '/../../config/config.php';
+    if (file_exists($configFile)) {
+        require_once $configFile;
+    } else {
+        define('BASE_URL', '/IO_Service/');
+    }
+}
+?>
+</main>
+<footer><b>I/O Service</b> · <span data-i18n="ft">Layanan internasional terpadu Politeknik Negeri Jakarta</span></footer>
+<!-- ============ MODALS ============ -->
+<div class="modal" id="loginModal" role="dialog" aria-modal="true">
+  <form class="mbox" id="loginForm">
+    <button type="button" class="x" data-close aria-label="Close">✕</button>
+    <h3 data-i18n="lg_t">Masuk</h3>
+    <p data-i18n="lg_demo">Demo: isi bebas untuk masuk.</p>
+    <div class="f"><label data-i18n="lg_user">Email / NIP</label><input type="text" id="lgUser" required placeholder="nama@pnj.ac.id"></div>
+    <div class="f"><label data-i18n="lg_pass">Kata Sandi</label><input type="password" id="lgPass" required placeholder="••••••••"></div>
+    <button type="submit" class="btn main" style="width:100%;margin-top:6px" data-i18n="lg_btn">Masuk</button>
+    <div style="margin-top:14px;padding-top:12px;border-top:1px dashed var(--t300);text-align:center;font-size:13px;color:var(--muted)">
+      <a href="#login" data-go="login" data-close style="color:var(--t600);font-weight:600;text-decoration:underline">Buka Halaman Login Penuh / SSO PNJ</a>
+    </div>
+  </form>
+</div>
+<div class="modal" id="okModal" role="dialog" aria-modal="true">
+  <div class="mbox">
+    <h3 data-i18n="ok_t">Pengajuan Terkirim</h3>
+    <p data-i18n="ok_note">Pantau statusnya lewat menu Pengajuan Saya.</p>
+    <div class="sum" id="okSum"></div>
+    <div class="mact">
+      <button type="button" class="btn ghost" id="okAgain" data-i18n="ok_again">Ajukan Lagi</button>
+      <button type="button" class="btn main" id="okHome" data-i18n="ok_home">Ke Beranda</button>
+    </div>
+  </div>
+</div>
+<div class="toasts" id="toasts" aria-live="polite"></div>
+<div class="tip" id="tip" role="tooltip" hidden></div>
+<script src="<?php echo BASE_URL; ?>assets/script.js"></script>
+</body>
+</html>

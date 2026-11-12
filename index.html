@@ -1,0 +1,1316 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>I/O Service — PNJ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,500..700;1,8..60,500..700&family=Source+Sans+3:ital,wght@0,400..700;1,400..600&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Archivo:wdth,wght@100..125,400..800&family=JetBrains+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<!-- ============ SVG ICONS DEFINITION ============ -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+<symbol id="i-send" viewBox="0 0 24 24"><path d="M21 4L10 14M21 4l-6.5 16-4.5-6-6-4.5z"/></symbol>
+<symbol id="i-pie" viewBox="0 0 24 24"><path d="M12 3v9h9"/><path d="M20.4 15.5A9 9 0 1 1 8.5 3.6"/></symbol>
+<symbol id="i-doc" viewBox="0 0 24 24"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M10 12h5M10 16h5"/></symbol>
+<symbol id="i-docok" viewBox="0 0 24 24"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M9.5 14l2 2 3.5-4"/></symbol>
+<symbol id="i-book" viewBox="0 0 24 24"><path d="M3.5 5.5C6.5 4 9.5 4.2 12 6.2c2.5-2 5.5-2.2 8.5-.7V19c-3-1.5-6-1.3-8.5.7-2.5-2-5.5-2.2-8.5-.7z"/><path d="M12 6.2v13.5"/></symbol>
+<symbol id="i-folder" viewBox="0 0 24 24"><path d="M3.5 6.5V19h17V9h-9L10 6.5z"/></symbol>
+<symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+<symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+<symbol id="i-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="6.5"/></symbol>
+<symbol id="i-hourglass" viewBox="0 0 24 24"><path d="M7 4h10M7 20h10"/><path d="M8 4v3.5L12 12l4-4.5V4M8 20v-3.5L12 12l4 4.5V20"/></symbol>
+<symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-4 3-6 7-6s7 2 7 6"/></symbol>
+<symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c3.2 3.2 3.2 13.8 0 17M12 3.5c-3.2 3.2-3.2 13.8 0 17"/></symbol>
+<symbol id="i-cal" viewBox="0 0 24 24"><rect x="4" y="5.5" width="16" height="14.5"/><path d="M4 10h16M8.5 3.5v4M15.5 3.5v4"/></symbol>
+<symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21v-6M8 4h8l-1.5 6 3 3H6.5l3-3z"/></symbol>
+<symbol id="i-ext" viewBox="0 0 24 24"><path d="M13.5 4.5H20V11M20 4.5L11 13.5M18 14.5V19H5V6h4.5"/></symbol>
+<symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><circle cx="12" cy="16" r="1.5"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></symbol>
+<symbol id="i-arrow-r" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+<symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3s7 3 7 8c0 5-7 10-7 10S5 16 5 11c0-5 7-8 7-8z"/></symbol>
+<symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></symbol>
+<symbol id="i-school" viewBox="0 0 24 24"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></symbol>
+</defs></svg>
+
+<!-- ============ HEADER UTAMA ============ -->
+<header class="top">
+  <a class="brand" href="#home" data-go="home"><b>I</b><i>/</i><b>O</b><span>Service</span></a>
+  <nav class="nav" aria-label="Menu utama">
+    <ul>
+      <li><a href="#home" data-go="home" data-page="home" data-i18n="n_home">Beranda</a></li>
+      <li><a href="#outbound" data-go="outbound" data-page="outbound">Outbound</a></li>
+      <li><a href="#inbound" data-go="inbound" data-page="inbound">Inbound</a></li>
+      <li><a href="#pdln" data-go="pdln" data-page="pdln">PDLN</a></li>
+      <li><a href="#faq" data-go="faq" data-page="faq">FAQ</a></li>
+    </ul>
+  </nav>
+  <div class="tools">
+    <div class="lang" role="group" aria-label="Language">
+      <button type="button" data-lang="id" class="on">ID</button>
+      <button type="button" data-lang="en">EN</button>
+    </div>
+    <button type="button" class="burger" id="burger" aria-label="Menu akun" aria-controls="drawer"><span></span><span></span><span></span></button>
+  </div>
+</header>
+
+<!-- ============ DRAWER (AKUN) ============ -->
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-hidden="true">
+  <div class="d-head"><span data-i18n="acc">Akun</span><button type="button" class="x" id="drawerClose" aria-label="Close">✕</button></div>
+  <div class="user" style="cursor:pointer" data-go="profile">
+    <div class="avatar guest" id="avatar">?</div>
+    <div><b id="uName" data-i18n="belum">Belum masuk</b><small id="uMeta" data-i18n="silakan">Silakan login untuk melanjutkan</small></div>
+  </div>
+  <div class="d-menu">
+    <a href="profile.html#profil" data-go="profile/profil"><i>01</i><span data-i18n="m_profil">Profil Saya</span></a>
+    <a href="profile.html#pengajuan" data-go="profile/pengajuan"><i>02</i><span data-i18n="m_ajuan">Pengajuan Saya</span><em class="badge" style="font-style:normal">1</em></a>
+    <a href="profile.html#notifikasi" data-go="profile/notifikasi"><i>03</i><span data-i18n="m_notif">Notifikasi</span><em class="badge" style="font-style:normal">2</em></a>
+    <a href="profile.html#pengaturan" data-go="profile/pengaturan"><i>04</i><span data-i18n="m_set">Pengaturan Akun</span></a>
+  </div>
+  <div class="d-lang"><span data-i18n="m_lang">Bahasa</span>
+    <div class="lang"><button type="button" data-lang="id" class="on">ID</button><button type="button" data-lang="en">EN</button></div>
+  </div>
+  <div class="d-foot">
+    <button type="button" class="btn slate" id="authBtn" data-i18n="m_login">Login</button>
+  </div>
+</aside>
+
+<main>
+
+<!-- ===================================================================== -->
+<!-- 1. HALAMAN BERANDA / DASHBOARD                                       -->
+<!-- ===================================================================== -->
+<section class="page active" id="page-home">
+  <div class="hero">
+    <div class="hero-l">
+      <h1>Welcome</h1>
+      <p class="lead" data-i18n="h_lead">Satu pintu untuk urusan perjalanan dan kunjungan lintas negara civitas Politeknik Negeri Jakarta. Ajukan, pantau, dan ambil dokumen tanpa antre.</p>
+      <button type="button" class="btn slate" id="heroLogin">LOGIN</button>
+    </div>
+    <div class="hero-r">
+      <div class="band">
+        <div class="track" id="galTrack">
+          <figure class="slide" tabindex="0">
+            <div class="pic p1" data-slot="1" style="--img:url('assets/images/opening_confe.jpeg')"></div>
+            <figcaption><b data-i18n="g1t">Grand Opening</b><span data-i18n="g1d">Pembukaan program kerja sama dengan mitra internasional.</span></figcaption>
+          </figure>
+          <figure class="slide" tabindex="0">
+            <div class="pic p2" data-slot="2" style="--img:url('assets/images/green_camp.jpeg')"></div>
+            <figcaption><b data-i18n="g2t">Summer Camp</b><span data-i18n="g2d">Pertukaran pelajar dalam program Green Summer Camp 2026.</span></figcaption>
+          </figure>
+          <figure class="slide" tabindex="0">
+            <div class="pic p3" data-slot="3" style="--img:url('assets/images/tech_pro.jpeg')"></div>
+            <figcaption><b data-i18n="g3t">Future Tech Seminar</b><span data-i18n="g3d">Seminar teknologi masa depan dengan berbagai tamu luar dan dalam negeri.</span></figcaption>
+          </figure>
+          <figure class="slide" tabindex="0">
+            <div class="pic p4" data-slot="4" style="--img:url('assets/images/international_cs.jpeg')"></div>
+            <figcaption><b data-i18n="g4t">International Computer Students</b><span data-i18n="g4d">Kerja sama dengan perguruan tinggi global rumpun TIK.</span></figcaption>
+          </figure>
+          <figure class="slide" tabindex="0">
+            <div class="pic p5" data-slot="5" style="--img:url('assets/images/gse.jpeg')"></div>
+            <figcaption><b data-i18n="g5t">Space Exhibition</b><span data-i18n="g5d">Pameran dan klub penelitian luar angkasa global.</span></figcaption>
+          </figure>
+        </div>
+      </div>
+      <div class="gctl">
+        <button type="button" id="galPrev" aria-label="Previous"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M9 2L4 7l5 5" fill="none" stroke="currentColor" stroke-width="2"/></svg></button>
+        <button type="button" id="galNext" aria-label="Next"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M5 2l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2"/></svg></button>
+        <span class="cnt" id="galCnt">01 / 05</span><i class="bar"></i>
+      </div>
+    </div>
+  </div>
+
+  <div class="ticker" aria-hidden="true"><div class="tk" id="tk"></div></div>
+
+  <div class="svc">
+    <h2 class="sec-title" data-i18n="s_svc">Layanan</h2>
+    <div class="cards">
+      <button type="button" class="card" data-go="outbound">
+        <span class="big">01</span>
+        <h3>Outbound</h3>
+        <p data-i18n="c_out">Civitas PNJ mengurus dokumen yang butuh izin negara: paspor, visa, dan surat izin keluar negeri.</p>
+        <span class="go" data-i18n="c_go">BUKA FORM</span>
+      </button>
+      <button type="button" class="card y" data-go="inbound">
+        <span class="big">02</span>
+        <h3>Inbound</h3>
+        <p data-i18n="c_in">Pihak eksternal dan luar negeri mengajukan kunjungan, kolaborasi, atau kegiatan di PNJ.</p>
+        <span class="go" data-i18n="c_go">BUKA FORM</span>
+      </button>
+      <button type="button" class="card" data-go="pdln">
+        <span class="big">03</span>
+        <h3>PDLN</h3>
+        <p data-i18n="c_pdln">Pengajuan Perjalanan Dinas Luar Negeri untuk seminar, studi banding, pelatihan, dan riset.</p>
+        <span class="go" data-i18n="c_go">BUKA FORM</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="flow">
+    <h2 data-i18n="s_flow">Alur Pengajuan</h2>
+    <div class="steps">
+      <div class="step"><div class="n">1</div><h4 data-i18n="st1">Isi form</h4><p data-i18n="st1d">Pilih layanan, lengkapi data dan unggah dokumen.</p></div>
+      <div class="step"><div class="n">2</div><h4 data-i18n="st2">Verifikasi</h4><p data-i18n="st2d">Petugas memeriksa kelengkapan dan kesesuaian berkas.</p></div>
+      <div class="step"><div class="n">3</div><h4 data-i18n="st3">Persetujuan</h4><p data-i18n="st3d">Pimpinan menyetujui, atau meminta perbaikan jika perlu.</p></div>
+      <div class="step"><div class="n">4</div><h4 data-i18n="st4">Dokumen terbit</h4><p data-i18n="st4d">Unduh surat dan dokumen hasil pengajuan dari akunmu.</p></div>
+    </div>
+  </div>
+
+  <!-- FAQ & TIKET -->
+  <section class="faqsec" id="faq">
+    <div class="faqin">
+      <div class="faql">
+        <h2 class="sec-title" data-i18n="faq_t">Pertanyaan Umum</h2>
+        <details class="qa" open><summary data-i18n="q1">Siapa saja yang dapat mengajukan?</summary><p data-i18n="a1">Civitas PNJ (dosen, tenaga kependidikan, mahasiswa) untuk Outbound dan PDLN. Pihak eksternal atau luar negeri mengajukan lewat Inbound.</p></details>
+        <details class="qa"><summary data-i18n="q2">Berapa lama proses verifikasi?</summary><p data-i18n="a2">Verifikasi awal umumnya 3–5 hari kerja setelah seluruh dokumen dinyatakan lengkap.</p></details>
+        <details class="qa"><summary data-i18n="q3">Format dokumen apa yang diterima?</summary><p data-i18n="a3">PDF, JPG, atau PNG dengan ukuran maksimal 5 MB per berkas.</p></details>
+        <details class="qa"><summary data-i18n="q4">Apakah pengajuan bisa diubah setelah dikirim?</summary><p data-i18n="a4">Tidak. Pengajuan yang sudah dikirim tidak dapat diubah. Jika ada kesalahan setelah submit, hubungi admin atau helpdesk lewat form tiket di halaman ini untuk meminta pembatalan, lalu buat pengajuan baru dengan data yang benar.</p></details>
+        <details class="qa"><summary data-i18n="q5">Bagaimana jika pesertanya lebih dari satu?</summary><p data-i18n="a5">Pilih Ya pada pertanyaan peserta lainnya, lalu tambahkan data setiap peserta. Maksimal 10 orang per pengajuan.</p></details>
+      </div>
+      <aside class="tkt" id="tkt">
+        <div id="tkWrap">
+          <h3 data-i18n="tk_t">Tidak menemukan jawabanmu?</h3>
+          <p data-i18n="tk_d">Kirim tiket pertanyaan. Jawabannya kami kirim ke email-mu.</p>
+          <form id="tktForm" novalidate>
+            <div class="grid">
+              <div class="f"><label data-i18n="tk_nama">Nama</label><input type="text" required data-auto="name"></div>
+              <div class="f"><label data-i18n="tk_email">Email</label><input type="email" required data-auto="email" placeholder="nama@email.com"></div>
+              <div class="f full"><label data-i18n="tk_topik">Topik</label>
+                <select required><option value="" data-i18n="sel_pilih">Pilih…</option><option>Outbound</option><option>Inbound</option><option>PDLN</option><option data-i18n="tk_akun">Akun & Login</option><option data-i18n="tk_dok">Dokumen & Upload</option><option data-i18n="k_lain">Lainnya</option></select></div>
+              <div class="f full"><label data-i18n="tk_isi">Isi Pertanyaan</label><textarea required placeholder="Tulis pertanyaanmu selengkap mungkin..." data-i18n-ph="tk_ph"></textarea></div>
+            </div>
+            <button type="submit" class="btn main" data-i18n="tk_kirim">Kirim Tiket</button>
+          </form>
+        </div>
+      </aside>
+    </div>
+  </section>
+</section>
+
+<!-- ===================================================================== -->
+<!-- 2. HALAMAN OUTBOUND                                                   -->
+<!-- ===================================================================== -->
+<section class="page" id="page-outbound">
+  <div class="wrap">
+    <div class="crumb"><a href="#home" data-go="home" data-i18n="n_home">Beranda</a> / <a href="#outbound" data-go="outbound">Outbound</a> / <b>Form</b></div>
+    <div class="fhead">
+      <h2 class="ftitle">Form<em>Outbound</em></h2>
+      <div class="progress"><span><i></i></span><b>0%</b></div>
+      <p class="fsub" data-i18n="ob_sub">Pengurusan dokumen yang memerlukan izin negara untuk civitas PNJ: paspor, visa, dan surat izin keluar negeri.</p>
+    </div>
+
+    <form class="shell" id="f-outbound" data-mod="OUTBOUND" novalidate>
+      <div class="sec"><span class="num">01</span><h3 data-i18n="o_s1">Data Mahasiswa</h3><i class="dash"></i></div>
+      <div class="grid">
+        <div class="f"><label data-i18n="o_nama">Nama Lengkap</label><input type="text" required data-auto="name"></div>
+        <div class="f"><label data-i18n="o_nim">NIM</label><input type="text" required inputmode="numeric"></div>
+        <div class="f"><label data-i18n="o_jur">Jurusan</label><select required><option value="" data-i18n="sel_pilih">Pilih…</option><option data-i18n="u_sipil">Teknik Sipil</option><option data-i18n="u_mesin">Teknik Mesin</option><option data-i18n="u_elek">Teknik Elektro</option><option data-i18n="u_tik">Teknik Informatika dan Komputer</option><option data-i18n="u_akun">Akuntansi</option><option data-i18n="u_niaga">Administrasi Niaga</option><option data-i18n="u_grafika">Teknik Grafika dan Penerbitan</option><option data-i18n="u_pasca">Pascasarjana</option></select></div>
+        <div class="f"><label data-i18n="o_prodi">Program Studi</label><input type="text" required placeholder="Contoh: Teknik Informatika" data-i18n-ph="o_ph_prodi"></div>
+        <div class="f"><label data-i18n="o_kelas">Kelas</label><input type="text" required placeholder="Contoh: 5A" data-i18n-ph="o_ph_kelas"></div>
+        <div class="f"><label data-i18n="o_ipk">IPK Terakhir</label><input type="text" required placeholder="0.00 – 4.00" inputmode="decimal" data-max="4"></div>
+        <div class="f full"><div class="lrow"><label data-i18n="o_ipkup">Upload Bukti Transkrip</label></div><div class="drop"><input type="file" required accept=".pdf,.jpg,.jpeg,.png"><div class="drop-ui"><span class="ico"></span><span class="dz-t" data-i18n="drop_t">Pilih file atau seret ke sini</span><small class="mono" data-i18n="drop_h">PDF / JPG / PNG · maks 5 MB</small></div><ul class="files"></ul></div></div>
+        <div class="f"><label data-i18n="o_wa">Nomor WhatsApp</label><input type="tel" required placeholder="08xx xxxx xxxx" inputmode="tel"></div>
+        <div class="f"><label data-i18n="o_email">Email PNJ</label><input type="email" required placeholder="nama@pnj.ac.id" data-auto="email"></div>
+      </div>
+
+      <div class="sec"><span class="num">02</span><h3 data-i18n="o_s2">Data Program</h3><i class="dash"></i></div>
+      <div class="grid">
+        <div class="f full"><label data-i18n="o_jl">Jenis Layanan</label><select required><option value="" data-i18n="o_jl_pilih">Pilih Jenis Layanan</option><option data-i18n="o_jl1">Surat Pengantar Pembuatan Paspor</option><option data-i18n="o_jl2">Surat Keterangan Mahasiswa Aktif/ Statement Enrollment</option><option data-i18n="o_jl3">Surat Rekomendasi VISA</option><option>Clearance Letter</option></select></div>
+        <div class="f"><label data-i18n="o_kat">Kategori Program</label><select required><option value="" data-i18n="o_kat_pilih">Pilih kategori program</option><option>IISMA</option><option data-i18n="o_k_ex">Exchange/Student Mobility</option><option>Short Course</option><option>Joint Degree</option><option data-i18n="o_k_int">Internship/Magang Internasional</option></select></div>
+        <div class="f"><label data-i18n="o_univ">Universitas / Perusahaan Tujuan</label><input type="text" required placeholder="Nama universitas atau perusahaan" data-i18n-ph="o_ph_univ"></div>
+        <div class="f"><label data-i18n="l_negara">Negara Tujuan</label><input type="text" required placeholder="Contoh: Jepang" data-i18n-ph="ph_negara"></div>
+        <div class="f"><label data-i18n="o_mulai">Durasi Program: Tanggal Mulai</label><input type="date" required data-role="start"></div>
+        <div class="f"><label data-i18n="o_selesai">Durasi Program: Tanggal Selesai</label><input type="date" required data-role="end"></div>
+      </div>
+
+      <div class="sec"><span class="num">03</span><h3 data-i18n="s_upload2">Upload Dokumen</h3><i class="dash"></i></div>
+      <div class="grid">
+        <div class="f"><div class="lrow"><label data-i18n="o_d_trans">Transkrip Nilai Akademik</label></div><div class="drop"><input type="file" required accept=".pdf,.jpg,.jpeg,.png"><div class="drop-ui"><span class="ico"></span><span class="dz-t" data-i18n="drop_t">Pilih file atau seret ke sini</span><small class="mono" data-i18n="drop_h">PDF / JPG / PNG · maks 5 MB</small></div><ul class="files"></ul></div></div>
+        <div class="f"><div class="lrow"><label data-i18n="o_d_rek">Surat Rekomendasi dari Jurusan / Kaprodi</label></div><div class="drop"><input type="file" required accept=".pdf,.jpg,.jpeg,.png"><div class="drop-ui"><span class="ico"></span><span class="dz-t" data-i18n="drop_t">Pilih file atau seret ke sini</span><small class="mono" data-i18n="drop_h">PDF / JPG / PNG · maks 5 MB</small></div><ul class="files"></ul></div></div>
+        <div class="f"><div class="lrow"><label data-i18n="o_d_ortu">Surat Izin Orang Tua / Wali</label></div><div class="drop"><input type="file" required accept=".pdf,.jpg,.jpeg,.png"><div class="drop-ui"><span class="ico"></span><span class="dz-t" data-i18n="drop_t">Pilih file atau seret ke sini</span><small class="mono" data-i18n="drop_h">PDF / JPG / PNG · maks 5 MB</small></div><ul class="files"></ul></div></div>
+        <div class="f"><div class="lrow"><label data-i18n="o_d_pasp">Paspor Aktif</label></div><div class="drop"><input type="file" required accept=".pdf,.jpg,.jpeg,.png"><div class="drop-ui"><span class="ico"></span><span class="dz-t" data-i18n="drop_t">Pilih file atau seret ke sini</span><small class="mono" data-i18n="drop_h">PDF / JPG / PNG · maks 5 MB</small></div><ul class="files"></ul></div></div>
+        <div class="f"><div class="lrow"><label data-i18n="o_d_toefl">Sertifikat TOEFL/IELTS</label></div><div class="drop"><input type="file" required accept=".pdf,.jpg,.jpeg,.png"><div class="drop-ui"><span class="ico"></span><span class="dz-t" data-i18n="drop_t">Pilih file atau seret ke sini</span><small class="mono" data-i18n="drop_h">PDF / JPG / PNG · maks 5 MB</small></div><ul class="files"></ul></div></div>
+      </div>
+
+      <div class="actions">
+        <span class="hint" data-i18n="hint_req">* wajib diisi</span>
+        <button type="button" class="btn ghost" data-reset data-i18n="batal">Batal</button>
+        <button type="submit" class="btn main" data-i18n="kirim">Kirim Pengajuan</button>
+      </div>
+    </form>
+  </div>
+</section>
+
+<!-- ===================================================================== -->
+<!-- 3. HALAMAN INBOUND                                                    -->
+<!-- ===================================================================== -->
+<section class="page" id="page-inbound">
+  <div class="wrap">
+    <div class="crumb"><a href="#home" data-go="home" data-i18n="n_home">Beranda</a> / <a href="#inbound" data-go="inbound">Inbound</a> / <b>Form</b></div>
+    <div class="fhead">
+      <h2 class="ftitle">Form<em>Inbound</em></h2>
+      <div class="progress"><span><i></i></span><b>0%</b></div>
+      <p class="fsub" data-i18n="in_sub">Pengurusan kunjungan dan dokumen pihak eksternal atau luar negeri yang datang ke PNJ.</p>
+    </div>
+
+    <form class="shell" id="f-inbound" data-mod="INBOUND" novalidate>
+      <div class="sec"><span class="num">A</span><h3 data-i18n="i_sA">Data Pribadi Pemohon</h3><i class="dash"></i></div>
+      <div class="grid">
+        <div class="f"><label data-i18n="i_nama">Nama Lengkap (Sesuai Paspor)</label><input type="text" required data-auto="name"></div>
+        <div class="f"><label data-i18n="i_pasp">Nomor Paspor</label><input type="text" required placeholder="Contoh: A12345678" data-i18n-ph="i_ph_pasp"></div>
+        <div class="f"><label data-i18n="i_nat">Kewarganegaraan</label><input type="text" required placeholder="Contoh: Jepang" data-i18n-ph="i_ph_nat"></div>
+        <div class="f"><label data-i18n="i_gen">Jenis Kelamin</label><select required><option value="" data-i18n="sel_pilih">Pilih…</option><option data-i18n="i_g_m">Laki-laki</option><option data-i18n="i_g_f">Perempuan</option></select></div>
+        <div class="f"><label data-i18n="i_dob">Tanggal Lahir</label><input type="date" required></div>
+        <div class="f"><label data-i18n="i_email">Email Aktif</label><input type="email" required placeholder="nama@email.com" data-auto="email"></div>
+        <div class="f full"><label data-i18n="i_phone">Nomor Telepon / WhatsApp (dengan kode negara)</label><input type="tel" required placeholder="+81 90 1234 5678" inputmode="tel"></div>
+      </div>
+
+      <div class="sec"><span class="num">B</span><h3 data-i18n="i_sB">Data Institusi Asal</h3><i class="dash"></i></div>
+      <div class="grid">
+        <div class="f"><label data-i18n="i_univ">Nama Universitas / Institusi Asal</label><input type="text" required placeholder="Contoh: NIT Gunma College" data-i18n-ph="i_ph_univ"></div>
+        <div class="f"><label data-i18n="i_u_coun">Negara Asal Institusi</label><input type="text" required placeholder="Contoh: Jepang" data-i18n-ph="i_ph_u_coun"></div>
+        <div class="f"><label data-i18n="i_dept">Jurusan</label><input type="text" required></div>
+        <div class="f"><label data-i18n="i_deg">Jenjang Pendidikan Saat Ini</label><select required><option value="" data-i18n="sel_pilih">Pilih…</option><option data-i18n="i_bach">Sarjana (Bachelor)</option><option data-i18n="i_mast">Magister (Master)</option><option data-i18n="i_dip">Diploma</option></select></div>
+      </div>
+
+      <div class="sec"><span class="num">C</span><h3 data-i18n="i_sC">Pilihan Program di PNJ</h3><i class="dash"></i></div>
+      <div class="grid">
+        <div class="f"><label data-i18n="i_type">Jenis Program Inbound</label><select required><option value="" data-i18n="sel_pilih">Pilih…</option><option data-i18n="i_t1">Semester Pertukaran (Exchange Semester)</option><option data-i18n="i_t2">Kursus Singkat / Imersi Budaya</option><option data-i18n="i_t3">Program Musim Panas (Summer Program)</option><option data-i18n="i_t4">Magang Riset (Research Internship)</option></select></div>
+        <div class="f"><label data-i18n="i_host">Jurusan Tujuan di PNJ</label><select required><option value="" data-i18n="sel_pilih">Pilih…</option><option data-i18n="u_sipil">Teknik Sipil</option><option data-i18n="u_mesin">Teknik Mesin</option><option data-i18n="u_elek">Teknik Elektro</option><option data-i18n="u_tik">Teknik Informatika dan Komputer</option><option data-i18n="u_akun">Akuntansi</option><option data-i18n="u_niaga">Administrasi Niaga</option><option data-i18n="u_grafika">Teknik Grafika dan Penerbitan</option><option data-i18n="u_pasca">Pascasarjana</option></select></div>
+        <div class="f full"><label data-i18n="i_period">Periode Studi yang Diinginkan</label><input type="text" required placeholder="Contoh: Semester Ganjil 2026/2027" data-i18n-ph="i_ph_period"></div>
+      </div>
+
+      <div class="sec"><span class="num">D</span><h3 data-i18n="i_sD">Upload Dokumen (PDF/JPG)</h3><i class="dash"></i></div>
+      <div class="grid">
+        <div class="f"><div class="lrow"><label data-i18n="i_d_pass">Halaman Data Paspor (Scan)</label></div><small class="fh" data-i18n="i_h_pass">Masa berlaku minimal 6–12 bulan</small><div class="drop"><input type="file" required accept=".pdf,.jpg,.jpeg,.png"><div class="drop-ui"><span class="ico"></span><span class="dz-t" data-i18n="drop_t">Pilih file atau seret ke sini</span><small class="mono" data-i18n="drop_h">PDF / JPG / PNG · maks 5 MB</small></div><ul class="files"></ul></div></div>
+        <div class="f"><div class="lrow"><label data-i18n="i_d_trans">Transkrip Akademik Resmi</label></div><div class="drop"><input type="file" required accept=".pdf,.jpg,.jpeg,.png"><div class="drop-ui"><span class="ico"></span><span class="dz-t" data-i18n="drop_t">Pilih file atau seret ke sini</span><small class="mono" data-i18n="drop_h">PDF / JPG / PNG · maks 5 MB</small></div><ul class="files"></ul></div></div>
+        <div class="f"><div class="lrow"><label data-i18n="i_d_foto">Pas Foto Formal (Latar Merah/Putih)</label></div><div class="drop"><input type="file" required accept=".pdf,.jpg,.jpeg,.png"><div class="drop-ui"><span class="ico"></span><span class="dz-t" data-i18n="drop_t">Pilih file atau seret ke sini</span><small class="mono" data-i18n="drop_h">PDF / JPG / PNG · maks 5 MB</small></div><ul class="files"></ul></div></div>
+        <div class="f"><div class="lrow"><label data-i18n="i_d_eng">Sertifikat Bahasa Inggris / Surat Rekomendasi</label></div><div class="drop"><input type="file" required accept=".pdf,.jpg,.jpeg,.png"><div class="drop-ui"><span class="ico"></span><span class="dz-t" data-i18n="drop_t">Pilih file atau seret ke sini</span><small class="mono" data-i18n="drop_h">PDF / JPG / PNG · maks 5 MB</small></div><ul class="files"></ul></div></div>
+        <div class="f full"><div class="lrow"><label data-i18n="i_d_health">Surat Keterangan Sehat / Medical Clearance</label></div><small class="fh" data-i18n="i_h_health">Diperlukan untuk pengurusan izin tinggal/visa</small><div class="drop"><input type="file" required accept=".pdf,.jpg,.jpeg,.png"><div class="drop-ui"><span class="ico"></span><span class="dz-t" data-i18n="drop_t">Pilih file atau seret ke sini</span><small class="mono" data-i18n="drop_h">PDF / JPG / PNG · maks 5 MB</small></div><ul class="files"></ul></div></div>
+      </div>
+
+      <div class="actions">
+        <span class="hint" data-i18n="hint_req">* wajib diisi</span>
+        <button type="button" class="btn ghost" data-reset data-i18n="batal">Batal</button>
+        <button type="submit" class="btn main" data-i18n="kirim">Kirim Pengajuan</button>
+      </div>
+    </form>
+  </div>
+</section>
+
+<!-- ===================================================================== -->
+<!-- 4. HALAMAN PDLN                                                       -->
+<!-- ===================================================================== -->
+<section class="page" id="page-pdln">
+  <div class="psubbar" id="psubbar">
+    <div class="psb-in">
+      <div class="psb-aux" aria-label="Panduan dan template">
+        <a href="#pdln/panduan" data-go="pdln/panduan"><svg class="ic"><use href="#i-book"/></svg><span data-i18n="s_panduan">Panduan</span></a>
+        <a href="#pdln/template" data-go="pdln/template"><svg class="ic"><use href="#i-folder"/></svg><span data-i18n="s_template">Template</span></a>
+      </div>
+      <nav class="psb-main" aria-label="Menu PDLN">
+        <a href="#pdln/input" data-go="pdln/input" data-sub="input" data-i18n="s_input">Input Pengajuan</a>
+        <a href="#pdln/progress" data-go="pdln/progress" data-sub="progress" data-i18n="s_progress">Progress</a>
+        <a href="#pdln/laporan" data-go="pdln/laporan" data-sub="laporan" data-i18n="s_laporan">Laporan Kegiatan</a>
+      </nav>
+    </div>
+  </div>
+
+  <!-- 1. DASHBOARD PDLN -->
+  <div class="psub active" id="psub-dash">
+    <div class="wrap">
+      <div class="crumb"><a href="#home" data-go="home" data-i18n="n_home">Beranda</a> / <a href="#pdln" data-go="pdln">PDLN</a> / <b>Dashboard</b></div>
+      <div class="fhead">
+        <h2 class="ftitle">Dashboard<em>PDLN</em></h2>
+        <p class="fsub" data-i18n="d_sub">Ringkasan pengajuan Perjalanan Dinas Luar Negeri (PDLN) civitas PNJ: status, negara tujuan, dan aktivitas terkini.</p>
+      </div>
+      <div class="kpis">
+        <div class="kpi"><span class="num" id="kp1">0</span><div class="l"><b data-i18n="kp1_l">Total Surat Setneg</b><span data-i18n="kp1_s">Surat Setneg terbit</span></div></div>
+        <div class="kpi y"><span class="num" id="kp2">0</span><div class="l"><b data-i18n="kp2_l">Total Paspor Dinas</b><span data-i18n="kp2_s">Diproses &amp; selesai</span></div></div>
+        <div class="kpi"><span class="num" id="kp3">0</span><div class="l"><b data-i18n="kp3_l">Total Laporan</b><span data-i18n="kp3_s">Laporan diterima</span></div></div>
+      </div>
+      <div class="dacts">
+        <button type="button" class="dact" data-go="pdln/input"><span class="ico"><svg class="ic"><use href="#i-send"/></svg></span><h3>Ajukan PDLN</h3><p data-i18n="a1_d">Isi data kegiatan, data peserta, dan unggah dokumen pendukung dalam satu form terpadu.</p><span class="btn main" data-i18n="s_input">Input Pengajuan</span></button>
+        <button type="button" class="dact" data-go="pdln/progress"><span class="ico"><svg class="ic"><use href="#i-pie"/></svg></span><h3 data-i18n="a2_t">Cek Progress</h3><p data-i18n="a2_d">Lihat status, persentase kemajuan, dan catatan admin dari pengajuan yang sudah dikirim.</p><span class="btn ghost" data-i18n="a2_b">Lihat Daftar</span></button>
+        <button type="button" class="dact" data-go="pdln/laporan"><span class="ico"><svg class="ic"><use href="#i-docok"/></svg></span><h3 data-i18n="s_laporan">Laporan Kegiatan</h3><p data-i18n="a3_d">Kegiatan sudah selesai? Unggah laporan dan dokumentasi agar pengajuan dapat ditutup.</p><span class="btn ghost" data-i18n="a3_b">Kirim Laporan</span></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. FORM PDLN -->
+  <div class="psub" id="psub-input">
+    <div class="wrap">
+      <div class="crumb"><a href="#home" data-go="home" data-i18n="n_home">Beranda</a> / <a href="#pdln" data-go="pdln">PDLN</a> / <b>Input Pengajuan</b></div>
+      <div class="fhead">
+        <h2 class="ftitle">Form<em>PDLN</em></h2>
+        <div class="progress"><span><i></i></span><b>0%</b></div>
+        <p class="fsub" data-i18n="pdln_sub">Pengajuan Perjalanan Dinas Luar Negeri. Isi data kegiatan, unggah dokumen, lalu tambahkan setiap peserta.</p>
+      </div>
+      <form class="shell" id="f-pdln" data-mod="PDLN" novalidate>
+        <div class="sec"><span class="num">01</span><h3 data-i18n="s_data">Data Kegiatan</h3><i class="dash"></i></div>
+        <div class="grid">
+          <div class="f full"><label data-i18n="l_keg">Nama Kegiatan</label><input type="text" required placeholder="Contoh: The 5th International Conference on Applied Science" data-i18n-ph="ph_keg"></div>
+          <div class="f"><label data-i18n="l_negara">Negara Tujuan</label><input type="text" required placeholder="Contoh: Jepang" data-i18n-ph="ph_negara"></div>
+          <div class="f"><label data-i18n="l_kota">Kota Tujuan</label><input type="text" required placeholder="Contoh: Tokyo" data-i18n-ph="ph_kota"></div>
+          <div class="f"><label data-i18n="l_mulai">Tanggal Mulai</label><input type="date" required data-role="start"></div>
+          <div class="f"><label data-i18n="l_selesai">Tanggal Selesai</label><input type="date" required data-role="end"></div>
+          <div class="f full"><label data-i18n="l_biaya">Sumber Pembiayaan</label><input type="text" required placeholder="Contoh: DIPA PNJ 2026 / Beasiswa Mitra" data-i18n-ph="ph_biaya"></div>
+        </div>
+
+        <div class="sec"><span class="num">02</span><h3 data-i18n="s_upload">Upload Dokumen (PDF/JPG)</h3><i class="dash"></i></div>
+        <div class="grid">
+          <div class="f"><div class="lrow"><label data-i18n="d_surat">Surat Undangan Resmi</label></div><div class="drop"><input type="file" required accept=".pdf,.jpg,.jpeg,.png"><div class="drop-ui"><span class="ico"></span><span class="dz-t" data-i18n="drop_t">Pilih file atau seret ke sini</span><small class="mono" data-i18n="drop_h">PDF / JPG / PNG · maks 5 MB</small></div><ul class="files"></ul></div></div>
+          <div class="f"><div class="lrow"><label data-i18n="d_tor">Kerangka Acuan Kerja (TOR)</label><a href="#" class="tpl" data-tpl="tor" data-i18n="b_tpl">Template</a></div><div class="drop"><input type="file" required accept=".pdf,.jpg,.jpeg,.png"><div class="drop-ui"><span class="ico"></span><span class="dz-t" data-i18n="drop_t">Pilih file atau seret ke sini</span><small class="mono" data-i18n="drop_h">PDF / JPG / PNG · maks 5 MB</small></div><ul class="files"></ul></div></div>
+        </div>
+
+        <div class="actions">
+          <span class="hint" data-i18n="hint_req">* wajib diisi</span>
+          <button type="button" class="btn ghost" data-reset data-i18n="batal">Batal</button>
+          <button type="submit" class="btn main" data-i18n="kirim">Kirim Pengajuan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 3. PROGRESS PDLN -->
+  <div class="psub" id="psub-progress">
+    <div class="wrap">
+      <div class="crumb"><a href="#home" data-go="home" data-i18n="n_home">Beranda</a> / <a href="#pdln" data-go="pdln">PDLN</a> / <b>Progress</b></div>
+      <div class="fhead">
+        <h2 class="ftitle">Progress<em>Pengajuan</em></h2>
+        <p class="fsub" data-i18n="pr_sub">Pantau status, persentase kemajuan, dan catatan verifikasi dari Admin.</p>
+      </div>
+      <div class="pfilts">
+        <input type="search" id="prQ" placeholder="Cari nama, kegiatan, atau negara tujuan...">
+        <select id="prJab"><option value="">Semua Jabatan</option><option>Dosen</option><option>Tenaga Kependidikan</option><option>Pimpinan</option></select>
+        <select id="prSt"><option value="">Semua Status</option><option value="proses">Dalam Proses</option><option value="disetujui">Disetujui</option><option value="ditolak">Ditolak</option></select>
+        <button type="button" class="btn ghost" id="prReset">Reset</button>
+      </div>
+      <div class="tbl-wrap">
+        <table class="tbl" id="prTbl">
+          <thead>
+            <tr><th>No</th><th>Nama Kegiatan</th><th>Peserta</th><th>Jabatan</th><th>Lokasi</th><th>Diajukan</th><th>Status</th><th>Progress</th><th>Catatan</th></tr>
+          </thead>
+          <tbody id="prBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. LAPORAN KEGIATAN -->
+  <div class="psub" id="psub-laporan">
+    <div class="wrap">
+      <div class="crumb"><a href="#home" data-go="home" data-i18n="n_home">Beranda</a> / <a href="#pdln" data-go="pdln">PDLN</a> / <b>Laporan Kegiatan</b></div>
+      <div class="fhead">
+        <h2 class="ftitle">Laporan<em>Kegiatan</em></h2>
+        <p class="fsub" data-i18n="lp_sub">Laporkan hasil kegiatan PDLN yang telah terlaksana dan disetujui.</p>
+      </div>
+      <form class="shell" id="f-laporan" novalidate>
+        <div class="sec"><span class="num">01</span><h3 data-i18n="lp_s1">Detail Laporan</h3><i class="dash"></i></div>
+        <div class="grid">
+          <div class="f full"><label data-i18n="lp_rel">Pengajuan Terkait</label><select required id="lpRel"><option value="" data-i18n="sel_pilih">Pilih pengajuan yang telah disetujui…</option><option>Seminar Internasional IEEE ICEEE (Berlin, Jerman)</option></select></div>
+          <div class="f"><label data-i18n="lp_email">Email Pelapor</label><input type="email" required data-auto="email" placeholder="nama@pnj.ac.id"></div>
+          <div class="f full"><label data-i18n="lp_hasil">Ringkasan Hasil Kegiatan</label><textarea required placeholder="Uraikan kegiatan yang telah dijalankan dan hasil utamanya..."></textarea></div>
+        </div>
+        <div class="actions">
+          <button type="submit" class="btn main" data-i18n="kirim_lap">Kirim Laporan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ===================================================================== -->
+<!-- 5. HALAMAN LOGIN (AUTENTIKASI & SSO PNJ)                              -->
+<!-- ===================================================================== -->
+<section class="page" id="page-login">
+  <div class="wrap">
+    <div class="crumb">
+      <a href="#home" data-go="home" data-i18n="n_home">Beranda</a> / 
+      <span>Autentikasi</span> / 
+      <b>Masuk Akun</b>
+    </div>
+
+    <div class="fhead auth-fhead">
+      <div class="auth-kicker"><span class="bdg">PORTAL AUTENTIKASI RESMI</span></div>
+      <h2 class="ftitle">Masuk<em>Akun</em></h2>
+      <p class="fsub">Gunakan akun SSO Politeknik Negeri Jakarta atau masukkan email terdaftar Anda.</p>
+    </div>
+
+    <div class="auth-card-wrap">
+      <div class="auth-shell shell">
+        
+        <div class="auth-card-top">
+          <div class="auth-icon-badge">
+            <svg class="ic"><use href="#i-user"/></svg>
+          </div>
+          <div>
+            <h3 class="auth-card-title">Masuk ke Portal I/O</h3>
+            <p class="auth-card-sub">Masukkan email / NIP / NIM dan kata sandi Anda</p>
+          </div>
+        </div>
+
+        <form class="auth-form" id="f-login" onsubmit="handleLoginSubmit(event)">
+          <div class="f">
+            <label for="loginUser">Email / NIP / NIM</label>
+            <div class="input-with-icon">
+              <svg class="input-ico ic"><use href="#i-user"/></svg>
+              <input type="text" name="identifier" id="loginUser" required placeholder="nama@pnj.ac.id atau NIM / NIP" autocomplete="username">
+            </div>
+            <span class="err">Silakan masukkan email, NIM, atau NIP Anda.</span>
+          </div>
+
+          <div class="f">
+            <div class="lrow">
+              <label for="loginPassword">Kata Sandi</label>
+              <a href="#faq" data-go="faq" class="auth-link-sm">Lupa kata sandi?</a>
+            </div>
+            <div class="input-with-icon pass-field">
+              <svg class="input-ico ic"><use href="#i-lock"/></svg>
+              <input type="password" name="password" id="loginPassword" required placeholder="••••••••" autocomplete="current-password">
+              <button type="button" class="btn-eye" id="toggleLoginPass" aria-label="Lihat kata sandi">
+                <svg class="ic"><use href="#i-eye"/></svg>
+              </button>
+            </div>
+            <span class="err">Silakan masukkan kata sandi Anda.</span>
+          </div>
+
+          <div class="auth-options">
+            <label class="custom-chk">
+              <input type="checkbox" name="remember" id="rememberMe" value="1">
+              <span class="chk-box"></span>
+              <span class="chk-text">Ingat saya di perangkat ini</span>
+            </label>
+          </div>
+
+          <button type="submit" class="btn main auth-submit-btn">
+            <span>MASUK KE SISTEM</span>
+            <svg class="ic"><use href="#i-arrow-r"/></svg>
+          </button>
+        </form>
+
+        <!-- Quick Demo Login Peran ERD -->
+        <div style="margin:22px 0 16px;background:var(--card,#fff);border:1.5px dashed var(--t300);padding:16px;border-radius:2px;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+            <svg width="15" height="15" style="fill:var(--t600);"><use href="#i-shield"/></svg>
+            <b style="font-size:12px;color:var(--t900);letter-spacing:0.04em;text-transform:uppercase;">Demo Cepat: Masuk Berdasarkan ERD Role</b>
+          </div>
+          <p style="font-size:12px;color:var(--muted);margin:0 0 12px 0;">Pilih salah satu role pengguna untuk langsung simulasi login &amp; melihat data ERD di menu profil:</p>
+          <div style="display:grid;grid-template-columns:1fr;gap:8px;">
+            <button type="button" class="btn ghost" style="justify-content:flex-start;padding:8px 12px;font-size:12px;text-align:left;border-color:var(--t400);background:#fff;" onclick="handleDemoLogin('mahasiswa')">
+              <span style="font-weight:700;color:var(--t900);margin-right:6px;">🎓 1. Mahasiswa PNJ</span>
+              <span style="color:var(--muted);">(NIM: 2507411018 · Program Outbound)</span>
+            </button>
+            <button type="button" class="btn ghost" style="justify-content:flex-start;padding:8px 12px;font-size:12px;text-align:left;border-color:var(--t400);background:#fff;" onclick="handleDemoLogin('civitas')">
+              <span style="font-weight:700;color:var(--t900);margin-right:6px;">🏛️ 2. Civitas Dosen/Tendik</span>
+              <span style="color:var(--muted);">(NIP: 19780412... · Izin PDLN Setneg)</span>
+            </button>
+            <button type="button" class="btn ghost" style="justify-content:flex-start;padding:8px 12px;font-size:12px;text-align:left;border-color:var(--t400);background:#fff;" onclick="handleDemoLogin('eksternal')">
+              <span style="font-weight:700;color:var(--t900);margin-right:6px;">🌏 3. Mahasiswa Luar / Tamu Eksternal</span>
+              <span style="color:var(--muted);">(Paspor: TK8891201 · Program Inbound)</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="auth-divider">
+          <span>ATAU MASUK DENGAN</span>
+        </div>
+
+        <div class="sso-wrapper">
+          <div class="sso-box">
+            <div class="sso-badge-row">
+              <span class="pill-sso">KHUSUS SIVITAS AKADEMIKA PNJ</span>
+            </div>
+            <a href="#profile" data-go="profile" class="btn-sso-pnj" id="btnSsoLogin" onclick="handleDemoLogin('mahasiswa')">
+              <div class="sso-emblem">
+                <span class="pnj-abbr">PNJ</span>
+                <span class="sso-txt">SSO</span>
+              </div>
+              <div class="sso-desc">
+                <b class="sso-title">Login dengan SSO PNJ</b>
+                <span class="sso-sub">Single Sign-On resmi Politeknik Negeri Jakarta</span>
+              </div>
+              <div class="sso-arrow-box">
+                <svg class="ic"><use href="#i-arrow-r"/></svg>
+              </div>
+            </a>
+            <div class="sso-hint">
+              <svg class="ic"><use href="#i-shield"/></svg>
+              <span>Dosen, tendik, dan mahasiswa aktif dapat langsung masuk menggunakan akun <code>@pnj.ac.id</code> tanpa mendaftar manual.</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="auth-footer-bar">
+          <p>Belum memiliki akun? <a href="#register" data-go="register" class="auth-action-link">Daftar Akun Baru</a></p>
+          <a href="#home" data-go="home" class="auth-back-link">
+            <span>← Kembali ke Beranda</span>
+          </a>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================================================================== -->
+<!-- 6. HALAMAN REGISTRASI (SIVITAS PNJ & EKSTERNAL)                       -->
+<!-- ===================================================================== -->
+<section class="page" id="page-register">
+  <div class="wrap">
+    <div class="crumb">
+      <a href="#home" data-go="home" data-i18n="n_home">Beranda</a> / 
+      <span>Autentikasi</span> / 
+      <b>Registrasi Akun</b>
+    </div>
+
+    <div class="fhead auth-fhead">
+      <div class="auth-kicker"><span class="bdg">PENDAFTARAN AKUN BARU</span></div>
+      <h2 class="ftitle">Daftar<em>Akun Baru</em></h2>
+      <p class="fsub">Pilih kategori pendaftaran sesuai status Anda: Sivitas Politeknik Negeri Jakarta atau Mahasiswa Luar / Tamu Internasional.</p>
+    </div>
+
+    <div class="reg-container">
+      <div class="reg-category-tabs" role="tablist" aria-label="Pilihan Kategori Pendaftaran">
+        <button type="button" class="reg-cat-card active" id="tab-btn-pnj" data-target="pane-pnj" role="tab" aria-selected="true">
+          <div class="cat-pill">OPSI 01 · INTERNAL</div>
+          <div class="cat-header">
+            <div class="cat-icon pnj-color"><svg class="ic"><use href="#i-school"/></svg></div>
+            <div>
+              <h3 class="cat-title">Sivitas PNJ</h3>
+              <span class="cat-tagline">Dosen, Tendik, &amp; Mahasiswa PNJ</span>
+            </div>
+          </div>
+          <p class="cat-desc">Untuk civitas aktif Politeknik Negeri Jakarta yang mengajukan program Outbound, PDLN, atau layanan internasional.</p>
+          <div class="cat-indicator"><span class="dot"></span><b>Formulir Aktif</b></div>
+        </button>
+
+        <button type="button" class="reg-cat-card" id="tab-btn-ext" data-target="pane-ext" role="tab" aria-selected="false">
+          <div class="cat-pill ext-pill">OPSI 02 · EKSTERNAL</div>
+          <div class="cat-header">
+            <div class="cat-icon ext-color"><svg class="ic"><use href="#i-globe"/></svg></div>
+            <div>
+              <h3 class="cat-title">Mahasiswa Luar / Eksternal</h3>
+              <span class="cat-tagline">Mahasiswa Asing &amp; Mitra Internasional</span>
+            </div>
+          </div>
+          <p class="cat-desc">Untuk mahasiswa internasional, perwakilan universitas luar negeri, atau pihak luar yang mengajukan program Inbound.</p>
+          <div class="cat-indicator"><span class="dot"></span><b>Formulir Aktif</b></div>
+        </button>
+      </div>
+
+      <!-- FORM 1: SIVITAS PNJ -->
+      <div class="reg-pane active" id="pane-pnj" role="tabpanel">
+        <form class="shell reg-shell" id="f-register-pnj" onsubmit="handleRegisterPnj(event)">
+          <div class="auth-notice pnj-notice">
+            <div class="notice-icon"><svg class="ic"><use href="#i-shield"/></svg></div>
+            <div class="notice-content">
+              <b>Sudah memiliki akun SSO PNJ?</b>
+              <p>Sivitas akademika aktif tidak perlu mendaftar manual jika sudah memiliki akun SSO Politeknik Negeri Jakarta. Anda dapat langsung <a href="#login" data-go="login">Login dengan SSO PNJ</a>.</p>
+            </div>
+          </div>
+
+          <div class="sec"><span class="num">01</span><h3>Data Sivitas PNJ</h3><i class="dash"></i></div>
+          <div class="grid">
+            <div class="f">
+              <label for="pnjRole">Status Sivitas</label>
+              <select name="peran" id="pnjRole" required>
+                <option value="">Pilih status sivitas…</option>
+                <option value="mahasiswa">Mahasiswa Aktif PNJ</option>
+                <option value="dosen">Dosen PNJ</option>
+                <option value="tendik">Tenaga Kependidikan (Tendik) PNJ</option>
+              </select>
+            </div>
+            <div class="f">
+              <label for="pnjNama">Nama Lengkap (Sesuai KTP / KTM)</label>
+              <input type="text" name="nama" id="pnjNama" required placeholder="Contoh: Muhammad Farhan">
+            </div>
+            <div class="f">
+              <label for="pnjNim">NIM / NIP</label>
+              <input type="text" name="nim_nip" id="pnjNim" required placeholder="Contoh: 2107411001 atau 1985..." inputmode="numeric">
+            </div>
+            <div class="f">
+              <label for="pnjJurusan">Jurusan / Unit Kerja</label>
+              <select name="jurusan" id="pnjJurusan" required>
+                <option value="">Pilih jurusan / unit…</option>
+                <option value="TIK">Teknik Informatika dan Komputer (TIK)</option>
+                <option value="Mesin">Teknik Mesin</option>
+                <option value="Sipil">Teknik Sipil</option>
+                <option value="Elektro">Teknik Elektro</option>
+                <option value="Akuntansi">Akuntansi</option>
+                <option value="Niaga">Administrasi Niaga</option>
+                <option value="Grafika">Teknik Grafika dan Penerbitan</option>
+                <option value="Pascasarjana">Pascasarjana</option>
+              </select>
+            </div>
+            <div class="f">
+              <label for="pnjProdi">Program Studi / Bagian</label>
+              <input type="text" name="prodi" id="pnjProdi" required placeholder="Contoh: Teknik Informatika">
+            </div>
+            <div class="f">
+              <label for="pnjWa">Nomor WhatsApp / HP</label>
+              <input type="tel" name="whatsapp" id="pnjWa" required placeholder="08xx xxxx xxxx" inputmode="tel">
+            </div>
+            <div class="f full">
+              <label for="pnjEmail">Email Resmi PNJ (@pnj.ac.id)</label>
+              <input type="email" name="email" id="pnjEmail" required placeholder="nama@pnj.ac.id" autocomplete="email">
+            </div>
+          </div>
+
+          <div class="sec" style="margin-top: 24px;"><span class="num">02</span><h3>Keamanan Akun</h3><i class="dash"></i></div>
+          <div class="grid">
+            <div class="f">
+              <label for="pnjPass">Kata Sandi Baru</label>
+              <div class="input-with-icon pass-field">
+                <svg class="input-ico ic"><use href="#i-lock"/></svg>
+                <input type="password" name="password" id="pnjPass" required placeholder="Minimal 8 karakter" minlength="8" autocomplete="new-password">
+                <button type="button" class="btn-eye" data-toggle="pnjPass" aria-label="Lihat kata sandi"><svg class="ic"><use href="#i-eye"/></svg></button>
+              </div>
+            </div>
+            <div class="f">
+              <label for="pnjPassConf">Konfirmasi Kata Sandi</label>
+              <div class="input-with-icon pass-field">
+                <svg class="input-ico ic"><use href="#i-lock"/></svg>
+                <input type="password" name="password_confirmation" id="pnjPassConf" required placeholder="Ulangi kata sandi" autocomplete="new-password">
+                <button type="button" class="btn-eye" data-toggle="pnjPassConf" aria-label="Lihat kata sandi"><svg class="ic"><use href="#i-eye"/></svg></button>
+              </div>
+            </div>
+          </div>
+
+          <div class="actions reg-actions">
+            <span class="hint">* Kolom wajib diisi</span>
+            <button type="submit" class="btn main">
+              <span>DAFTAR SEBAGAI SIVITAS PNJ</span>
+              <svg class="ic"><use href="#i-arrow-r"/></svg>
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- FORM 2: MAHASISWA LUAR / EKSTERNAL -->
+      <div class="reg-pane" id="pane-ext" role="tabpanel">
+        <form class="shell reg-shell" id="f-register-ext" onsubmit="handleRegisterExt(event)">
+          <div class="auth-notice ext-notice">
+            <div class="notice-icon"><svg class="ic"><use href="#i-globe"/></svg></div>
+            <div class="notice-content">
+              <b>Pendaftaran Akun Eksternal / Internasional</b>
+              <p>Khusus mahasiswa luar negeri, mahasiswa perguruan tinggi lain, tamu, atau perwakilan mitra kerja sama yang akan berkegiatan di Politeknik Negeri Jakarta (Layanan Inbound).</p>
+            </div>
+          </div>
+
+          <div class="sec"><span class="num">01</span><h3>Identitas Mahasiswa / Tamu Luar</h3><i class="dash"></i></div>
+          <div class="grid">
+            <div class="f">
+              <label for="extCat">Kategori Pendaftar</label>
+              <select name="kategori_eksternal" id="extCat" required>
+                <option value="">Pilih kategori…</option>
+                <option value="international_student">Mahasiswa Asing / Internasional</option>
+                <option value="national_student">Mahasiswa Luar PNJ (Domestik)</option>
+                <option value="guest_lecturer">Dosen Tamu / Visiting Professor</option>
+                <option value="researcher">Peneliti Luar / Mitra Riset</option>
+                <option value="other">Lainnya</option>
+              </select>
+            </div>
+            <div class="f">
+              <label for="extNama">Nama Lengkap (Full Name as in Passport)</label>
+              <input type="text" name="nama" id="extNama" required placeholder="Contoh: Kenji Tanaka / John Doe">
+            </div>
+            <div class="f">
+              <label for="extInst">Asal Universitas / Institusi (Home University)</label>
+              <input type="text" name="institusi_asal" id="extInst" required placeholder="Contoh: NIT Gunma College / ITB">
+            </div>
+            <div class="f">
+              <label for="extCountry">Negara Asal (Country of Origin)</label>
+              <input type="text" name="negara_asal" id="extCountry" required placeholder="Contoh: Japan / Malaysia">
+            </div>
+            <div class="f">
+              <label for="extIdNo">Nomor Paspor / Identitas Resmi</label>
+              <input type="text" name="no_identitas" id="extIdNo" required placeholder="Contoh: TK1234567 atau NIK">
+            </div>
+            <div class="f">
+              <label for="extPhone">Nomor Telepon / WhatsApp</label>
+              <input type="tel" name="whatsapp" id="extPhone" required placeholder="+81 90 xxxx xxxx" inputmode="tel">
+            </div>
+            <div class="f full">
+              <label for="extEmail">Alamat Email Aktif (Active Email Address)</label>
+              <input type="email" name="email" id="extEmail" required placeholder="name@domain.com" autocomplete="email">
+            </div>
+          </div>
+
+          <div class="sec" style="margin-top: 24px;"><span class="num">02</span><h3>Keamanan Akun</h3><i class="dash"></i></div>
+          <div class="grid">
+            <div class="f">
+              <label for="extPass">Kata Sandi Baru</label>
+              <div class="input-with-icon pass-field">
+                <svg class="input-ico ic"><use href="#i-lock"/></svg>
+                <input type="password" name="password" id="extPass" required placeholder="Minimal 8 karakter" minlength="8" autocomplete="new-password">
+                <button type="button" class="btn-eye" data-toggle="extPass" aria-label="Lihat kata sandi"><svg class="ic"><use href="#i-eye"/></svg></button>
+              </div>
+            </div>
+            <div class="f">
+              <label for="extPassConf">Konfirmasi Kata Sandi</label>
+              <div class="input-with-icon pass-field">
+                <svg class="input-ico ic"><use href="#i-lock"/></svg>
+                <input type="password" name="password_confirmation" id="extPassConf" required placeholder="Ulangi kata sandi" autocomplete="new-password">
+                <button type="button" class="btn-eye" data-toggle="extPassConf" aria-label="Lihat kata sandi"><svg class="ic"><use href="#i-eye"/></svg></button>
+              </div>
+            </div>
+          </div>
+
+          <div class="actions reg-actions">
+            <span class="hint">* Kolom wajib diisi</span>
+            <button type="submit" class="btn main">
+              <span>DAFTAR SEBAGAI MAHASISWA LUAR</span>
+              <svg class="ic"><use href="#i-arrow-r"/></svg>
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <div class="auth-footer-bar" style="margin-top: 30px;">
+        <p>Sudah memiliki akun terdaftar? <a href="#login" data-go="login" class="auth-action-link">Masuk ke Akun Anda</a></p>
+        <a href="#home" data-go="home" class="auth-back-link">
+          <span>← Kembali ke Beranda</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================================================================== -->
+<!-- 7. HALAMAN PROFIL & AKUN PENGGUNA TERINTEGRASI                        -->
+<!-- ===================================================================== -->
+<section class="page" id="page-profile">
+  <div class="wrap" style="padding-top:28px;padding-bottom:60px;">
+    <div class="crumb">
+      <a href="#home" data-go="home">Beranda</a> / 
+      <a href="#profile" data-go="profile">Portal Akun</a> / 
+      <b id="crumb-active-title">Profil Pengguna</b>
+    </div>
+
+    <div class="fhead">
+      <div class="auth-kicker"><span class="bdg">MANAJEMEN AKUN &amp; IDENTITAS KUI</span></div>
+      <h2 class="ftitle">Profil<em>Pengguna</em></h2>
+      <p class="fsub">Kelola data identitas resmi sesuai database ERD KUI PNJ, pantau status dan riwayat dokumen internasional, serta atur preferensi akun Anda.</p>
+    </div>
+
+    <div class="profile-grid">
+      <!-- Kolom Kiri: Kartu Identitas & Menu -->
+      <aside>
+        <div class="shell profile-card">
+          <div class="profile-avatar-wrap">
+            <div class="profile-avatar" id="side-avatar">A</div>
+          </div>
+          <h3 class="profile-user-name" id="side-name">Asna Qonita</h3>
+          <p class="profile-user-email" id="side-email">snqnt1812@gmail.com</p>
+          <div class="profile-role-badge">
+            <span id="side-badge">Mahasiswa PNJ</span>
+          </div>
+          <div class="profile-id-box">
+            <span class="id-label" id="side-id-label">Nomor Induk Mahasiswa (NIM)</span>
+            <span class="id-val" id="side-id-val">2507411018</span>
+          </div>
+
+          <div class="profile-menu">
+            <button type="button" id="tab-btn-profil" class="active" onclick="switchProfileTab('profil')">
+              <i>01</i>
+              <span id="menu-txt-profil">Profil Pengguna</span>
+            </button>
+            <button type="button" id="tab-btn-pengajuan" onclick="switchProfileTab('pengajuan')">
+              <i>02</i>
+              <span id="menu-txt-pengajuan">Riwayat Outbound</span>
+              <span class="badge" id="menu-badge-pengajuan">1 Berkas</span>
+            </button>
+            <button type="button" id="tab-btn-notifikasi" onclick="switchProfileTab('notifikasi')">
+              <i>03</i>
+              <span>Pusat Notifikasi</span>
+              <span class="badge" id="menu-badge-notif">2 Baru</span>
+            </button>
+            <button type="button" id="tab-btn-pengaturan" onclick="switchProfileTab('pengaturan')">
+              <i>04</i>
+              <span>Pengaturan Akun</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="kui-support-card">
+          <h4>
+            <svg width="16" height="16" style="fill:none;stroke:currentColor;stroke-width:2"><use href="#i-hourglass"/></svg>
+            Jam Operasional KUI
+          </h4>
+          <p>
+            <b>Senin – Kamis:</b> 08.00 – 15.30 WIB<br>
+            <b>Jumat:</b> 08.00 – 16.00 WIB<br>
+            <span style="color:var(--red);font-weight:600;font-size:12px;">Sabtu, Minggu &amp; Libur Nasional: TUTUP</span>
+          </p>
+          <a href="https://wa.me/6281234567890" target="_blank" class="btn-kui-wa">
+            <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.669-.699c.969.584 1.777.892 2.791.893h.001c3.181 0 5.768-2.586 5.768-5.766 0-3.18-2.587-5.779-5.769-5.779zm0 10.373c-.933 0-1.782-.267-2.545-.733l-.182-.109-1.58.414.421-1.539-.12-.191c-.512-.814-.829-1.637-.828-2.615.001-2.529 2.059-4.587 4.588-4.587 2.528 0 4.586 2.058 4.586 4.587 0 2.529-2.058 4.773-4.54 4.773z"/></svg>
+            <span>Bantuan WhatsApp KUI</span>
+          </a>
+        </div>
+      </aside>
+
+      <!-- Kolom Kanan: Tab Profil, Pengajuan, Notifikasi, Pengaturan -->
+      <div>
+        <!-- TAB 1: FORM PROFIL -->
+        <section id="pane-profil" class="profile-pane">
+          <div class="shell">
+            <div class="sec">
+              <span class="num">01</span>
+              <h3 id="pane-profil-sec-title">Informasi Identitas Mahasiswa</h3>
+              <i class="dash"></i>
+            </div>
+            <form id="form-profile-main" onsubmit="saveProfileData(event)">
+              
+              <!-- 1. Form Mahasiswa PNJ (Atribut ERD: nim, nama, tempat_lahir, tgl_lahir, gender, jurusan, prodi, semester, kelas, ipk, no_hp, alamat, email) -->
+              <div id="form-fields-mahasiswa" class="grid role-form-section">
+                <div class="f">
+                  <div class="lrow"><label for="profMhsNim">NIM (Nomor Induk Mahasiswa)</label><span class="bdg">PRIMARY KEY</span></div>
+                  <input type="text" name="nim" id="profMhsNim" value="2507411018" readonly style="background:#F2FBFB;font-weight:700;">
+                </div>
+                <div class="f">
+                  <label for="profMhsNama">Nama Lengkap Mahasiswa</label>
+                  <input type="text" name="nama" id="profMhsNama" value="Asna Qonita" required>
+                </div>
+                <div class="f">
+                  <label for="profMhsEmail">Email Mahasiswa Aktif</label>
+                  <input type="email" name="email" id="profMhsEmail" value="asna.qonita.tik24@mhsw.pnj.ac.id" required>
+                </div>
+                <div class="f">
+                  <label for="profMhsWA">Nomor Handphone / WhatsApp</label>
+                  <input type="tel" name="no_hp" id="profMhsWA" value="081234567890" required>
+                </div>
+                <div class="f">
+                  <label for="profMhsTmpLahir">Tempat Lahir</label>
+                  <input type="text" name="tempat_lahir" id="profMhsTmpLahir" value="Jakarta" required>
+                </div>
+                <div class="f">
+                  <label for="profMhsTglLahir">Tanggal Lahir</label>
+                  <input type="date" name="tanggal_lahir" id="profMhsTglLahir" value="2004-12-18" required>
+                </div>
+                <div class="f">
+                  <label for="profMhsGender">Jenis Kelamin</label>
+                  <select name="jenis_kelamin" id="profMhsGender" required>
+                    <option value="Perempuan" selected>Perempuan</option>
+                    <option value="Laki-Laki">Laki-Laki</option>
+                  </select>
+                </div>
+                <div class="f">
+                  <label for="profMhsJurusan">Jurusan di PNJ</label>
+                  <input type="text" name="jurusan" id="profMhsJurusan" value="Teknik Informatika dan Komputer" required>
+                </div>
+                <div class="f">
+                  <label for="profMhsProdi">Program Studi</label>
+                  <input type="text" name="prodi" id="profMhsProdi" value="Teknik Informatika" required>
+                </div>
+                <div class="f">
+                  <label for="profMhsSemester">Semester Aktif</label>
+                  <input type="text" name="semester" id="profMhsSemester" value="Semester 5" required>
+                </div>
+                <div class="f">
+                  <label for="profMhsKelas">Kelas</label>
+                  <input type="text" name="kelas" id="profMhsKelas" value="TI-5A" required>
+                </div>
+                <div class="f">
+                  <label for="profMhsIpk">IPK Terakhir (Skala 4.00)</label>
+                  <input type="text" name="ipk" id="profMhsIpk" value="3.88" required>
+                </div>
+                <div class="f full">
+                  <label for="profMhsAlamat">Alamat Domisili Lengkap</label>
+                  <textarea name="alamat" id="profMhsAlamat" rows="2" required>Jl. Prof. DR. G.A. Siwabessy, Kampus UI Depok, Jawa Barat 16425</textarea>
+                </div>
+              </div>
+
+              <!-- 2. Form Civitas PNJ (Atribut ERD: nip, nama_lengkap [gelar_depan, nama, gelar_belakang], unit_kerja, jabatan, no_hp, email, alamat, jenis_kelamin) -->
+              <div id="form-fields-civitas" class="grid role-form-section" style="display:none;">
+                <div class="f">
+                  <div class="lrow"><label for="profCivNip">NIP / NIDN Pegawai</label><span class="bdg">PRIMARY KEY</span></div>
+                  <input type="text" name="nip" id="profCivNip" value="197804122005011002" readonly style="background:#F2FBFB;font-weight:700;">
+                </div>
+                <div class="f">
+                  <label for="profCivNama">Nama Lengkap (Tanpa Gelar)</label>
+                  <input type="text" name="nama" id="profCivNama" value="Hendra Wijaya" required>
+                </div>
+                <div class="f">
+                  <label for="profCivGelarDepan">Gelar Depan</label>
+                  <input type="text" name="gelar_depan" id="profCivGelarDepan" value="Dr.">
+                </div>
+                <div class="f">
+                  <label for="profCivGelarBelakang">Gelar Belakang</label>
+                  <input type="text" name="gelar_belakang" id="profCivGelarBelakang" value="S.T., M.T.">
+                </div>
+                <div class="f">
+                  <label for="profCivEmail">Email Resmi PNJ (@pnj.ac.id)</label>
+                  <input type="email" name="email" id="profCivEmail" value="hendra.wijaya@pnj.ac.id" required>
+                </div>
+                <div class="f">
+                  <label for="profCivWA">Nomor Handphone / WhatsApp</label>
+                  <input type="tel" name="no_hp" id="profCivWA" value="085678901234" required>
+                </div>
+                <div class="f">
+                  <label for="profCivJabatan">Jabatan Fungsional / Struktural</label>
+                  <select name="jabatan" id="profCivJabatan" required>
+                    <option value="Lektor Kepala" selected>Lektor Kepala</option>
+                    <option value="Lektor">Lektor</option>
+                    <option value="Asisten Ahli">Asisten Ahli</option>
+                    <option value="Guru Besar / Profesor">Guru Besar / Profesor</option>
+                    <option value="Tenaga Kependidikan">Tenaga Kependidikan (Tendik)</option>
+                  </select>
+                </div>
+                <div class="f">
+                  <label for="profCivUnit">Unit Kerja / Jurusan Asal</label>
+                  <input type="text" name="unit_kerja" id="profCivUnit" value="Jurusan Teknik Elektro" required>
+                </div>
+                <div class="f">
+                  <label for="profCivGender">Jenis Kelamin</label>
+                  <select name="jenis_kelamin" id="profCivGender" required>
+                    <option value="Laki-Laki" selected>Laki-Laki</option>
+                    <option value="Perempuan">Perempuan</option>
+                  </select>
+                </div>
+                <div class="f">
+                  <label for="profCivStatus">Status Kepegawaian</label>
+                  <input type="text" name="status" id="profCivStatus" value="PNS / Dosen Tetap" readonly style="background:#F2FBFB;">
+                </div>
+                <div class="f full">
+                  <label for="profCivAlamat">Alamat Domisili / Rumah</label>
+                  <textarea name="alamat" id="profCivAlamat" rows="2" required>Komp. Pesona Depok Estate Blok B2 No. 14, Depok, Jawa Barat</textarea>
+                </div>
+              </div>
+
+              <!-- 3. Form Mahasiswa Luar / Eksternal (Atribut ERD: no_paspor, nama, negara_asal, asal_instansi, jurusan_asal, prodi_tujuan, jenis_kelamin, tgl_lahir, no_telp, email, alamat) -->
+              <div id="form-fields-eksternal" class="grid role-form-section" style="display:none;">
+                <div class="f">
+                  <div class="lrow"><label for="profExtPaspor">Passport Number / ID Resmi</label><span class="bdg">PRIMARY KEY</span></div>
+                  <input type="text" name="no_paspor" id="profExtPaspor" value="TK8891201" readonly style="background:#F2FBFB;font-weight:700;">
+                </div>
+                <div class="f">
+                  <label for="profExtNama">Full Name (as in Passport)</label>
+                  <input type="text" name="nama" id="profExtNama" value="Kenji Takahashi" required>
+                </div>
+                <div class="f">
+                  <label for="profExtNegara">Country of Origin (Negara Asal)</label>
+                  <input type="text" name="negara_asal" id="profExtNegara" value="Japan" required>
+                </div>
+                <div class="f">
+                  <label for="profExtInstansi">Home Institution / University (Asal Instansi)</label>
+                  <input type="text" name="asal_instansi" id="profExtInstansi" value="National Institute of Technology (NIT), Gunma College" required>
+                </div>
+                <div class="f">
+                  <label for="profExtJurusanAsal">Department / Major in Home University (Jurusan Asal)</label>
+                  <input type="text" name="jurusan_asal" id="profExtJurusanAsal" value="Electronic &amp; Information Engineering" required>
+                </div>
+                <div class="f">
+                  <label for="profExtProdiTujuan">Host Department in PNJ (Prodi Tujuan di PNJ)</label>
+                  <input type="text" name="prodi_tujuan" id="profExtProdiTujuan" value="Teknik Informatika dan Komputer" required>
+                </div>
+                <div class="f">
+                  <label for="profExtGender">Gender (Jenis Kelamin)</label>
+                  <select name="jenis_kelamin" id="profExtGender" required>
+                    <option value="Male" selected>Male (Laki-Laki)</option>
+                    <option value="Female">Female (Perempuan)</option>
+                  </select>
+                </div>
+                <div class="f">
+                  <label for="profExtDOB">Date of Birth (Tanggal Lahir)</label>
+                  <input type="date" name="tgl_lahir" id="profExtDOB" value="1998-08-22" required>
+                </div>
+                <div class="f">
+                  <label for="profExtEmail">Active Email Address</label>
+                  <input type="email" name="email" id="profExtEmail" value="kenji.takahashi@gunma.ac.jp" required>
+                </div>
+                <div class="f">
+                  <label for="profExtPhone">Contact Number (WhatsApp with Country Code)</label>
+                  <input type="tel" name="no_telp" id="profExtPhone" value="+81 90 1234 5678" required>
+                </div>
+                <div class="f full">
+                  <label for="profExtAlamat">Current Address / Local Accommodation (Alamat)</label>
+                  <textarea name="alamat" id="profExtAlamat" rows="2" required>Dormitory Building 3, Gunma College / Guest House PNJ Depok</textarea>
+                </div>
+              </div>
+              <div class="sec" style="margin-top:32px;">
+                <span class="num">02</span>
+                <h3>Kontak Darurat / Penanggung Jawab</h3>
+                <i class="dash"></i>
+              </div>
+              <div class="grid">
+                <div class="f"><label>Nama Kontak Darurat</label><input type="text" id="profEmergencyName" value="Drs. H. Mulyadi (Orang Tua)" required></div>
+                <div class="f"><label>Hubungan</label><input type="text" id="profEmergencyRel" value="Orang Tua / Wali" required></div>
+                <div class="f full"><label>Nomor Telepon Darurat (WhatsApp)</label><input type="tel" id="profEmergencyPhone" value="081398765432" required></div>
+              </div>
+              <div style="margin-top:32px;padding-top:20px;border-top:1px dashed var(--t300);display:flex;justify-content:flex-end;">
+                <button type="submit" class="btn main">
+                  <span>SIMPAN PERUBAHAN PROFIL</span>
+                  <svg class="ic"><use href="#i-arrow-r"/></svg>
+                </button>
+              </div>
+            </form>
+          </div>
+        </section>
+
+        <!-- TAB 2: RIWAYAT & PENGAJUAN -->
+        <section id="pane-pengajuan" class="profile-pane" style="display:none;">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px;">
+            <div class="shell" style="padding:28px 24px;display:flex;flex-direction:column;justify-content:space-between;">
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+                <div>
+                  <span class="bdg">STATUS TERKINI</span>
+                  <h4 style="font:700 28px/1.2 var(--serif);color:var(--t900);margin-top:8px;" id="dash-active-count">1 Berkas Aktif</h4>
+                  <p style="font-size:13px;color:var(--muted);margin-top:4px;">Dokumen dalam pantauan loket digital KUI PNJ.</p>
+                </div>
+                <div style="width:48px;height:48px;background:var(--t100);display:grid;place-items:center;border:1.5px solid var(--t400);color:var(--t700);">
+                  <svg width="24" height="24" style="fill:none;stroke:currentColor;stroke-width:2"><use href="#i-docok"/></svg>
+                </div>
+              </div>
+              <div style="margin-top:24px;">
+                <a id="btn-buat-pengajuan" href="#outbound" data-go="outbound" class="btn main" style="width:100%;text-align:center;">
+                  + BUAT PENGAJUAN OUTBOUND
+                </a>
+              </div>
+            </div>
+
+            <div class="kui-card">
+              <div class="kui-card-top">
+                <span class="kui-card-brand">I<b>/</b>O <span>PNJ IDENTITY</span></span>
+                <span class="kui-card-badge" id="card-badge">MAHASISWA</span>
+              </div>
+              <div class="kui-card-mid">
+                <p class="kui-card-label">Nama Pemegang / Cardholder</p>
+                <p class="kui-card-name" id="card-name">ASNA QONITA</p>
+              </div>
+              <div class="kui-card-bot">
+                <div>
+                  <p class="kui-card-label" id="card-id-label">ID / NIM</p>
+                  <p class="kui-card-id" id="card-id-val">2507411018</p>
+                </div>
+                <div class="kui-card-status">
+                  <svg width="12" height="12" style="fill:currentColor"><circle cx="6" cy="6" r="5"/></svg>
+                  <span>ACTIVE</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="shell">
+            <div class="sec">
+              <span class="num">02</span>
+              <h3 id="pane-history-title">Daftar Dokumen &amp; Pengajuan Aktif</h3>
+              <i class="dash"></i>
+            </div>
+
+            <!-- 1. Riwayat Mahasiswa (Outbound) -->
+            <div id="history-items-mahasiswa" class="role-history-group">
+              <div class="profile-sub-item">
+                <div class="profile-sub-info">
+                  <div style="display:flex;gap:8px;align-items:center;">
+                    <span class="bdg" style="background:var(--y);color:var(--t900);">OUTBOUND</span>
+                    <span class="st g-proses" style="font-size:11.5px;">Sedang Dicek KUI</span>
+                  </div>
+                  <h4>Permohonan Rekomendasi Paspor &amp; Visa</h4>
+                  <p>Tujuan: Universiti Teknologi Malaysia (UTM) · Kategori: Student Mobility / IISMA · Tanggal Pengajuan: 10 Nov 2026</p>
+                </div>
+                <div style="display:flex;align-items:center;gap:12px;">
+                  <div style="text-align:right;">
+                    <span style="font-size:12px;color:var(--muted);display:block;">Progress</span>
+                    <b style="color:var(--t700);font-size:15px;">40%</b>
+                  </div>
+                  <button type="button" class="btn ghost" style="padding:8px 16px;font-size:11.5px;" onclick="toast('Membuka rincian pengajuan Outbound...')">Lihat Detail</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- 2. Riwayat Civitas (PDLN) -->
+            <div id="history-items-civitas" class="role-history-group" style="display:none;">
+              <div class="profile-sub-item">
+                <div class="profile-sub-info">
+                  <div style="display:flex;gap:8px;align-items:center;">
+                    <span class="bdg" style="background:var(--t600);color:#fff;">PDLN</span>
+                    <span class="st g-disetujui" style="font-size:11.5px;">Surat SP Terbit</span>
+                  </div>
+                  <h4>Izin Setneg: Seminar Internasional IEEE ICEEE</h4>
+                  <p>Tujuan: Berlin, Jerman · Jenis: Konferensi Ilmiah · No. SP: 241/SP-PDLN/PNJ/2026 · Sumber Biaya: DIPA PNJ</p>
+                </div>
+                <div style="display:flex;align-items:center;gap:12px;">
+                  <div style="text-align:right;">
+                    <span style="font-size:12px;color:var(--muted);display:block;">Progress</span>
+                    <b style="color:var(--t700);font-size:15px;">100%</b>
+                  </div>
+                  <button type="button" class="btn main" style="padding:8px 16px;font-size:11.5px;" onclick="toast('Mengunduh Surat Persetujuan (SP) PDF...')">Unduh SP PDF</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- 3. Riwayat Mahasiswa Luar (Inbound) -->
+            <div id="history-items-eksternal" class="role-history-group" style="display:none;">
+              <div class="profile-sub-item">
+                <div class="profile-sub-info">
+                  <div style="display:flex;gap:8px;align-items:center;">
+                    <span class="bdg" style="background:var(--g700);color:#fff;">INBOUND</span>
+                    <span class="st g-proses" style="font-size:11.5px;">Verifikasi Dokumen</span>
+                  </div>
+                  <h4>Letter of Acceptance (LoA) &amp; Study Permit</h4>
+                  <p>Program: International Research Student Mobility 2026 · Host: Jurusan TIK PNJ · Status LoA: Menunggu TTD Direktur</p>
+                </div>
+                <div style="display:flex;align-items:center;gap:12px;">
+                  <div style="text-align:right;">
+                    <span style="font-size:12px;color:var(--muted);display:block;">Progress</span>
+                    <b style="color:var(--t700);font-size:15px;">65%</b>
+                  </div>
+                  <button type="button" class="btn ghost" style="padding:8px 16px;font-size:11.5px;" onclick="toast('Membuka status berkas LoA Inbound...')">Lihat Berkas</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- TAB 3: NOTIFIKASI -->
+        <section id="pane-notifikasi" class="profile-pane" style="display:none;">
+          <div class="shell">
+            <div class="sec">
+              <span class="num">03</span>
+              <h3>Pemberitahuan Sistem &amp; Progres</h3>
+              <i class="dash"></i>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;">
+              <span style="font-size:13px;color:var(--muted);font-weight:600;">Menampilkan notifikasi terbaru terkait verifikasi berkas:</span>
+              <button type="button" class="btn ghost" style="padding:6px 14px;font-size:11px;" onclick="toast('Semua notifikasi telah ditandai sudah dibaca.')">Tandai Semua Dibaca</button>
+            </div>
+            <!-- Notifikasi Mahasiswa -->
+            <div id="notif-items-mahasiswa" class="role-notif-group">
+              <div class="profile-notif-item unread">
+                <span class="profile-notif-dot"></span>
+                <div style="flex:1;">
+                  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+                    <b style="font-size:14.5px;color:var(--t900);">Verifikasi Berkas Outbound Sedang Berjalan</b>
+                    <span style="font-size:11.5px;color:var(--muted);">Hari ini, 10:45 WIB</span>
+                  </div>
+                  <p style="font-size:13px;color:var(--muted);margin:0;">Dokumen permohonan rekomendasi paspor &amp; visa Anda telah diterima dan saat ini sedang dalam proses review oleh validator KUI.</p>
+                </div>
+              </div>
+              <div class="profile-notif-item unread">
+                <span class="profile-notif-dot"></span>
+                <div style="flex:1;">
+                  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+                    <b style="font-size:14.5px;color:var(--t900);">Surat Rekomendasi Jurusan Divalidasi</b>
+                    <span style="font-size:11.5px;color:var(--muted);">Kemarin, 14:20 WIB</span>
+                  </div>
+                  <p style="font-size:13px;color:var(--muted);margin:0;">Surat persetujuan jurusan dan tanda tangan kaprodi telah diverifikasi keabsahannya.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Notifikasi Civitas -->
+            <div id="notif-items-civitas" class="role-notif-group" style="display:none;">
+              <div class="profile-notif-item unread">
+                <span class="profile-notif-dot"></span>
+                <div style="flex:1;">
+                  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+                    <b style="font-size:14.5px;color:var(--t900);">Surat Persetujuan (SP) Setneg Telah Terbit</b>
+                    <span style="font-size:11.5px;color:var(--muted);">Hari ini, 09:15 WIB</span>
+                  </div>
+                  <p style="font-size:13px;color:var(--muted);margin:0;">Surat persetujuan izin perjalanan dinas luar negeri dari Kemensetneg telah selesai diproses. Silakan unduh dokumen PDF pada menu Riwayat PDLN.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Notifikasi Mahasiswa Luar -->
+            <div id="notif-items-eksternal" class="role-notif-group" style="display:none;">
+              <div class="profile-notif-item unread">
+                <span class="profile-notif-dot"></span>
+                <div style="flex:1;">
+                  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+                    <b style="font-size:14.5px;color:var(--t900);">Letter of Acceptance (LoA) Under Review</b>
+                    <span style="font-size:11.5px;color:var(--muted);">Today, 11:30 WIB</span>
+                  </div>
+                  <p style="font-size:13px;color:var(--muted);margin:0;">Your inbound research visit request has been approved by the department. Formal Letter of Acceptance is being issued.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- TAB 4: PENGATURAN -->
+        <section id="pane-pengaturan" class="profile-pane" style="display:none;">
+          <div class="shell">
+            <div class="sec">
+              <span class="num">04</span>
+              <h3>Keamanan &amp; Kata Sandi</h3>
+              <i class="dash"></i>
+            </div>
+            <form onsubmit="handlePasswordChange(event)" style="max-width:540px;">
+              <div class="f" style="margin-bottom:14px;"><label>Kata Sandi Saat Ini</label><input type="password" id="oldPass" required placeholder="••••••••"></div>
+              <div class="f" style="margin-bottom:14px;"><label>Kata Sandi Baru</label><input type="password" id="newPass" required placeholder="Minimal 8 karakter"></div>
+              <div class="f" style="margin-bottom:20px;"><label>Ketik Ulang Kata Sandi Baru</label><input type="password" id="confirmPass" required placeholder="Ketik ulang kata sandi baru"></div>
+              <button type="submit" class="btn main"><span>SIMPAN KATA SANDI BARU</span><svg class="ic"><use href="#i-lock"/></svg></button>
+            </form>
+            <div class="sec" style="margin-top:36px;"><span class="num">05</span><h3>Preferensi Notifikasi &amp; Sesi</h3><i class="dash"></i></div>
+            <div style="display:grid;gap:14px;max-width:540px;margin-bottom:24px;">
+              <label class="custom-chk"><input type="checkbox" checked><span class="chk-box"></span><span class="chk-text">Kirim notifikasi status verifikasi ke email utama</span></label>
+              <label class="custom-chk"><input type="checkbox" checked><span class="chk-box"></span><span class="chk-text">Kirim notifikasi via WhatsApp untuk perubahan status pengajuan</span></label>
+            </div>
+            <div style="padding-top:20px;border-top:1px dashed var(--t300);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+              <div><b style="font-size:13.5px;color:var(--t900);display:block;">Sesi Aktif Perangkat</b><span style="font-size:12.5px;color:var(--muted);">Terakhir masuk: Browser Desktop (Chrome) · IP: 127.0.0.1</span></div>
+              <button type="button" class="btn slate" onclick="alertLogout()">KELUAR DARI SEMUA SESI</button>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer><b>I/O Service</b> · <span data-i18n="ft">Layanan internasional terpadu Politeknik Negeri Jakarta</span></footer>
+
+<!-- ============ MODALS ============ -->
+<div class="modal" id="loginModal" role="dialog" aria-modal="true">
+  <form class="mbox" id="loginForm">
+    <button type="button" class="x" data-close aria-label="Close">✕</button>
+    <h3 data-i18n="lg_t">Masuk</h3>
+    <p data-i18n="lg_demo">Demo: isi bebas atau pilih role cepat di bawah.</p>
+    <div class="f"><label data-i18n="lg_user">Email / NIP / NIM</label><input type="text" id="lgUser" required placeholder="nama@pnj.ac.id atau NIM"></div>
+    <div class="f"><label data-i18n="lg_pass">Kata Sandi</label><input type="password" id="lgPass" required placeholder="••••••••"></div>
+    <button type="submit" class="btn main" style="width:100%;margin-top:6px" data-i18n="lg_btn">Masuk</button>
+    
+    <div style="margin:14px 0 6px;padding:10px;background:var(--t50);border:1px dashed var(--t300);display:flex;flex-direction:column;gap:6px;">
+      <span style="font-size:11px;font-weight:700;color:var(--t800);text-transform:uppercase;letter-spacing:0.04em;">Demo Login Cepat Sesuai ERD:</span>
+      <button type="button" class="btn ghost" style="padding:6px 10px;font-size:11.5px;text-align:left;justify-content:flex-start;background:#fff;" data-close onclick="handleDemoLogin('mahasiswa')">
+        🎓 Masuk sbg <b>Mahasiswa PNJ</b>
+      </button>
+      <button type="button" class="btn ghost" style="padding:6px 10px;font-size:11.5px;text-align:left;justify-content:flex-start;background:#fff;" data-close onclick="handleDemoLogin('civitas')">
+        🏛️ Masuk sbg <b>Civitas Dosen/Tendik</b>
+      </button>
+      <button type="button" class="btn ghost" style="padding:6px 10px;font-size:11.5px;text-align:left;justify-content:flex-start;background:#fff;" data-close onclick="handleDemoLogin('eksternal')">
+        🌏 Masuk sbg <b>Mahasiswa Luar</b>
+      </button>
+    </div>
+    <div style="margin-top:14px;padding-top:12px;border-top:1px dashed var(--t300);text-align:center;font-size:13px;color:var(--muted)">
+      <a href="#login" data-go="login" data-close style="color:var(--t600);font-weight:600;text-decoration:underline">Buka Halaman Login Penuh / SSO PNJ</a>
+    </div>
+  </form>
+</div>
+
+<div class="modal" id="okModal" role="dialog" aria-modal="true">
+  <div class="mbox">
+    <h3 data-i18n="ok_t">Pengajuan Terkirim</h3>
+    <p data-i18n="ok_note">Pantau statusnya lewat menu Pengajuan Saya.</p>
+    <div class="sum" id="okSum"></div>
+    <div class="mact">
+      <button type="button" class="btn ghost" id="okAgain" data-i18n="ok_again">Ajukan Lagi</button>
+      <button type="button" class="btn main" id="okHome" data-i18n="ok_home">Ke Beranda</button>
+    </div>
+  </div>
+</div>
+
+<div class="toasts" id="toasts" aria-live="polite"></div>
+<div class="tip" id="tip" role="tooltip" hidden></div>
+
+<script src="assets/script.js"></script>
+</body>
+</html>
