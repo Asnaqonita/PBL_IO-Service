@@ -18,8 +18,8 @@ if (!defined('BASE_URL')) {
   <div class="user">
     <div class="avatar">A</div>
     <div>
-      <b>Admin I/O PNJ</b>
-      <small>admin.io@pnj.ac.id</small>
+      <b><?php echo htmlspecialchars($_SESSION['admin_user']['name'] ?? 'Admin I/O PNJ'); ?></b>
+      <small><?php echo htmlspecialchars($_SESSION['admin_user']['email'] ?? 'admin.io@pnj.ac.id'); ?></small>
     </div>
   </div>
   <div class="d-menu">
@@ -52,6 +52,6 @@ if (!defined('BASE_URL')) {
     </button>
   </div>
   <div class="d-foot">
-    <a href="<?php echo BASE_URL; ?>index.php" class="btn slate" style="width:100%;text-align:center;display:block">LOGOUT</a>
+    <a href="<?php echo BASE_URL; ?>admin.php?action=logout" class="btn slate" style="width:100%;text-align:center;display:block">LOGOUT</a>
   </div>
 </aside>

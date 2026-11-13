@@ -4263,3 +4263,96 @@ footer b {
     grid-template-columns: 1fr;
   }
 }
+
+/* ============ PROFILE PANE ENHANCEMENTS & PADDING FIX ============ */
+.profile-pane .shell {
+  padding: 40px 42px 42px;
+}
+
+.custom-chk.items-start {
+  align-items: flex-start;
+}
+
+.custom-chk.items-start .chk-box {
+  margin-top: 3px;
+}
+
+/* ============ SESSION & DANGER ZONE STYLES ============ */
+.session-card {
+  border: 1.5px solid var(--t200);
+  background: var(--t50);
+  padding: 16px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  transition: border-color .2s, box-shadow .2s;
+}
+
+.session-card.current {
+  background: #fff;
+  border-color: var(--t400);
+  box-shadow: 3px 3px 0 var(--t100);
+}
+
+.session-card-info {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.session-card-icon {
+  width: 42px;
+  height: 42px;
+  background: var(--t100);
+  border: 1px solid var(--t300);
+  display: grid;
+  place-items: center;
+  color: var(--t700);
+  flex-shrink: 0;
+}
+
+.btn.danger:hover {
+  border-color: var(--red);
+  color: #9B1C1C;
+}
+
+.danger-zone-box {
+  background: #FFF8F8;
+  border: 1.5px solid #F5C6CB;
+  border-left: 4px solid var(--red);
+  padding: 24px 26px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.danger-zone-info h4 {
+  font: 700 16px var(--serif);
+  color: var(--red);
+  margin: 0 0 6px;
+}
+
+.danger-zone-info p {
+  font: 400 13px/1.55 var(--sans);
+  color: var(--muted);
+  max-width: 620px;
+  margin: 0;
+}
+
+@media(max-width:640px) {
+  .profile-pane .shell {
+    padding: 28px 20px 32px;
+  }
+  .session-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .danger-zone-box {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

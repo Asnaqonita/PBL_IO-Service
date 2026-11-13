@@ -8,7 +8,6 @@
 <div class="f">
   <div class="lrow">
     <label for="profExtPaspor">Passport Number / ID Resmi</label>
-    <span class="bdg">PRIMARY KEY</span>
   </div>
   <input type="text" name="no_paspor" id="profExtPaspor" value="TK8891201" readonly style="background:#F2FBFB;font-weight:700;">
 </div>

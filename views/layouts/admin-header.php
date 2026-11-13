@@ -44,8 +44,6 @@ if (!defined('BASE_URL')) {
       <li><a href="#" onclick="switchTab('akun'); return false;" id="nav-akun">Data Akun</a></li>
       <li><a href="#" onclick="switchTab('faq'); return false;" id="nav-faq">FAQ</a></li>
       <li><a href="#" onclick="switchTab('loket'); return false;" id="nav-loket">Loket</a></li>
-      <li><a href="#" onclick="switchTab('profil'); return false;" id="nav-profil">Profil</a></li>
-      <li><a href="#" onclick="switchTab('notifikasi'); return false;" id="nav-notifikasi">Notifikasi</a></li>
     </ul>
   </nav>
   <div class="tools">

@@ -7,7 +7,6 @@
 <div class="f">
   <div class="lrow">
     <label for="profCivNip">NIP / NIDN Pegawai</label>
-    <span class="bdg">PRIMARY KEY</span>
   </div>
   <input type="text" name="nip" id="profCivNip" value="197804122005011002" readonly style="background:#F2FBFB;font-weight:700;">
 </div>

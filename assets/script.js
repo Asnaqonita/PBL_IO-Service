@@ -2489,16 +2489,80 @@ function saveProfileData(e) {
 
 function handlePasswordChange(e) {
   if (e) e.preventDefault();
-  const np = document.getElementById('newPass').value;
-  const cp = document.getElementById('confirmPass').value;
-  if (np !== cp) {
+  const op = document.getElementById('oldPass');
+  const np = document.getElementById('newPass');
+  const cp = document.getElementById('confirmPass');
+  if (!op || !np || !cp) return;
+
+  if (np.value.length < 8) {
+    toast('Kata sandi baru minimal harus 8 karakter!', true);
+    return;
+  }
+  if (np.value !== cp.value) {
     toast('Konfirmasi kata sandi tidak cocok!', true);
     return;
   }
   toast('Kata sandi berhasil diperbarui.');
-  document.getElementById('oldPass').value = '';
-  document.getElementById('newPass').value = '';
-  document.getElementById('confirmPass').value = '';
+  op.value = '';
+  np.value = '';
+  cp.value = '';
+}
+
+function saveNotificationPreferences(e) {
+  if (e) e.preventDefault();
+  const emailNotif = document.getElementById('chkNotifEmail') ? document.getElementById('chkNotifEmail').checked : true;
+  const waNotif = document.getElementById('chkNotifWA') ? document.getElementById('chkNotifWA').checked : true;
+  const newsNotif = document.getElementById('chkNotifNewsletter') ? document.getElementById('chkNotifNewsletter').checked : false;
+
+  try {
+    const prefs = { emailNotif, waNotif, newsNotif, updatedAt: new Date().toISOString() };
+    localStorage.setItem('io_notif_prefs', JSON.stringify(prefs));
+  } catch(err) {}
+
+  toast('Preferensi notifikasi & komunikasi berhasil disimpan.');
+}
+
+function terminateSingleSession(btn, deviceName) {
+  if (!confirm(`Cabut akses login untuk perangkat "${deviceName}"?`)) return;
+  const card = btn ? btn.closest('.session-card') : null;
+  if (card) {
+    card.style.opacity = '0.45';
+    card.style.pointerEvents = 'none';
+    const actionDiv = btn.parentElement;
+    if (actionDiv) {
+      actionDiv.innerHTML = '<span class="st g-ditolak" style="font-size:10.5px;">AKSES DICABUT</span>';
+    }
+  }
+  toast(`Akses untuk ${deviceName} berhasil dicabut.`);
+}
+
+function logoutOtherSessions() {
+  if (!confirm('Apakah Anda yakin ingin mengeluarkan akun dari seluruh perangkat lain? Hanya sesi di perangkat ini yang tetap aktif.')) return;
+  
+  document.querySelectorAll('.session-card:not(.current)').forEach(card => {
+    card.style.opacity = '0.45';
+    card.style.pointerEvents = 'none';
+    const lastCol = card.querySelector('div:last-child');
+    if (lastCol) {
+      lastCol.innerHTML = '<span class="st g-ditolak" style="font-size:10.5px;">SESI BERAKHIR</span>';
+    }
+  });
+
+  toast('Berhasil keluar dari seluruh sesi perangkat lain.');
+}
+
+function handleDeactivateAccount() {
+  const answer = prompt('PERINGATAN: Menonaktifkan akun akan menangguhkan seluruh permohonan dokumen internasional Anda di KUI PNJ.\n\nKetik "NONAKTIFKAN" untuk mengonfirmasi:');
+  if (answer === null) return;
+  if (answer.trim().toUpperCase() !== 'NONAKTIFKAN') {
+    toast('Konfirmasi dibatalkan. Kata konfirmasi tidak cocok.', true);
+    return;
+  }
+
+  toast('Permohonan penonaktifan akun diterima. Menutup sesi...', true);
+  setTimeout(() => {
+    alertLogout();
+  }, 2000);
 }
 
 function alertLogout() {

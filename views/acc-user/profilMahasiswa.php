@@ -7,7 +7,6 @@
 <div class="f">
   <div class="lrow">
     <label for="profMhsNim">NIM (Nomor Induk Mahasiswa)</label>
-    <span class="bdg">PRIMARY KEY</span>
   </div>
   <input type="text" name="nim" id="profMhsNim" value="2507411018" readonly style="background:#F2FBFB;font-weight:700;">
 </div>

@@ -34,6 +34,9 @@
 <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3s7 3 7 8c0 5-7 10-7 10S5 16 5 11c0-5 7-8 7-8z"/></symbol>
 <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></symbol>
 <symbol id="i-school" viewBox="0 0 24 24"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></symbol>
+<symbol id="i-laptop" viewBox="0 0 24 24"><path d="M20 16V7a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v9m16 0H4m16 0 1.28 2.55a1 1 0 0 1-.9 1.45H3.62a1 1 0 0 1-.9-1.45L4 16"/></symbol>
+<symbol id="i-phone" viewBox="0 0 24 24"><rect x="7" y="2" width="10" height="20" rx="2"/><circle cx="12" cy="18" r="1"/></symbol>
+<symbol id="i-alert" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4M12 17h.01"/></symbol>
 </defs></svg>
 
 <!-- ============ HEADER UTAMA ============ -->
@@ -306,6 +309,7 @@
 <!-- 4. HALAMAN PDLN                                                       -->
 <!-- ===================================================================== -->
 <section class="page" id="page-pdln">
+
   <div class="psubbar" id="psubbar">
     <div class="psb-in">
       <div class="psb-aux" aria-label="Panduan dan template">
@@ -320,108 +324,237 @@
     </div>
   </div>
 
-  <!-- 1. DASHBOARD PDLN -->
+  <!-- ===== 1. DASHBOARD PDLN ===== -->
   <div class="psub active" id="psub-dash">
     <div class="wrap">
-      <div class="crumb"><a href="#home" data-go="home" data-i18n="n_home">Beranda</a> / <a href="#pdln" data-go="pdln">PDLN</a> / <b>Dashboard</b></div>
+      <div class="crumb"><a href="#home" data-go="home" data-i18n="n_home">Beranda</a> / <b>PDLN</b></div>
       <div class="fhead">
         <h2 class="ftitle">Dashboard<em>PDLN</em></h2>
-        <p class="fsub" data-i18n="d_sub">Ringkasan pengajuan Perjalanan Dinas Luar Negeri (PDLN) civitas PNJ: status, negara tujuan, dan aktivitas terkini.</p>
+        <p class="fsub" data-i18n="d_sub">Ringkasan pengajuan Perjalanan Dinas Luar Negeri PNJ: status, negara tujuan, dan aktivitas terbaru.</p>
       </div>
+
+      <div class="acts">
+        <article class="acard first">
+          <span class="ai"><svg class="ic"><use href="#i-send"/></svg></span>
+          <h3 data-i18n="a1_t">Ajukan PDLN</h3>
+          <p data-i18n="a1_d">Isi data kegiatan, peserta, dan unggah dokumen pendukung dalam satu form terpadu.</p>
+          <button type="button" class="btn main" data-go="pdln/input" data-i18n="s_input">Input Pengajuan</button>
+        </article>
+        <article class="acard">
+          <span class="ai"><svg class="ic"><use href="#i-pie"/></svg></span>
+          <h3 data-i18n="a2_t">Cek Progress</h3>
+          <p data-i18n="a2_d">Lihat status, persentase progres, dan catatan admin dari pengajuan yang sudah masuk.</p>
+          <button type="button" class="btn ghost" data-go="pdln/progress" data-i18n="a2_b">Lihat Daftar</button>
+        </article>
+        <article class="acard">
+          <span class="ai"><svg class="ic"><use href="#i-doc"/></svg></span>
+          <h3 data-i18n="s_laporan">Laporan Kegiatan</h3>
+          <p data-i18n="a3_d">Kegiatan sudah selesai? Unggah laporan dan dokumentasi agar pengajuan dinyatakan tuntas.</p>
+          <button type="button" class="btn ghost" data-go="pdln/laporan" data-i18n="a3_b">Isi Laporan</button>
+        </article>
+      </div>
+
       <div class="kpis">
-        <div class="kpi"><span class="num" id="kp1">0</span><div class="l"><b data-i18n="kp1_l">Total Surat Setneg</b><span data-i18n="kp1_s">Surat Setneg terbit</span></div></div>
-        <div class="kpi y"><span class="num" id="kp2">0</span><div class="l"><b data-i18n="kp2_l">Total Paspor Dinas</b><span data-i18n="kp2_s">Diproses &amp; selesai</span></div></div>
-        <div class="kpi"><span class="num" id="kp3">0</span><div class="l"><b data-i18n="kp3_l">Total Laporan</b><span data-i18n="kp3_s">Laporan diterima</span></div></div>
+        <div class="kpi"><span class="k-l" data-i18n="kp1_l">Total SP Setneg</span><b class="k-v" id="kp-setneg">0</b><span class="k-s" data-i18n="kp1_s">SP Setneg terbit</span></div>
+        <div class="kpi"><span class="k-l" data-i18n="kp2_l">Total Paspor Dinas</span><b class="k-v" id="kp-paspor">0</b><span class="k-s" data-i18n="kp2_s">Diproses & selesai</span></div>
+        <div class="kpi"><span class="k-l" data-i18n="kp3_l">Total Laporan</span><b class="k-v" id="kp-laporan">0</b><span class="k-s" data-i18n="kp3_s">Laporan diterima</span></div>
       </div>
-      <div class="dacts">
-        <button type="button" class="dact" data-go="pdln/input"><span class="ico"><svg class="ic"><use href="#i-send"/></svg></span><h3>Ajukan PDLN</h3><p data-i18n="a1_d">Isi data kegiatan, data peserta, dan unggah dokumen pendukung dalam satu form terpadu.</p><span class="btn main" data-i18n="s_input">Input Pengajuan</span></button>
-        <button type="button" class="dact" data-go="pdln/progress"><span class="ico"><svg class="ic"><use href="#i-pie"/></svg></span><h3 data-i18n="a2_t">Cek Progress</h3><p data-i18n="a2_d">Lihat status, persentase kemajuan, dan catatan admin dari pengajuan yang sudah dikirim.</p><span class="btn ghost" data-i18n="a2_b">Lihat Daftar</span></button>
-        <button type="button" class="dact" data-go="pdln/laporan"><span class="ico"><svg class="ic"><use href="#i-docok"/></svg></span><h3 data-i18n="s_laporan">Laporan Kegiatan</h3><p data-i18n="a3_d">Kegiatan sudah selesai? Unggah laporan dan dokumentasi agar pengajuan dapat ditutup.</p><span class="btn ghost" data-i18n="a3_b">Kirim Laporan</span></button>
+
+      <div class="panels">
+        <section class="panel"><h3 data-i18n="p_status">Distribusi Status</h3><div id="donutBox"></div></section>
+        <section class="panel"><h3 data-i18n="p_neg">Top Negara Tujuan</h3><div id="rankBox"></div></section>
+        <section class="panel"><h3 data-i18n="p_hl">Highlight Bulan Ini</h3><div id="hlBox"></div></section>
+      </div>
+    </div>
+
+  <!-- ===== PANDUAN & TEMPLATE ===== -->
+  <section class="pinfo" id="pinfo">
+    <div class="pinfo-in">
+      <details class="acc" id="acc-panduan">
+        <summary><i class="chev"></i><span data-i18n="s_panduan">Panduan</span></summary>
+        <div class="gsteps">
+          <div class="gs"><span class="n">1</span><h4 data-i18n="gd1_t">Ambil Template Berkas</h4><p data-i18n="gd1_d">Buka bagian Template di bawah halaman ini untuk melihat daftar format resmi.</p></div>
+          <div class="gs"><span class="n">2</span><h4 data-i18n="gd2_t">Isi Form Pengajuan</h4><p data-i18n="gd2_d">Lengkapi data kegiatan dan peserta dengan benar di menu Input Pengajuan.</p></div>
+          <div class="gs"><span class="n">3</span><h4 data-i18n="gd3_t">Unggah Dokumen Wajib</h4><p data-i18n="gd3_d">Upload berkas bertanda bintang merah (*). Jika disetujui, Anda perlu memproses Paspor Dinas dan Exit Permit.</p></div>
+          <div class="gs"><span class="n">4</span><h4 data-i18n="gd4_t">Pantau & Laporkan</h4><p data-i18n="gd4_d">Pantau progres di menu Progress. Setelah kegiatan selesai, kirim laporan lewat menu Laporan Kegiatan.</p></div>
+        </div>
+      </details>
+
+      <details class="acc" id="acc-template">
+        <summary><i class="chev"></i><span data-i18n="s_template">Template</span></summary>
+        <!-- UPDATE: link unduhan tiap template isi di script (objek TPL_LINK). Kosong = tampilkan "Template belum tersedia". -->
+        <ul class="tpls">
+          <li><svg class="ic"><use href="#i-doc"/></svg><span data-i18n="d_mou">Draft MoU / MoA</span><button type="button" class="tpl" data-tpl="mou"><span data-i18n="b_buka">Buka</span><svg class="ic"><use href="#i-ext"/></svg></button></li>
+          <li><svg class="ic"><use href="#i-doc"/></svg><span data-i18n="d_jadwal">Jadwal Kegiatan</span><button type="button" class="tpl" data-tpl="jadwal"><span data-i18n="b_buka">Buka</span><svg class="ic"><use href="#i-ext"/></svg></button></li>
+          <li><svg class="ic"><use href="#i-doc"/></svg><span data-i18n="d_tor">TOR Kegiatan</span><button type="button" class="tpl" data-tpl="tor"><span data-i18n="b_buka">Buka</span><svg class="ic"><use href="#i-ext"/></svg></button></li>
+          <li><svg class="ic"><use href="#i-doc"/></svg><span data-i18n="d_biaya">Surat Pernyataan Pembiayaan</span><button type="button" class="tpl" data-tpl="pembiayaan"><span data-i18n="b_buka">Buka</span><svg class="ic"><use href="#i-ext"/></svg></button></li>
+          <li><svg class="ic"><use href="#i-doc"/></svg><span data-i18n="d_memo">Memo Persetujuan</span><button type="button" class="tpl" data-tpl="memo"><span data-i18n="b_buka">Buka</span><svg class="ic"><use href="#i-ext"/></svg></button></li>
+          <li><svg class="ic"><use href="#i-doc"/></svg><span data-i18n="d_relevansi">Surat Keterangan Relevansi</span><button type="button" class="tpl" data-tpl="relevansi"><span data-i18n="b_buka">Buka</span><svg class="ic"><use href="#i-ext"/></svg></button></li>
+          <li><svg class="ic"><use href="#i-doc"/></svg><span data-i18n="d_tugas">Surat Tugas</span><button type="button" class="tpl" data-tpl="tugas"><span data-i18n="b_buka">Buka</span><svg class="ic"><use href="#i-ext"/></svg></button></li>
+          <li><svg class="ic"><use href="#i-doc"/></svg><span data-i18n="d_undangan">Undangan</span><button type="button" class="tpl" data-tpl="undangan"><span data-i18n="b_buka">Buka</span><svg class="ic"><use href="#i-ext"/></svg></button></li>
+          <li><svg class="ic"><use href="#i-doc"/></svg><span data-i18n="d_setneg">Surat Persetujuan Setneg</span><button type="button" class="tpl" data-tpl="setneg"><span data-i18n="b_buka">Buka</span><svg class="ic"><use href="#i-ext"/></svg></button></li>
+          <li><svg class="ic"><use href="#i-doc"/></svg><span data-i18n="s_laporan">Laporan Kegiatan</span><button type="button" class="tpl" data-tpl="laporan"><span data-i18n="b_buka">Buka</span><svg class="ic"><use href="#i-ext"/></svg></button></li>
+        </ul>
+      </details>
+    </div>
+  </section>
+  </div>
+
+  <!-- ===== 2. INPUT PENGAJUAN (form PDLN) ===== -->
+  <div class="psub" id="psub-input">
+  <div class="wrap">
+    <div class="crumb"><a href="#home" data-go="home" data-i18n="n_home">Beranda</a> / <a href="#pdln" data-go="pdln">PDLN</a> / <b data-i18n="s_input">Input Pengajuan</b></div>
+    <div class="fhead">
+      <h2 class="ftitle">Form<em>PDLN</em></h2>
+      <div class="progress"><span><i></i></span><b>0%</b></div>
+      <p class="fsub" data-i18n="pdln_sub">Pengajuan Perjalanan Dinas Luar Negeri. Isi data kegiatan, unggah dokumen, lalu tambahkan seluruh peserta.</p>
+    </div>
+
+    <form class="shell" id="f-pdln" data-mod="PDLN" data-ok-n="okN_pdln" data-ok-go="pdln/progress" data-ok-gok="goProg" novalidate>
+      <div class="sec"><span class="num">01</span><h3 data-i18n="s_data">Data Kegiatan</h3><i class="dash"></i></div>
+      <div class="grid">
+        <div class="f full"><label data-i18n="l_email">Email Pengaju</label><input type="email" required placeholder="contoh@pnj.ac.id" data-auto="email"></div>
+        <div class="f"><label data-i18n="l_jenis">Jenis Kegiatan</label>
+          <select required>
+            <option value="" data-i18n="sel_jenis">Pilih jenis kegiatan</option>
+            <option data-i18n="k_studi">Studi Banding / Kunjungan</option>
+            <option data-i18n="k_konf">Seminar / Konferensi</option>
+            <option data-i18n="k_latih">Pelatihan / Workshop</option>
+            <option data-i18n="k_riset">Penelitian / Riset Kolaborasi</option>
+            <option data-i18n="k_tukar">Pertukaran Dosen / Mahasiswa</option>
+            <option data-i18n="k_lain">Lainnya</option>
+          </select></div>
+        <div class="f"><label data-i18n="l_nama_keg">Nama Kegiatan</label><input type="text" required placeholder="Nama konferensi, seminar, dsb." data-i18n-ph="ph_namakeg" data-k="kegiatan"></div>
+        <div class="f"><label data-i18n="l_tgl_mulai">Tanggal Kegiatan Mulai</label><input type="date" required data-role="start"></div>
+        <div class="f"><label data-i18n="l_tgl_selesai">Tanggal Kegiatan Selesai</label><input type="date" required data-role="end"></div>
+        <div class="f"><label data-i18n="l_inst">Nama Institusi Tujuan</label><input type="text" required placeholder="Nama universitas / lembaga" data-i18n-ph="ph_inst"></div>
+        <div class="f"><label data-i18n="l_tempat">Tempat Kegiatan (Kota, Negara)</label><input type="text" required placeholder="Contoh: Tokyo, Jepang" data-i18n-ph="ph_tempat" data-k="tempat"></div>
+        <div class="f full"><label data-i18n="l_rtl">Rencana Tindak Lanjut</label><textarea required placeholder="Tuliskan rencana tindak lanjut pasca kegiatan..." data-i18n-ph="ph_rtl"></textarea></div>
+      </div>
+
+      <div class="sec"><span class="num">02</span><h3 data-i18n="s_upload">Upload Dokumen PDLN</h3><i class="dash"></i></div>
+      <div class="grid">
+        <div class="f"><div class="lrow"><label data-i18n="d_tor">TOR Kegiatan</label><button type="button" class="tpl" data-tpl="tor" data-i18n="b_tpl">Template</button></div><div class="drop"><input type="file" required accept=".pdf,.jpg,.jpeg,.png"><div class="drop-ui"><span class="ico"></span><span class="dz-t" data-i18n="drop_t">Pilih file atau seret ke sini</span><small class="mono" data-i18n="drop_h">PDF / JPG / PNG · maks 5 MB</small></div><ul class="files"></ul></div></div>
+        <div class="f"><div class="lrow"><label data-i18n="d_memo">Memo Persetujuan</label><button type="button" class="tpl" data-tpl="memo" data-i18n="b_tpl">Template</button></div><div class="drop"><input type="file"  accept=".pdf,.jpg,.jpeg,.png"><div class="drop-ui"><span class="ico"></span><span class="dz-t" data-i18n="drop_t">Pilih file atau seret ke sini</span><small class="mono" data-i18n="drop_h">PDF / JPG / PNG · maks 5 MB</small></div><ul class="files"></ul></div></div>
+        <div class="f"><div class="lrow"><label data-i18n="d_tugas">Surat Tugas</label><button type="button" class="tpl" data-tpl="tugas" data-i18n="b_tpl">Template</button></div><div class="drop"><input type="file" required accept=".pdf,.jpg,.jpeg,.png"><div class="drop-ui"><span class="ico"></span><span class="dz-t" data-i18n="drop_t">Pilih file atau seret ke sini</span><small class="mono" data-i18n="drop_h">PDF / JPG / PNG · maks 5 MB</small></div><ul class="files"></ul></div></div>
+        <div class="f"><div class="lrow"><label data-i18n="d_undangan">Undangan</label><button type="button" class="tpl" data-tpl="undangan" data-i18n="b_tpl">Template</button></div><div class="drop"><input type="file" required accept=".pdf,.jpg,.jpeg,.png"><div class="drop-ui"><span class="ico"></span><span class="dz-t" data-i18n="drop_t">Pilih file atau seret ke sini</span><small class="mono" data-i18n="drop_h">PDF / JPG / PNG · maks 5 MB</small></div><ul class="files"></ul></div></div>
+        <div class="f"><div class="lrow"><label data-i18n="d_jadwal">Jadwal Kegiatan</label><button type="button" class="tpl" data-tpl="jadwal" data-i18n="b_tpl">Template</button></div><div class="drop"><input type="file" required accept=".pdf,.jpg,.jpeg,.png"><div class="drop-ui"><span class="ico"></span><span class="dz-t" data-i18n="drop_t">Pilih file atau seret ke sini</span><small class="mono" data-i18n="drop_h">PDF / JPG / PNG · maks 5 MB</small></div><ul class="files"></ul></div></div>
+        <div class="f"><div class="lrow"><label data-i18n="d_setneg">Surat Persetujuan Setneg</label><button type="button" class="tpl" data-tpl="setneg" data-i18n="b_tpl">Template</button></div><div class="drop"><input type="file" required accept=".pdf,.jpg,.jpeg,.png"><div class="drop-ui"><span class="ico"></span><span class="dz-t" data-i18n="drop_t">Pilih file atau seret ke sini</span><small class="mono" data-i18n="drop_h">PDF / JPG / PNG · maks 5 MB</small></div><ul class="files"></ul></div></div>
+        <div class="f"><div class="lrow"><label data-i18n="d_relevansi">Surat Keterangan Relevansi</label><button type="button" class="tpl" data-tpl="relevansi" data-i18n="b_tpl">Template</button></div><div class="drop"><input type="file" required accept=".pdf,.jpg,.jpeg,.png"><div class="drop-ui"><span class="ico"></span><span class="dz-t" data-i18n="drop_t">Pilih file atau seret ke sini</span><small class="mono" data-i18n="drop_h">PDF / JPG / PNG · maks 5 MB</small></div><ul class="files"></ul></div></div>
+        <div class="f"><div class="lrow"><label data-i18n="d_biaya">Surat Pernyataan Pembiayaan</label><button type="button" class="tpl" data-tpl="pembiayaan" data-i18n="b_tpl">Template</button></div><div class="drop"><input type="file" required accept=".pdf,.jpg,.jpeg,.png"><div class="drop-ui"><span class="ico"></span><span class="dz-t" data-i18n="drop_t">Pilih file atau seret ke sini</span><small class="mono" data-i18n="drop_h">PDF / JPG / PNG · maks 5 MB</small></div><ul class="files"></ul></div></div>
+        <div class="f"><div class="lrow"><label data-i18n="d_mou">Draft MoU / MoA</label><span class="bdg" data-i18n="b_opt">Opsional</span><button type="button" class="tpl" data-tpl="mou" data-i18n="b_tpl">Template</button></div><div class="drop"><input type="file"  accept=".pdf,.jpg,.jpeg,.png"><div class="drop-ui"><span class="ico"></span><span class="dz-t" data-i18n="drop_t">Pilih file atau seret ke sini</span><small class="mono" data-i18n="drop_h">PDF / JPG / PNG · maks 5 MB</small></div><ul class="files"></ul></div></div>
+        <div class="f"><div class="lrow"><label data-i18n="d_brosur">Brosur</label><span class="bdg" data-i18n="b_opt">Opsional</span></div><div class="drop"><input type="file"  accept=".pdf,.jpg,.jpeg,.png"><div class="drop-ui"><span class="ico"></span><span class="dz-t" data-i18n="drop_t">Pilih file atau seret ke sini</span><small class="mono" data-i18n="drop_h">PDF / JPG / PNG · maks 5 MB</small></div><ul class="files"></ul></div></div>
+        <div class="f"><div class="lrow"><label data-i18n="d_regis">Bukti Registrasi</label><span class="bdg" data-i18n="b_opt">Opsional</span></div><div class="drop"><input type="file"  accept=".pdf,.jpg,.jpeg,.png"><div class="drop-ui"><span class="ico"></span><span class="dz-t" data-i18n="drop_t">Pilih file atau seret ke sini</span><small class="mono" data-i18n="drop_h">PDF / JPG / PNG · maks 5 MB</small></div><ul class="files"></ul></div></div>
+        <div class="f"><div class="lrow"><label data-i18n="d_clear">Clearance Letter</label><span class="bdg" data-i18n="b_ada">Jika ada</span></div><div class="drop"><input type="file"  accept=".pdf,.jpg,.jpeg,.png"><div class="drop-ui"><span class="ico"></span><span class="dz-t" data-i18n="drop_t">Pilih file atau seret ke sini</span><small class="mono" data-i18n="drop_h">PDF / JPG / PNG · maks 5 MB</small></div><ul class="files"></ul></div></div>
+      </div>
+
+      <div class="sec"><span class="num">03</span><h3 data-i18n="s_peserta">Data Peserta Kegiatan</h3><i class="dash"></i></div>
+      <div class="plist" id="pl-pdln" data-variant="pdln"></div>
+      <div class="more">
+        <span class="ask" data-i18n="p_more">Apakah ada peserta lainnya?</span>
+        <button type="button" class="btn ghost" id="add-pdln" data-i18n="p_add">+ Tambah Peserta</button>
+      </div>
+
+      <div class="actions">
+        <span class="hint" data-i18n="hint_req">* wajib diisi</span>
+        <button type="button" class="btn ghost" data-reset data-i18n="batal">Batal</button>
+        <button type="submit" class="btn main" data-i18n="kirim">Kirim Pengajuan</button>
+      </div>
+    </form>
+  </div>
+  </div>
+
+  <!-- ===== 3. PROGRESS ===== -->
+  <div class="psub" id="psub-progress">
+    <div class="wrap">
+      <div class="crumb"><a href="#home" data-go="home" data-i18n="n_home">Beranda</a> / <a href="#pdln" data-go="pdln">PDLN</a> / <b data-i18n="s_progress">Progress</b></div>
+      <div class="fhead">
+        <h2 class="ftitle">Progress<em data-i18n="pr_em">Pengajuan</em></h2>
+        <p class="fsub" data-i18n="pr_sub">Pantau status, persentase progres, dan catatan verifikasi dari Admin.</p>
+      </div>
+
+      <div class="flt">
+        <div class="f fs"><span class="si"><svg class="ic"><use href="#i-search"/></svg></span><input type="search" id="fq" autocomplete="off" placeholder="Cari nama, kegiatan, atau negara tujuan..." data-i18n-ph="f_ph" aria-label="Cari"></div>
+        <div class="f"><select id="fjab" aria-label="Jabatan">
+          <option value="" data-i18n="f_jab">Semua Jabatan</option>
+          <option value="dosen" data-i18n="j_dosen">Dosen</option>
+          <option value="tendik" data-i18n="j_tendik">Tenaga Kependidikan</option>
+          <option value="pimpinan" data-i18n="j_pimp">Pimpinan</option>
+          <option value="mahasiswa" data-i18n="j_mhs">Mahasiswa</option></select></div>
+        <div class="f"><select id="fst" aria-label="Status">
+          <option value="" data-i18n="f_st">Semua Status</option>
+          <option value="proses" data-i18n="f_st_proses">Sedang Proses (semua tahap)</option>
+          <option value="baru" data-i18n="st_baru">Baru Diajukan</option>
+          <option value="verifikasi" data-i18n="st_verifikasi">Verifikasi Dokumen</option>
+          <option value="setneg" data-i18n="st_setneg">Menunggu Setneg</option>
+          <option value="disetujui" data-i18n="st_disetujui">Disetujui</option>
+          <option value="ditolak" data-i18n="st_ditolak">Ditolak</option></select></div>
+        <div class="f"><select id="fso" aria-label="Urutkan">
+          <option value="new" data-i18n="so_new">Terbaru</option>
+          <option value="old" data-i18n="so_old">Terlama</option>
+          <option value="az" data-i18n="so_az">Nama kegiatan A–Z</option>
+          <option value="prog" data-i18n="so_prog">Progres tertinggi</option></select></div>
+        <button type="button" class="btn ghost" id="fre" data-i18n="f_reset">Reset</button>
+      </div>
+
+      <div class="tbox">
+        <div class="twrap">
+          <table class="ptbl">
+            <thead><tr>
+              <th data-i18n="th_no">No</th><th data-i18n="th_keg">Nama Kegiatan</th><th data-i18n="th_pes">Nama Peserta</th><th data-i18n="th_jab">Jabatan</th>
+              <th data-i18n="th_tmp">Tempat Kegiatan</th><th data-i18n="th_aju">Diajukan</th><th data-i18n="th_st">Status</th><th data-i18n="th_prog">Progress</th><th data-i18n="th_cat">Catatan / Aksi</th>
+            </tr></thead>
+            <tbody id="ptb"></tbody>
+          </table>
+        </div>
+        <div class="empty" id="pEmpty" hidden>
+          <b data-i18n="emp_t">Tidak ada pengajuan yang cocok</b>
+          <p data-i18n="emp_d">Ubah kata kunci atau filter, lalu coba lagi.</p>
+          <button type="button" class="btn ghost" id="fre2" data-i18n="f_reset">Reset</button>
+        </div>
+        <div class="tfoot"><span id="pInfo"></span><div class="pager" id="pPager"></div></div>
       </div>
     </div>
   </div>
 
-  <!-- 2. FORM PDLN -->
-  <div class="psub" id="psub-input">
+  <!-- ===== 4. LAPORAN KEGIATAN ===== -->
+  <div class="psub" id="psub-laporan">
     <div class="wrap">
-      <div class="crumb"><a href="#home" data-go="home" data-i18n="n_home">Beranda</a> / <a href="#pdln" data-go="pdln">PDLN</a> / <b>Input Pengajuan</b></div>
+      <div class="crumb"><a href="#home" data-go="home" data-i18n="n_home">Beranda</a> / <a href="#pdln" data-go="pdln">PDLN</a> / <b data-i18n="s_laporan">Laporan Kegiatan</b></div>
       <div class="fhead">
-        <h2 class="ftitle">Form<em>PDLN</em></h2>
+        <h2 class="ftitle">Form<em>Laporan</em></h2>
         <div class="progress"><span><i></i></span><b>0%</b></div>
-        <p class="fsub" data-i18n="pdln_sub">Pengajuan Perjalanan Dinas Luar Negeri. Isi data kegiatan, unggah dokumen, lalu tambahkan setiap peserta.</p>
+        <p class="fsub" data-i18n="lp_sub">Laporkan hasil kegiatan PDLN yang sudah disetujui dan telah dilaksanakan.</p>
       </div>
-      <form class="shell" id="f-pdln" data-mod="PDLN" novalidate>
-        <div class="sec"><span class="num">01</span><h3 data-i18n="s_data">Data Kegiatan</h3><i class="dash"></i></div>
+
+      <form class="shell" id="f-laporan" data-mod="LAPORAN" data-ok-t="okT_lap" data-ok-n="okN_lap" data-ok-go="pdln" data-ok-gok="goDash" data-ok-ak="againRep" novalidate>
+        <div class="sec"><span class="num">01</span><h3 data-i18n="lp_s1">Data Laporan</h3><i class="dash"></i></div>
         <div class="grid">
-          <div class="f full"><label data-i18n="l_keg">Nama Kegiatan</label><input type="text" required placeholder="Contoh: The 5th International Conference on Applied Science" data-i18n-ph="ph_keg"></div>
-          <div class="f"><label data-i18n="l_negara">Negara Tujuan</label><input type="text" required placeholder="Contoh: Jepang" data-i18n-ph="ph_negara"></div>
-          <div class="f"><label data-i18n="l_kota">Kota Tujuan</label><input type="text" required placeholder="Contoh: Tokyo" data-i18n-ph="ph_kota"></div>
-          <div class="f"><label data-i18n="l_mulai">Tanggal Mulai</label><input type="date" required data-role="start"></div>
-          <div class="f"><label data-i18n="l_selesai">Tanggal Selesai</label><input type="date" required data-role="end"></div>
-          <div class="f full"><label data-i18n="l_biaya">Sumber Pembiayaan</label><input type="text" required placeholder="Contoh: DIPA PNJ 2026 / Beasiswa Mitra" data-i18n-ph="ph_biaya"></div>
+          <div class="f full"><label data-i18n="lp_rel">Pengajuan Terkait</label><select id="lpRel" required></select></div>
+          <div class="f full"><label data-i18n="lp_email">Email Pelapor</label><input type="email" required placeholder="contoh@pnj.ac.id" data-auto="email"></div>
+          <div class="f"><label data-i18n="lp_mulai">Tanggal Pelaksanaan Mulai</label><input type="date" required data-role="start"></div>
+          <div class="f"><label data-i18n="lp_selesai">Tanggal Pelaksanaan Selesai</label><input type="date" required data-role="end"></div>
+          <div class="f full"><label data-i18n="lp_hasil">Ringkasan Hasil Kegiatan</label><textarea required placeholder="Jelaskan kegiatan yang dilaksanakan dan hasil utamanya..." data-i18n-ph="lp_ph1"></textarea></div>
+          <div class="f full"><label data-i18n="lp_capaian">Capaian & Manfaat bagi PNJ</label><textarea required placeholder="Tuliskan capaian, kerja sama, atau manfaat yang diperoleh..." data-i18n-ph="lp_ph2"></textarea></div>
         </div>
 
-        <div class="sec"><span class="num">02</span><h3 data-i18n="s_upload">Upload Dokumen (PDF/JPG)</h3><i class="dash"></i></div>
+        <div class="sec"><span class="num">02</span><h3 data-i18n="s_upload2">Upload Dokumen</h3><i class="dash"></i></div>
         <div class="grid">
-          <div class="f"><div class="lrow"><label data-i18n="d_surat">Surat Undangan Resmi</label></div><div class="drop"><input type="file" required accept=".pdf,.jpg,.jpeg,.png"><div class="drop-ui"><span class="ico"></span><span class="dz-t" data-i18n="drop_t">Pilih file atau seret ke sini</span><small class="mono" data-i18n="drop_h">PDF / JPG / PNG · maks 5 MB</small></div><ul class="files"></ul></div></div>
-          <div class="f"><div class="lrow"><label data-i18n="d_tor">Kerangka Acuan Kerja (TOR)</label><a href="#" class="tpl" data-tpl="tor" data-i18n="b_tpl">Template</a></div><div class="drop"><input type="file" required accept=".pdf,.jpg,.jpeg,.png"><div class="drop-ui"><span class="ico"></span><span class="dz-t" data-i18n="drop_t">Pilih file atau seret ke sini</span><small class="mono" data-i18n="drop_h">PDF / JPG / PNG · maks 5 MB</small></div><ul class="files"></ul></div></div>
+          <div class="f"><div class="lrow"><label data-i18n="lp_d_lap">Laporan Kegiatan</label><button type="button" class="tpl" data-tpl="laporan" data-i18n="b_tpl">Template</button></div><div class="drop"><input type="file" required accept=".pdf,.jpg,.jpeg,.png"><div class="drop-ui"><span class="ico"></span><span class="dz-t" data-i18n="drop_t">Pilih file atau seret ke sini</span><small class="mono" data-i18n="drop_h">PDF / JPG / PNG · maks 5 MB</small></div><ul class="files"></ul></div></div>
+          <div class="f"><div class="lrow"><label data-i18n="lp_d_doc">Dokumentasi Kegiatan (foto)</label></div><div class="drop"><input type="file" required accept=".pdf,.jpg,.jpeg,.png"><div class="drop-ui"><span class="ico"></span><span class="dz-t" data-i18n="drop_t">Pilih file atau seret ke sini</span><small class="mono" data-i18n="drop_h">PDF / JPG / PNG · maks 5 MB</small></div><ul class="files"></ul></div></div>
+          <div class="f"><div class="lrow"><label data-i18n="lp_d_sert">Sertifikat / Bukti Kehadiran</label><span class="bdg" data-i18n="b_opt">Opsional</span></div><div class="drop"><input type="file" accept=".pdf,.jpg,.jpeg,.png"><div class="drop-ui"><span class="ico"></span><span class="dz-t" data-i18n="drop_t">Pilih file atau seret ke sini</span><small class="mono" data-i18n="drop_h">PDF / JPG / PNG · maks 5 MB</small></div><ul class="files"></ul></div></div>
+          <div class="f"><div class="lrow"><label data-i18n="lp_d_biaya">Bukti Pertanggungjawaban Biaya</label><span class="bdg" data-i18n="b_opt">Opsional</span></div><div class="drop"><input type="file" accept=".pdf,.jpg,.jpeg,.png"><div class="drop-ui"><span class="ico"></span><span class="dz-t" data-i18n="drop_t">Pilih file atau seret ke sini</span><small class="mono" data-i18n="drop_h">PDF / JPG / PNG · maks 5 MB</small></div><ul class="files"></ul></div></div>
         </div>
 
         <div class="actions">
           <span class="hint" data-i18n="hint_req">* wajib diisi</span>
           <button type="button" class="btn ghost" data-reset data-i18n="batal">Batal</button>
-          <button type="submit" class="btn main" data-i18n="kirim">Kirim Pengajuan</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- 3. PROGRESS PDLN -->
-  <div class="psub" id="psub-progress">
-    <div class="wrap">
-      <div class="crumb"><a href="#home" data-go="home" data-i18n="n_home">Beranda</a> / <a href="#pdln" data-go="pdln">PDLN</a> / <b>Progress</b></div>
-      <div class="fhead">
-        <h2 class="ftitle">Progress<em>Pengajuan</em></h2>
-        <p class="fsub" data-i18n="pr_sub">Pantau status, persentase kemajuan, dan catatan verifikasi dari Admin.</p>
-      </div>
-      <div class="pfilts">
-        <input type="search" id="prQ" placeholder="Cari nama, kegiatan, atau negara tujuan...">
-        <select id="prJab"><option value="">Semua Jabatan</option><option>Dosen</option><option>Tenaga Kependidikan</option><option>Pimpinan</option></select>
-        <select id="prSt"><option value="">Semua Status</option><option value="proses">Dalam Proses</option><option value="disetujui">Disetujui</option><option value="ditolak">Ditolak</option></select>
-        <button type="button" class="btn ghost" id="prReset">Reset</button>
-      </div>
-      <div class="tbl-wrap">
-        <table class="tbl" id="prTbl">
-          <thead>
-            <tr><th>No</th><th>Nama Kegiatan</th><th>Peserta</th><th>Jabatan</th><th>Lokasi</th><th>Diajukan</th><th>Status</th><th>Progress</th><th>Catatan</th></tr>
-          </thead>
-          <tbody id="prBody"></tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-
-  <!-- 4. LAPORAN KEGIATAN -->
-  <div class="psub" id="psub-laporan">
-    <div class="wrap">
-      <div class="crumb"><a href="#home" data-go="home" data-i18n="n_home">Beranda</a> / <a href="#pdln" data-go="pdln">PDLN</a> / <b>Laporan Kegiatan</b></div>
-      <div class="fhead">
-        <h2 class="ftitle">Laporan<em>Kegiatan</em></h2>
-        <p class="fsub" data-i18n="lp_sub">Laporkan hasil kegiatan PDLN yang telah terlaksana dan disetujui.</p>
-      </div>
-      <form class="shell" id="f-laporan" novalidate>
-        <div class="sec"><span class="num">01</span><h3 data-i18n="lp_s1">Detail Laporan</h3><i class="dash"></i></div>
-        <div class="grid">
-          <div class="f full"><label data-i18n="lp_rel">Pengajuan Terkait</label><select required id="lpRel"><option value="" data-i18n="sel_pilih">Pilih pengajuan yang telah disetujui…</option><option>Seminar Internasional IEEE ICEEE (Berlin, Jerman)</option></select></div>
-          <div class="f"><label data-i18n="lp_email">Email Pelapor</label><input type="email" required data-auto="email" placeholder="nama@pnj.ac.id"></div>
-          <div class="f full"><label data-i18n="lp_hasil">Ringkasan Hasil Kegiatan</label><textarea required placeholder="Uraikan kegiatan yang telah dijalankan dan hasil utamanya..."></textarea></div>
-        </div>
-        <div class="actions">
           <button type="submit" class="btn main" data-i18n="kirim_lap">Kirim Laporan</button>
         </div>
       </form>
     </div>
   </div>
+
 </section>
 
 <!-- ===================================================================== -->
@@ -1236,26 +1369,164 @@
         <!-- TAB 4: PENGATURAN -->
         <section id="pane-pengaturan" class="profile-pane" style="display:none;">
           <div class="shell">
+            
+            <!-- 04: Keamanan & Kata Sandi -->
             <div class="sec">
               <span class="num">04</span>
               <h3>Keamanan &amp; Kata Sandi</h3>
               <i class="dash"></i>
             </div>
-            <form onsubmit="handlePasswordChange(event)" style="max-width:540px;">
-              <div class="f" style="margin-bottom:14px;"><label>Kata Sandi Saat Ini</label><input type="password" id="oldPass" required placeholder="••••••••"></div>
-              <div class="f" style="margin-bottom:14px;"><label>Kata Sandi Baru</label><input type="password" id="newPass" required placeholder="Minimal 8 karakter"></div>
-              <div class="f" style="margin-bottom:20px;"><label>Ketik Ulang Kata Sandi Baru</label><input type="password" id="confirmPass" required placeholder="Ketik ulang kata sandi baru"></div>
-              <button type="submit" class="btn main"><span>SIMPAN KATA SANDI BARU</span><svg class="ic"><use href="#i-lock"/></svg></button>
+
+            <form onsubmit="handlePasswordChange(event)" style="max-width:580px;">
+              <div class="f" style="margin-bottom:14px;">
+                <label for="oldPass">Kata Sandi Saat Ini <span style="color:var(--red)">*</span></label>
+                <input type="password" id="oldPass" required placeholder="••••••••" autocomplete="current-password">
+              </div>
+              <div class="f" style="margin-bottom:14px;">
+                <label for="newPass">Kata Sandi Baru <span style="color:var(--red)">*</span></label>
+                <input type="password" id="newPass" required placeholder="Minimal 8 karakter (kombinasi huruf &amp; angka)" autocomplete="new-password">
+              </div>
+              <div class="f" style="margin-bottom:20px;">
+                <label for="confirmPass">Ketik Ulang Kata Sandi Baru <span style="color:var(--red)">*</span></label>
+                <input type="password" id="confirmPass" required placeholder="Ketik ulang kata sandi baru" autocomplete="new-password">
+              </div>
+              <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+                <button type="submit" class="btn main">
+                  <span>SIMPAN KATA SANDI BARU</span>
+                  <svg class="ic"><use href="#i-lock"/></svg>
+                </button>
+                <span style="font-size:12.5px;color:var(--muted);">Terakhir diperbarui: 3 bulan yang lalu</span>
+              </div>
             </form>
-            <div class="sec" style="margin-top:36px;"><span class="num">05</span><h3>Preferensi Notifikasi &amp; Sesi</h3><i class="dash"></i></div>
-            <div style="display:grid;gap:14px;max-width:540px;margin-bottom:24px;">
-              <label class="custom-chk"><input type="checkbox" checked><span class="chk-box"></span><span class="chk-text">Kirim notifikasi status verifikasi ke email utama</span></label>
-              <label class="custom-chk"><input type="checkbox" checked><span class="chk-box"></span><span class="chk-text">Kirim notifikasi via WhatsApp untuk perubahan status pengajuan</span></label>
+
+            <!-- 05: Preferensi Notifikasi & Komunikasi -->
+            <div class="sec" style="margin-top:42px;">
+              <span class="num">05</span>
+              <h3>Preferensi Notifikasi &amp; Komunikasi</h3>
+              <i class="dash"></i>
             </div>
-            <div style="padding-top:20px;border-top:1px dashed var(--t300);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
-              <div><b style="font-size:13.5px;color:var(--t900);display:block;">Sesi Aktif Perangkat</b><span style="font-size:12.5px;color:var(--muted);">Terakhir masuk: Browser Desktop (Chrome) · IP: 127.0.0.1</span></div>
-              <button type="button" class="btn slate" onclick="alertLogout()">KELUAR DARI SEMUA SESI</button>
+
+            <form onsubmit="saveNotificationPreferences(event)" style="max-width:640px;">
+              <p style="font-size:13px;color:var(--muted);margin-bottom:18px;">Atur saluran komunikasi resmi untuk menerima update verifikasi berkas internasional, pengumuman seleksi, dan status dokumen.</p>
+              
+              <div style="display:grid;gap:14px;margin-bottom:22px;">
+                <label class="custom-chk items-start">
+                  <input type="checkbox" id="chkNotifEmail" checked>
+                  <span class="chk-box"></span>
+                  <span class="chk-text">
+                    <b style="color:var(--t900);display:block;">Notifikasi Status Dokumen via Email</b>
+                    <span style="color:var(--muted);font-size:12.5px;display:block;margin-top:2px;">Kirim pembaruan status verifikasi formulir, LoA, dan penerbitan SP Setneg ke email utama Anda.</span>
+                  </span>
+                </label>
+                <label class="custom-chk items-start">
+                  <input type="checkbox" id="chkNotifWA" checked>
+                  <span class="chk-box"></span>
+                  <span class="chk-text">
+                    <b style="color:var(--t900);display:block;">Peringatan Cepat via WhatsApp</b>
+                    <span style="color:var(--muted);font-size:12.5px;display:block;margin-top:2px;">Terima peringatan mendesak jika berkas permohonan memerlukan perbaikan atau revisi dokumen dari validator KUI.</span>
+                  </span>
+                </label>
+                <label class="custom-chk items-start">
+                  <input type="checkbox" id="chkNotifNewsletter">
+                  <span class="chk-box"></span>
+                  <span class="chk-text">
+                    <b style="color:var(--t900);display:block;">Buletin Informasi Program &amp; Beasiswa Luar Negeri</b>
+                    <span style="color:var(--muted);font-size:12.5px;display:block;margin-top:2px;">Terima rilis informasi program pertukaran, IISMA, hibah riset internasional, dan konferensi universitas mitra.</span>
+                  </span>
+                </label>
+              </div>
+
+              <button type="submit" class="btn main" style="padding:11px 22px;">
+                <span>SIMPAN PREFERENSI NOTIFIKASI</span>
+                <svg class="ic"><use href="#i-check"/></svg>
+              </button>
+            </form>
+
+            <!-- 06: Sesi Login & Keamanan Perangkat -->
+            <div class="sec" style="margin-top:42px;">
+              <span class="num">06</span>
+              <h3>Manajemen Sesi &amp; Keamanan Perangkat</h3>
+              <i class="dash"></i>
             </div>
+
+            <p style="font-size:13px;color:var(--muted);margin-bottom:18px;">Daftar peramban dan perangkat yang saat ini aktif terhubung ke akun I/O Service Anda. Segera akhiri sesi perangkat yang tidak Anda kenali.</p>
+
+            <!-- Kartu Sesi Aktif -->
+            <div style="display:grid;gap:12px;margin-bottom:20px;max-width:720px;">
+              
+              <!-- Sesi 1: Perangkat Ini -->
+              <div class="session-card current">
+                <div class="session-card-info">
+                  <div class="session-card-icon">
+                    <svg width="20" height="20" style="fill:none;stroke:currentColor;stroke-width:2"><use href="#i-laptop"/></svg>
+                  </div>
+                  <div>
+                    <div style="display:flex;align-items:center;gap:8px;margin-bottom:3px;flex-wrap:wrap;">
+                      <b style="font-size:14px;color:var(--t900);">Google Chrome pada Windows 11 (Desktop)</b>
+                      <span class="st g-disetujui" style="font-size:10.5px;">SESI SAAT INI</span>
+                    </div>
+                    <p style="margin:0;font-size:12.5px;color:var(--muted);">Alamat IP: 127.0.0.1 (Localhost / Kampus PNJ) · Sesi Aktif</p>
+                  </div>
+                </div>
+                <div>
+                  <span style="font-size:12px;color:var(--t700);font-weight:700;">Perangkat Utama</span>
+                </div>
+              </div>
+
+              <!-- Sesi 2: Perangkat Mobile (Simulasi) -->
+              <div class="session-card">
+                <div class="session-card-info">
+                  <div class="session-card-icon">
+                    <svg width="20" height="20" style="fill:none;stroke:currentColor;stroke-width:2"><use href="#i-phone"/></svg>
+                  </div>
+                  <div>
+                    <div style="display:flex;align-items:center;gap:8px;margin-bottom:3px;flex-wrap:wrap;">
+                      <b style="font-size:14px;color:var(--t900);">Safari Mobile pada iOS (iPhone)</b>
+                      <span class="st g-proses" style="font-size:10.5px;">TERAKHIR AKTIF</span>
+                    </div>
+                    <p style="margin:0;font-size:12.5px;color:var(--muted);">Alamat IP: 182.253.112.45 (Jakarta, ID) · 2 hari yang lalu</p>
+                  </div>
+                </div>
+                <div>
+                  <button type="button" class="btn ghost" style="padding:7px 14px;font-size:11.5px;" onclick="terminateSingleSession(this, 'Safari Mobile pada iOS')">Cabut Akses</button>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Tombol Manajemen Sesi -->
+            <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:36px;">
+              <button type="button" class="btn ghost" onclick="logoutOtherSessions()" style="font-size:12px;">
+                <span>KELUAR DARI SESI LAIN</span>
+              </button>
+              <button type="button" class="btn slate" onclick="alertLogout()" style="font-size:12px;">
+                <span>KELUAR DARI SEMUA SESI</span>
+              </button>
+            </div>
+
+            <!-- 07: Zona Berbahaya -->
+            <div class="sec" style="margin-top:42px;">
+              <span class="num" style="background:var(--red);">07</span>
+              <h3 style="color:var(--red);">Zona Berbahaya &amp; Pengelolaan Akun</h3>
+              <i class="dash" style="border-color:#F5C6CB;"></i>
+            </div>
+
+            <div class="danger-zone-box">
+              <div class="danger-zone-info">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+                  <svg width="18" height="18" style="fill:none;stroke:var(--red);stroke-width:2;"><use href="#i-alert"/></svg>
+                  <h4 style="margin:0;">Penonaktifan Akun Pengguna</h4>
+                </div>
+                <p>Menonaktifkan akun akan menangguhkan sementara seluruh berkas permohonan internasional (Outbound / PDLN / Inbound) yang sedang berjalan di Kantor Urusan Internasional PNJ. Akun Anda tidak dapat digunakan untuk pengajuan baru sampai mengajukan pembukaan blokir ke admin KUI.</p>
+              </div>
+              <div>
+                <button type="button" class="btn danger" onclick="handleDeactivateAccount()">
+                  <span>NONAKTIFKAN AKUN SAYA</span>
+                  <svg class="ic"><use href="#i-x"/></svg>
+                </button>
+              </div>
+            </div>
+
           </div>
         </section>
       </div>

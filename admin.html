@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,500..700;1,8..60,500..700&family=Source+Sans+3:ital,wght@0,400..700;1,400..600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/admin.css">
 <style>
 /* ============ TOKENS ============ */
 :root{
@@ -304,14 +305,21 @@ footer b{color:var(--t600)}
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
 <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M3.5 12h17M12 3.5c3.2 3.2 3.2 13.8 0 17M12 3.5c-3.2 3.2-3.2 13.8 0 17" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
 <symbol id="i-hourglass" viewBox="0 0 24 24"><path d="M7 4h10M7 20h10" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 4v3.5L12 12l4-4.5V4M8 20v-3.5L12 12l4 4.5V20" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+<symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+<symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="16" r="1.5" fill="currentColor"/><path d="M8 11V7a4 4 0 0 1 8 0v4" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+<symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+<symbol id="i-arrow-r" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+<symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3s7 3 7 8c0 5-7 10-7 10S5 16 5 11c0-5 7-8 7-8z" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+<symbol id="i-alert" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 8v4M12 16h.01" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
 </defs></svg>
 
 <!-- ============ TOP BAR ============ -->
 <header class="top">
-  <a class="brand" href="#" onclick="switchTab('dashboard'); return false;">
+  <a class="brand" href="#" onclick="if(isAuthed()){ switchTab('dashboard'); } else { switchTab('login'); } return false;">
     <b>I<i>/</i>O</b><span>Service</span>
   </a>
-  <nav class="nav" aria-label="Menu navigasi">
+  <nav class="nav" id="adminNav" aria-label="Menu navigasi">
     <ul>
       <li><a href="#" onclick="switchTab('dashboard'); return false;" id="nav-dashboard" class="active">Beranda</a></li>
       <li><a href="#" onclick="switchTab('outbound'); return false;" id="nav-outbound">Outbound</a></li>
@@ -327,6 +335,7 @@ footer b{color:var(--t600)}
       <button type="button" class="on">ID</button>
       <button type="button">EN</button>
     </div>
+    <button type="button" class="btn ghost" id="adminLogoutTop" onclick="handleAdminLogout()" style="padding:6px 14px;font-size:11.5px;align-self:center;display:none" title="Keluar">LOGOUT</button>
     <button type="button" class="burger dot" onclick="toggleDrawer(true)" aria-label="Menu Akun">
       <span></span><span></span>
     </button>
@@ -336,9 +345,71 @@ footer b{color:var(--t600)}
 <main>
 
   <!-- ===================================================================== -->
+  <!-- 0. ADMIN LOGIN (HANYA EMAIL & PASSWORD)                                -->
+  <!-- ===================================================================== -->
+  <section class="page active" id="tab-login">
+    <div class="admin-auth-wrap">
+      <div class="admin-login-card">
+        
+        <div class="admin-login-head">
+          <div class="admin-login-badge">
+            <svg class="ic" width="24" height="24" style="stroke:currentColor"><use href="#i-shield"/></svg>
+          </div>
+          <div>
+            <h2 class="admin-login-title">Masuk Administrator</h2>
+            <p class="admin-login-sub">Panel Kendali Layanan Internasional KUI PNJ</p>
+          </div>
+        </div>
+
+        <div class="alert-box alert-error" id="adminLoginErr" style="display:none">
+          <svg width="20" height="20" style="stroke:currentColor;flex-shrink:0"><use href="#i-alert"/></svg>
+          <span id="adminLoginErrMsg">Email atau kata sandi tidak valid.</span>
+        </div>
+
+        <form onsubmit="handleAdminLogin(event)" novalidate>
+          <div class="f">
+            <label for="adminEmailField">Email Administrator</label>
+            <div class="input-with-icon">
+              <svg class="input-ico ic"><use href="#i-user"/></svg>
+              <input type="email" id="adminEmailField" required placeholder="admin@pnj.ac.id" autocomplete="email">
+            </div>
+          </div>
+
+          <div class="f">
+            <label for="adminPassField">Kata Sandi</label>
+            <div class="input-with-icon pass-field">
+              <svg class="input-ico ic"><use href="#i-lock"/></svg>
+              <input type="password" id="adminPassField" required placeholder="••••••••" autocomplete="current-password">
+              <button type="button" class="btn-eye" aria-label="Tampilkan Kata Sandi" onclick="toggleHtmlAdminPass()">
+                <svg class="ic" width="18" height="18"><use href="#i-eye"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <button type="submit" class="btn main" style="width:100%;margin-top:10px">
+            <span>MASUK KE DASHBOARD ADMIN</span>
+            <svg class="ic" width="16" height="16"><use href="#i-arrow-r"/></svg>
+          </button>
+        </form>
+
+        <div class="demo-box">
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px">
+            <svg width="14" height="14" style="stroke:var(--t600)"><use href="#i-shield"/></svg>
+            <b>Akun Pengujian Admin:</b>
+          </div>
+          <div>Email: <code style="background:#fff;padding:2px 6px;border:1px solid var(--t300);font-weight:700">admin@pnj.ac.id</code></div>
+          <div style="margin-top:3px">Kata Sandi: <code style="background:#fff;padding:2px 6px;border:1px solid var(--t300);font-weight:700">admin123</code></div>
+          <button type="button" class="demo-btn" onclick="fillHtmlAdminDemo()">Gunakan Kredensial Cepat</button>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
   <!-- 1. DASHBOARD / BERANDA (PERSIS SCREENSHOT FIGMA / INDEX.HTML)         -->
   <!-- ===================================================================== -->
-  <section class="page active" id="tab-dashboard">
+  <section class="page" id="tab-dashboard">
     <!-- HERO WELCOME -->
     <div class="hero">
       <div class="hero-l">
@@ -1002,7 +1073,7 @@ footer b{color:var(--t600)}
     </button>
   </div>
   <div class="d-foot">
-    <a href="index.html" class="btn slate" style="width:100%;text-align:center;display:block">LOGOUT</a>
+    <button type="button" class="btn slate" onclick="handleAdminLogout(); toggleDrawer(false);" style="width:100%;text-align:center;display:block">LOGOUT</button>
   </div>
 </aside>
 
@@ -1072,8 +1143,80 @@ footer b{color:var(--t600)}
 
 <!-- ============ JAVASCRIPT ============ -->
 <script>
+// Authentication State Management
+function isAuthed() {
+  return sessionStorage.getItem('admin_logged_in') === 'true';
+}
+
+function updateAuthUI() {
+  const authed = isAuthed();
+  const nav = document.getElementById('adminNav');
+  const logoutTop = document.getElementById('adminLogoutTop');
+  const heroLogin = document.getElementById('heroLogin');
+
+  if (nav) nav.style.display = authed ? '' : 'none';
+  if (logoutTop) logoutTop.style.display = authed ? '' : 'none';
+  if (heroLogin) {
+    heroLogin.textContent = authed ? 'MENU ADMIN' : 'LOGIN ADMIN';
+  }
+
+  if (!authed) {
+    switchTab('login');
+  } else {
+    const loginTab = document.getElementById('tab-login');
+    if (loginTab && loginTab.classList.contains('active')) {
+      switchTab('dashboard');
+    }
+  }
+}
+
+function toggleHtmlAdminPass() {
+  const p = document.getElementById('adminPassField');
+  if (p) p.type = (p.type === 'password') ? 'text' : 'password';
+}
+
+function fillHtmlAdminDemo() {
+  const e = document.getElementById('adminEmailField');
+  const p = document.getElementById('adminPassField');
+  if (e) e.value = 'admin@pnj.ac.id';
+  if (p) p.value = 'admin123';
+}
+
+function handleAdminLogin(e) {
+  e.preventDefault();
+  const email = document.getElementById('adminEmailField').value.trim();
+  const pass = document.getElementById('adminPassField').value.trim();
+  const errBox = document.getElementById('adminLoginErr');
+  const errMsg = document.getElementById('adminLoginErrMsg');
+
+  if (!email || !pass) {
+    if (errBox && errMsg) {
+      errMsg.textContent = 'Email dan kata sandi wajib diisi.';
+      errBox.style.display = 'flex';
+    }
+    return;
+  }
+
+  // Simpan status autentikasi di sessionStorage
+  sessionStorage.setItem('admin_logged_in', 'true');
+  sessionStorage.setItem('admin_email', email);
+  if (errBox) errBox.style.display = 'none';
+  toast('Login admin berhasil! Selamat datang di Dashboard.');
+  updateAuthUI();
+}
+
+function handleAdminLogout() {
+  sessionStorage.removeItem('admin_logged_in');
+  toast('Anda telah berhasil keluar dari sistem admin.', true);
+  updateAuthUI();
+}
+
 // Tab Switching
 function switchTab(key) {
+  if (!isAuthed() && key !== 'login') {
+    key = 'login';
+  }
+
   document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
   const target = document.getElementById('tab-' + key);
   if (target) {
@@ -1254,6 +1397,12 @@ function toast(msg, warn = false) {
   t.textContent = msg;
   wrap.appendChild(t);
   setTimeout(() => t.remove(), 3200);
+}
+
+// Inisialisasi status autentikasi admin saat halaman dimuat
+document.addEventListener('DOMContentLoaded', updateAuthUI);
+if (document.readyState === 'interactive' || document.readyState === 'complete') {
+  updateAuthUI();
 }
 </script>
 </body>

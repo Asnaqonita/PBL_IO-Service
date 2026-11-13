@@ -8,7 +8,9 @@ require_once __DIR__ . '/config/config.php';
 $page = $_GET['page'] ?? 'all';
 
 if ($page === 'admin') {
-    require_once __DIR__ . '/views/admin/index.php';
+    require_once __DIR__ . '/controllers/AdminController.php';
+    $admin = new AdminController();
+    $admin->index();
     exit;
 }
 

@@ -3,6 +3,10 @@
  * Admin Panel Master View
  * I/O Service — Kantor Urusan Internasional Politeknik Negeri Jakarta
  */
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 if (!defined('BASE_URL')) {
     $configFile = __DIR__ . '/../../config/config.php';
     if (file_exists($configFile)) {
@@ -10,6 +14,12 @@ if (!defined('BASE_URL')) {
     } else {
         define('BASE_URL', '/IO_Service/');
     }
+}
+
+// Perlindungan rute: hanya admin yang sudah login yang dapat mengakses dashboard
+if (empty($_SESSION['admin_logged_in'])) {
+    header('Location: ' . BASE_URL . 'admin.php');
+    exit;
 }
 
 // 1. Header Layout
