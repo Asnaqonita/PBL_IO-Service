@@ -1,3 +1,11 @@
+<?php
+// File: views/auth/register.php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+require_once __DIR__ . '/../../config/config.php';
+$regError = $_SESSION['error'] ?? null;
+?>
 <!-- ============ HALAMAN REGISTRASI ============ -->
 <section class="page" id="page-register">
   <div class="wrap">
@@ -18,6 +26,13 @@
 
     <!-- Container Utama Registrasi -->
     <div class="reg-container">
+
+      <!-- Alert Notifikasi Error dari Session PHP (jika ada) -->
+      <?php if (!empty($regError)): ?>
+        <div style="background:#FEE2E2;color:#991B1B;border:1px solid #FCA5A5;padding:12px 16px;border-radius:4px;font-size:13px;margin-bottom:20px;">
+          <?= htmlspecialchars($regError); ?>
+        </div>
+      <?php endif; ?>
       
       <!-- ============ PEMILIHAN KATEGORI (TERBAGI 2) ============ -->
       <div class="reg-category-tabs" role="tablist" aria-label="Pilihan Kategori Pendaftaran">
@@ -64,7 +79,7 @@
 
       <!-- ============ FORM 1: SIVITAS PNJ ============ -->
       <div class="reg-pane active" id="pane-pnj" role="tabpanel" aria-labelledby="tab-btn-pnj">
-        <form class="shell reg-shell" id="f-register-pnj" action="index.php?url=auth/storePnj" method="POST" novalidate>
+        <form class="shell reg-shell" id="f-register-pnj" action="<?= BASE_URL ?>controllers/AuthController.php?action=storePnj" method="POST" novalidate>
           
           <!-- Alert SSO PNJ -->
           <div class="auth-notice pnj-notice">
@@ -80,75 +95,42 @@
           <!-- Bagian 1: Data Sivitas PNJ -->
           <div class="sec">
             <span class="num">01</span>
-            <h3>Data Sivitas PNJ</h3>
+            <h3 id="reg-pnj-sec-title">Data Sivitas PNJ</h3>
             <i class="dash"></i>
           </div>
 
-          <div class="grid">
+          <div class="grid" style="margin-bottom: 24px;">
             <!-- Peran Sivitas -->
-            <div class="f">
+            <div class="f full">
               <label for="pnjRole">Status Sivitas</label>
-              <select name="peran" id="pnjRole" required>
-                <option value="">Pilih status sivitas…</option>
+              <select name="sub_role" id="pnjRole" required onchange="toggleRegisterPnjRole(this.value)">
+                <option value="">-- Pilih Status Sivitas Anda Terlebih Dahulu --</option>
                 <option value="mahasiswa">Mahasiswa Aktif PNJ</option>
                 <option value="dosen">Dosen PNJ</option>
                 <option value="tendik">Tenaga Kependidikan (Tendik) PNJ</option>
               </select>
               <span class="err">Silakan pilih status sivitas Anda.</span>
             </div>
+          </div>
 
-            <!-- Nama Lengkap -->
-            <div class="f">
-              <label for="pnjNama">Nama Lengkap (Sesuai KTP / KTM)</label>
-              <input type="text" name="nama" id="pnjNama" required placeholder="Contoh: Muhammad Farhan">
-              <span class="err">Nama lengkap wajib diisi.</span>
-            </div>
+          <!-- Pesan Petunjuk Sebelum Role Dipilih -->
+          <div id="reg-role-placeholder" style="background:#F8FAFC;border:1px dashed #CBD5E1;padding:18px;border-radius:4px;text-align:center;color:#64748B;font-size:13px;margin-bottom:16px;">
+            Silakan pilih <b>Status Sivitas</b> di atas (Mahasiswa, Dosen, atau Tendik) untuk memunculkan formulir isian identitas yang sesuai.
+          </div>
 
-            <!-- NIM / NIP -->
-            <div class="f">
-              <label for="pnjNim">NIM / NIP</label>
-              <input type="text" name="nim_nip" id="pnjNim" required placeholder="Contoh: 2107411001 atau 1985..." inputmode="numeric">
-              <span class="err">NIM atau NIP wajib diisi.</span>
-            </div>
+          <!-- 1A. Form Isian Khusus Mahasiswa PNJ (Sesuai DDL Tabel mahasiswa) -->
+          <div id="reg-fields-mahasiswa" class="grid" style="display: none;">
+            <?php require __DIR__ . '/registerMahasiswa.php'; ?>
+          </div>
 
-            <!-- Jurusan -->
-            <div class="f">
-              <label for="pnjJurusan">Jurusan / Unit Kerja</label>
-              <select name="jurusan" id="pnjJurusan" required>
-                <option value="">Pilih jurusan / unit…</option>
-                <option value="TIK">Teknik Informatika dan Komputer (TIK)</option>
-                <option value="Mesin">Teknik Mesin</option>
-                <option value="Sipil">Teknik Sipil</option>
-                <option value="Elektro">Teknik Elektro</option>
-                <option value="Akuntansi">Akuntansi</option>
-                <option value="Niaga">Administrasi Niaga</option>
-                <option value="Grafika">Teknik Grafika dan Penerbitan</option>
-                <option value="Pascasarjana">Pascasarjana</option>
-                <option value="Unit">Unit Kerja / Manajemen Pusat</option>
-              </select>
-              <span class="err">Jurusan / unit wajib dipilih.</span>
-            </div>
+          <!-- 1B. Form Isian Khusus Dosen PNJ (Sesuai DDL Tabel civitas) -->
+          <div id="reg-fields-dosen" class="grid" style="display: none;">
+            <?php require __DIR__ . '/registerDosen.php'; ?>
+          </div>
 
-            <!-- Program Studi -->
-            <div class="f">
-              <label for="pnjProdi">Program Studi / Bagian</label>
-              <input type="text" name="prodi" id="pnjProdi" required placeholder="Contoh: Teknik Informatika / Kepegawaian">
-              <span class="err">Program studi atau bagian wajib diisi.</span>
-            </div>
-
-            <!-- Nomor WhatsApp / HP -->
-            <div class="f">
-              <label for="pnjWa">Nomor WhatsApp / HP</label>
-              <input type="tel" name="whatsapp" id="pnjWa" required placeholder="08xx xxxx xxxx" inputmode="tel">
-              <span class="err">Nomor WhatsApp wajib diisi.</span>
-            </div>
-
-            <!-- Email PNJ -->
-            <div class="f full">
-              <label for="pnjEmail">Email Resmi PNJ (@pnj.ac.id)</label>
-              <input type="email" name="email" id="pnjEmail" required placeholder="nama@pnj.ac.id" autocomplete="email">
-              <span class="err">Gunakan alamat email resmi @pnj.ac.id yang valid.</span>
-            </div>
+          <!-- 1C. Form Isian Khusus Tendik PNJ (Sesuai DDL Tabel civitas) -->
+          <div id="reg-fields-tendik" class="grid" style="display: none;">
+            <?php require __DIR__ . '/registerTendik.php'; ?>
           </div>
 
           <!-- Bagian 2: Kata Sandi -->
@@ -159,6 +141,13 @@
           </div>
 
           <div class="grid">
+            <!-- Username (Sesuai DDL Tabel users) -->
+            <div class="f full">
+              <label for="pnjUsername">Username Akun</label>
+              <input type="text" name="username" id="pnjUsername" maxlength="50" required placeholder="Contoh: farhan_pnj24 atau hendra.wijaya" autocomplete="username">
+              <span class="err">Username wajib diisi.</span>
+            </div>
+
             <!-- Password -->
             <div class="f">
               <label for="pnjPass">Kata Sandi Baru</label>
@@ -209,7 +198,7 @@
 
       <!-- ============ FORM 2: MAHASISWA LUAR / EKSTERNAL ============ -->
       <div class="reg-pane" id="pane-ext" role="tabpanel" aria-labelledby="tab-btn-ext">
-        <form class="shell reg-shell" id="f-register-ext" action="index.php?url=auth/storeExt" method="POST" novalidate>
+        <form class="shell reg-shell" id="f-register-ext" action="<?= BASE_URL ?>controllers/AuthController.php?action=storeExt" method="POST" novalidate>
           
           <!-- Alert Eksternal -->
           <div class="auth-notice ext-notice">
@@ -255,7 +244,7 @@
             <!-- Asal Institusi / Universitas -->
             <div class="f">
               <label for="extInst">Asal Universitas / Institusi (Home University)</label>
-              <input type="text" name="institusi_asal" id="extInst" required placeholder="Contoh: University of Tsukuba / ITB">
+              <input type="text" name="asal_instansi" id="extInst" required placeholder="Contoh: University of Tsukuba / ITB">
               <span class="err">Asal institusi wajib diisi.</span>
             </div>
 
@@ -269,7 +258,7 @@
             <!-- Nomor Paspor / KTP -->
             <div class="f">
               <label for="extIdNo">Nomor Paspor / Identitas Resmi (Passport / ID Number)</label>
-              <input type="text" name="no_identitas" id="extIdNo" required placeholder="Contoh: TK1234567 atau NIK">
+              <input type="text" name="no_paspor" id="extIdNo" required placeholder="Contoh: TK1234567 atau NIK">
               <span class="err">Nomor paspor atau identitas wajib diisi.</span>
             </div>
 
@@ -355,4 +344,58 @@
     </div>
 
   </div>
+
+  <!-- Script Pengubah Formulir Berdasarkan Role Dropdown Status Sivitas -->
+  <script>
+    function toggleRegisterPnjRole(roleVal) {
+      var mhsBox = document.getElementById('reg-fields-mahasiswa');
+      var dsnBox = document.getElementById('reg-fields-dosen');
+      var tdkBox = document.getElementById('reg-fields-tendik');
+      var placeholder = document.getElementById('reg-role-placeholder');
+      var secTitle = document.getElementById('reg-pnj-sec-title');
+      if (!mhsBox || !dsnBox || !tdkBox) return;
+
+      var validRoles = ['mahasiswa', 'dosen', 'tendik'];
+      var hasValidRole = validRoles.indexOf(roleVal) !== -1;
+
+      if (placeholder) {
+        placeholder.style.display = hasValidRole ? 'none' : 'block';
+      }
+
+      var sections = {
+        mahasiswa: mhsBox,
+        dosen: dsnBox,
+        tendik: tdkBox
+      };
+
+      Object.keys(sections).forEach(function(key) {
+        var box = sections[key];
+        var isActive = (key === roleVal);
+        box.style.display = isActive ? 'grid' : 'none';
+        var fields = box.querySelectorAll('input, select, textarea');
+        fields.forEach(function(el) {
+          el.disabled = !isActive;
+          var fWrap = el.closest('.f');
+          if (fWrap) fWrap.classList.remove('invalid');
+        });
+      });
+
+      if (secTitle) {
+        if (roleVal === 'mahasiswa') secTitle.textContent = 'Data Sivitas PNJ — Mahasiswa';
+        else if (roleVal === 'dosen') secTitle.textContent = 'Data Sivitas PNJ — Dosen';
+        else if (roleVal === 'tendik') secTitle.textContent = 'Data Sivitas PNJ — Tenaga Kependidikan';
+        else secTitle.textContent = 'Data Sivitas PNJ';
+      }
+    }
+
+    (function() {
+      var sel = document.getElementById('pnjRole');
+      if (sel) {
+        sel.addEventListener('change', function() {
+          toggleRegisterPnjRole(this.value);
+        });
+        toggleRegisterPnjRole(sel.value);
+      }
+    })();
+  </script>
 </section>

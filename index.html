@@ -738,7 +738,7 @@
 
       <!-- FORM 1: SIVITAS PNJ -->
       <div class="reg-pane active" id="pane-pnj" role="tabpanel">
-        <form class="shell reg-shell" id="f-register-pnj" onsubmit="handleRegisterPnj(event)">
+        <form class="shell reg-shell" id="f-register-pnj" novalidate>
           <div class="auth-notice pnj-notice">
             <div class="notice-icon"><svg class="ic"><use href="#i-shield"/></svg></div>
             <div class="notice-content">
@@ -747,55 +747,172 @@
             </div>
           </div>
 
-          <div class="sec"><span class="num">01</span><h3>Data Sivitas PNJ</h3><i class="dash"></i></div>
-          <div class="grid">
-            <div class="f">
+          <div class="sec"><span class="num">01</span><h3 id="reg-pnj-sec-title">Data Sivitas PNJ</h3><i class="dash"></i></div>
+          <div class="grid" style="margin-bottom: 24px;">
+            <div class="f full">
               <label for="pnjRole">Status Sivitas</label>
-              <select name="peran" id="pnjRole" required>
+              <select name="peran" id="pnjRole" required onchange="toggleRegisterPnjRole(this.value)">
                 <option value="">Pilih status sivitas…</option>
                 <option value="mahasiswa">Mahasiswa Aktif PNJ</option>
                 <option value="dosen">Dosen PNJ</option>
                 <option value="tendik">Tenaga Kependidikan (Tendik) PNJ</option>
               </select>
+              <span class="err">Silakan pilih status sivitas Anda.</span>
+            </div>
+          </div>
+
+          <!-- 1A. Form Isian Khusus Mahasiswa PNJ (Sesuai DDL Tabel mahasiswa) -->
+          <div id="reg-fields-mahasiswa" class="grid">
+            <div class="f">
+              <label for="regMhsNim">NIM (Nomor Induk Mahasiswa)</label>
+              <input type="text" name="nim" id="regMhsNim" maxlength="20" required placeholder="Contoh: 2107411001" inputmode="numeric">
+              <span class="err">NIM wajib diisi sesuai Kartu Tanda Mahasiswa.</span>
             </div>
             <div class="f">
-              <label for="pnjNama">Nama Lengkap (Sesuai KTP / KTM)</label>
-              <input type="text" name="nama" id="pnjNama" required placeholder="Contoh: Muhammad Farhan">
+              <label for="regMhsNama">Nama Lengkap (Sesuai KTP / KTM)</label>
+              <input type="text" name="nama_lengkap" id="regMhsNama" maxlength="100" required placeholder="Contoh: Muhammad Farhan">
+              <span class="err">Nama lengkap wajib diisi.</span>
             </div>
             <div class="f">
-              <label for="pnjNim">NIM / NIP</label>
-              <input type="text" name="nim_nip" id="pnjNim" required placeholder="Contoh: 2107411001 atau 1985..." inputmode="numeric">
+              <label for="regMhsTempatLahir">Tempat Lahir</label>
+              <input type="text" name="tempat_lahir" id="regMhsTempatLahir" maxlength="50" placeholder="Contoh: Jakarta">
             </div>
             <div class="f">
-              <label for="pnjJurusan">Jurusan / Unit Kerja</label>
-              <select name="jurusan" id="pnjJurusan" required>
-                <option value="">Pilih jurusan / unit…</option>
-                <option value="TIK">Teknik Informatika dan Komputer (TIK)</option>
-                <option value="Mesin">Teknik Mesin</option>
-                <option value="Sipil">Teknik Sipil</option>
-                <option value="Elektro">Teknik Elektro</option>
-                <option value="Akuntansi">Akuntansi</option>
-                <option value="Niaga">Administrasi Niaga</option>
-                <option value="Grafika">Teknik Grafika dan Penerbitan</option>
-                <option value="Pascasarjana">Pascasarjana</option>
+              <label for="regMhsTanggalLahir">Tanggal Lahir</label>
+              <input type="date" name="tanggal_lahir" id="regMhsTanggalLahir">
+            </div>
+            <div class="f">
+              <label for="regMhsGender">Jenis Kelamin</label>
+              <select name="jenis_kelamin" id="regMhsGender">
+                <option value="">Pilih jenis kelamin…</option>
+                <option value="Laki-Laki">Laki-Laki</option>
+                <option value="Perempuan">Perempuan</option>
               </select>
             </div>
             <div class="f">
-              <label for="pnjProdi">Program Studi / Bagian</label>
-              <input type="text" name="prodi" id="pnjProdi" required placeholder="Contoh: Teknik Informatika">
+              <label for="regMhsAngkatan">Tahun Angkatan</label>
+              <input type="number" name="angkatan" id="regMhsAngkatan" min="2015" max="2035" placeholder="Contoh: 2024" inputmode="numeric">
             </div>
             <div class="f">
-              <label for="pnjWa">Nomor WhatsApp / HP</label>
-              <input type="tel" name="whatsapp" id="pnjWa" required placeholder="08xx xxxx xxxx" inputmode="tel">
+              <label for="regMhsJurusan">Jurusan</label>
+              <select name="jurusan" id="regMhsJurusan" required>
+                <option value="">Pilih jurusan…</option>
+                <option value="Teknik Informatika dan Komputer">Teknik Informatika dan Komputer (TIK)</option>
+                <option value="Teknik Mesin">Teknik Mesin</option>
+                <option value="Teknik Sipil">Teknik Sipil</option>
+                <option value="Teknik Elektro">Teknik Elektro</option>
+                <option value="Akuntansi">Akuntansi</option>
+                <option value="Administrasi Niaga">Administrasi Niaga</option>
+                <option value="Teknik Grafika dan Penerbitan">Teknik Grafika dan Penerbitan</option>
+                <option value="Pascasarjana">Pascasarjana</option>
+              </select>
+              <span class="err">Jurusan wajib dipilih.</span>
+            </div>
+            <div class="f">
+              <label for="regMhsProdi">Program Studi</label>
+              <input type="text" name="prodi" id="regMhsProdi" maxlength="100" required placeholder="Contoh: D4 Teknik Informatika">
+              <span class="err">Program studi wajib diisi.</span>
+            </div>
+            <div class="f">
+              <label for="regMhsIpk">IPK Terakhir (Skala 4.00)</label>
+              <input type="number" name="ipk" id="regMhsIpk" step="0.01" min="0" max="4.00" data-max="4.00" placeholder="Contoh: 3.85">
+            </div>
+            <div class="f">
+              <label for="regMhsPaspor">Nomor Paspor (Jika Ada)</label>
+              <input type="text" name="no_paspor" id="regMhsPaspor" maxlength="30" placeholder="Contoh: C1234567 (Opsional)">
+            </div>
+            <div class="f">
+              <label for="regMhsHp">Nomor WhatsApp / HP</label>
+              <input type="tel" name="no_hp" id="regMhsHp" maxlength="20" required placeholder="08xx xxxx xxxx" inputmode="tel">
+              <span class="err">Nomor WhatsApp / HP wajib diisi.</span>
+            </div>
+            <div class="f">
+              <label for="regMhsEmail">Email Resmi PNJ (@mhsw.pnj.ac.id / @pnj.ac.id)</label>
+              <input type="email" name="email" id="regMhsEmail" maxlength="100" required placeholder="nama@mhsw.pnj.ac.id" autocomplete="email">
+              <span class="err">Gunakan alamat email resmi PNJ yang valid.</span>
             </div>
             <div class="f full">
-              <label for="pnjEmail">Email Resmi PNJ (@pnj.ac.id)</label>
-              <input type="email" name="email" id="pnjEmail" required placeholder="nama@pnj.ac.id" autocomplete="email">
+              <label for="regMhsAlamat">Alamat Lengkap</label>
+              <textarea name="alamat" id="regMhsAlamat" rows="2" placeholder="Masukkan alamat lengkap tempat tinggal / domisili saat ini..."></textarea>
+            </div>
+          </div>
+
+          <!-- 1B. Form Isian Khusus Civitas Dosen / Tendik PNJ (Sesuai DDL Tabel civitas) -->
+          <div id="reg-fields-civitas" class="grid" style="display: none;">
+            <div class="f">
+              <label for="regCivNip">NIP (Nomor Induk Pegawai)</label>
+              <input type="text" name="nip" id="regCivNip" maxlength="30" required placeholder="Contoh: 198504122010121002" inputmode="numeric" disabled>
+              <span class="err">NIP pegawai wajib diisi.</span>
+            </div>
+            <div class="f">
+              <label for="regCivNidn" id="lblRegCivNidn">NIDN (Nomor Induk Dosen Nasional)</label>
+              <input type="text" name="nidn" id="regCivNidn" maxlength="30" placeholder="Contoh: 0012048501 (Opsional bagi Tendik)" inputmode="numeric" disabled>
+            </div>
+            <div class="f">
+              <label for="regCivNama">Nama Lengkap (Tanpa Gelar)</label>
+              <input type="text" name="nama_lengkap" id="regCivNama" maxlength="100" required placeholder="Contoh: Hendra Wijaya" disabled>
+              <span class="err">Nama lengkap wajib diisi.</span>
+            </div>
+            <div class="f">
+              <label for="regCivJabatan" id="lblRegCivJabatan">Jabatan</label>
+              <input type="text" name="jabatan" id="regCivJabatan" maxlength="100" required placeholder="Contoh: Dosen PNJ / Tendik - Kepegawaian" disabled>
+              <span class="err">Jabatan wajib diisi.</span>
+            </div>
+            <div class="f">
+              <label for="regCivGelarDepan">Gelar Depan</label>
+              <input type="text" name="gelar_depan" id="regCivGelarDepan" maxlength="30" placeholder="Contoh: Dr. / Prof. / Ir. (Opsional)" disabled>
+            </div>
+            <div class="f">
+              <label for="regCivGelarBelakang">Gelar Belakang</label>
+              <input type="text" name="gelar_belakang" id="regCivGelarBelakang" maxlength="50" placeholder="Contoh: S.T., M.T., Ph.D. (Opsional)" disabled>
+            </div>
+            <div class="f">
+              <label for="regCivPangkat">Pangkat / Golongan</label>
+              <input type="text" name="pangkat_golongan" id="regCivPangkat" maxlength="50" placeholder="Contoh: Penata Tk. I / III/d (Opsional)" disabled>
+            </div>
+            <div class="f">
+              <label for="regCivUnitKerja">Unit Kerja / Jurusan</label>
+              <select name="unit_kerja" id="regCivUnitKerja" required disabled>
+                <option value="">Pilih jurusan / unit kerja…</option>
+                <option value="Teknik Informatika dan Komputer">Jurusan Teknik Informatika dan Komputer (TIK)</option>
+                <option value="Teknik Mesin">Jurusan Teknik Mesin</option>
+                <option value="Teknik Sipil">Jurusan Teknik Sipil</option>
+                <option value="Teknik Elektro">Jurusan Teknik Elektro</option>
+                <option value="Akuntansi">Jurusan Akuntansi</option>
+                <option value="Administrasi Niaga">Jurusan Administrasi Niaga</option>
+                <option value="Teknik Grafika dan Penerbitan">Jurusan Teknik Grafika dan Penerbitan</option>
+                <option value="Pascasarjana">Pascasarjana</option>
+                <option value="Unit Kerja / Manajemen Pusat">Unit Kerja Pusat / Bagian Administrasi</option>
+              </select>
+              <span class="err">Unit kerja atau jurusan wajib dipilih.</span>
+            </div>
+            <div class="f">
+              <label for="regCivPaspor">Nomor Paspor (Jika Ada)</label>
+              <input type="text" name="no_paspor" id="regCivPaspor" maxlength="30" placeholder="Contoh: C1234567 (Opsional)" disabled>
+            </div>
+            <div class="f">
+              <label for="regCivHp">Nomor WhatsApp / HP</label>
+              <input type="tel" name="no_hp" id="regCivHp" maxlength="20" required placeholder="08xx xxxx xxxx" inputmode="tel" disabled>
+              <span class="err">Nomor WhatsApp / HP wajib diisi.</span>
+            </div>
+            <div class="f full">
+              <label for="regCivEmail">Email Resmi PNJ (@pnj.ac.id)</label>
+              <input type="email" name="email_pnj" id="regCivEmail" maxlength="100" required placeholder="nama@pnj.ac.id" autocomplete="email" disabled>
+              <span class="err">Gunakan alamat email resmi @pnj.ac.id yang valid.</span>
+            </div>
+            <div class="f full">
+              <label for="regCivAlamat">Alamat Lengkap</label>
+              <textarea name="alamat" id="regCivAlamat" rows="2" placeholder="Masukkan alamat lengkap tempat tinggal / domisili saat ini..." disabled></textarea>
             </div>
           </div>
 
           <div class="sec" style="margin-top: 24px;"><span class="num">02</span><h3>Keamanan Akun</h3><i class="dash"></i></div>
           <div class="grid">
+            <div class="f full">
+              <label for="pnjUsername">Username Akun</label>
+              <input type="text" name="username" id="pnjUsername" maxlength="50" required placeholder="Contoh: farhan_pnj24 atau hendra.wijaya" autocomplete="username">
+              <span class="err">Username wajib diisi.</span>
+            </div>
             <div class="f">
               <label for="pnjPass">Kata Sandi Baru</label>
               <div class="input-with-icon pass-field">

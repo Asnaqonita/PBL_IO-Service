@@ -1,3 +1,12 @@
+<?php
+// File: views/auth/login.php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+require_once __DIR__ . '/../../config/config.php';
+$loginError   = $_SESSION['error'] ?? null;
+$loginSuccess = $_SESSION['success'] ?? null;
+?>
 <!-- ============ HALAMAN LOGIN ============ -->
 <section class="page" id="page-login">
   <div class="wrap">
@@ -25,21 +34,34 @@
           </div>
           <div>
             <h3 class="auth-card-title">Masuk ke Portal I/O</h3>
-            <p class="auth-card-sub">Masukkan email / NIP / NIM dan kata sandi Anda</p>
+            <p class="auth-card-sub">Masukkan email / NIP / NIM / Paspor dan kata sandi Anda</p>
           </div>
         </div>
 
-        <!-- Form Login Standar (Email & Password) -->
-        <form class="auth-form" id="f-login" action="index.php?url=auth/authenticate" method="POST" novalidate>
+        <!-- Alert Notifikasi dari Session PHP (jika ada) -->
+        <?php if (!empty($loginError)): ?>
+          <div style="background:#FEE2E2;color:#991B1B;border:1px solid #FCA5A5;padding:10px 14px;border-radius:4px;font-size:12.5px;margin-bottom:16px;">
+            <?= htmlspecialchars($loginError); ?>
+          </div>
+        <?php endif; ?>
+
+        <?php if (!empty($loginSuccess)): ?>
+          <div style="background:#D1FAE5;color:#065F46;border:1px solid #6EE7B7;padding:10px 14px;border-radius:4px;font-size:12.5px;margin-bottom:16px;">
+            <?= htmlspecialchars($loginSuccess); ?>
+          </div>
+        <?php endif; ?>
+
+        <!-- Form Login Standar (Email / NIM / NIP / Paspor & Password) -->
+        <form class="auth-form" id="f-login" action="<?= BASE_URL ?>controllers/AuthController.php?action=authenticate" method="POST" novalidate>
           
-          <!-- Field Identifier (Email / NIP / NIM) -->
+          <!-- Field Identifier (Email / NIP / NIM / Paspor) -->
           <div class="f">
-            <label for="loginUser">Email / NIP / NIM</label>
+            <label for="loginUser">Email / NIP / NIM / No. Paspor</label>
             <div class="input-with-icon">
               <svg class="input-ico ic"><use href="#i-user"/></svg>
               <input type="text" name="identifier" id="loginUser" required placeholder="nama@pnj.ac.id atau NIM / NIP" autocomplete="username">
             </div>
-            <span class="err">Silakan masukkan email, NIM, atau NIP Anda.</span>
+            <span class="err">Silakan masukkan email, NIM, NIP, atau nomor paspor Anda.</span>
           </div>
 
           <!-- Field Password -->
@@ -74,29 +96,6 @@
           </button>
         </form>
 
-        <!-- Quick Demo Login Peran ERD -->
-        <div style="margin:22px 0 16px;background:var(--card,#fff);border:1.5px dashed var(--t300);padding:16px;border-radius:2px;">
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
-            <svg width="15" height="15" style="fill:var(--t600);"><use href="#i-shield"/></svg>
-            <b style="font-size:12px;color:var(--t900);letter-spacing:0.04em;text-transform:uppercase;">Demo Cepat: Masuk Berdasarkan ERD Role</b>
-          </div>
-          <p style="font-size:12px;color:var(--muted);margin:0 0 12px 0;">Pilih salah satu role pengguna untuk langsung simulasi login &amp; melihat data ERD di menu profil:</p>
-          <div style="display:grid;grid-template-columns:1fr;gap:8px;">
-            <button type="button" class="btn ghost" style="justify-content:flex-start;padding:8px 12px;font-size:12px;text-align:left;border-color:var(--t400);background:#fff;" onclick="handleDemoLogin('mahasiswa')">
-              <span style="font-weight:700;color:var(--t900);margin-right:6px;">🎓 1. Mahasiswa PNJ</span>
-              <span style="color:var(--muted);">(NIM: 2507411018 · Program Outbound)</span>
-            </button>
-            <button type="button" class="btn ghost" style="justify-content:flex-start;padding:8px 12px;font-size:12px;text-align:left;border-color:var(--t400);background:#fff;" onclick="handleDemoLogin('civitas')">
-              <span style="font-weight:700;color:var(--t900);margin-right:6px;">🏛️ 2. Civitas Dosen/Tendik</span>
-              <span style="color:var(--muted);">(NIP: 19780412... · Izin PDLN Setneg)</span>
-            </button>
-            <button type="button" class="btn ghost" style="justify-content:flex-start;padding:8px 12px;font-size:12px;text-align:left;border-color:var(--t400);background:#fff;" onclick="handleDemoLogin('eksternal')">
-              <span style="font-weight:700;color:var(--t900);margin-right:6px;">🌏 3. Mahasiswa Luar / Tamu Eksternal</span>
-              <span style="color:var(--muted);">(Paspor: TK8891201 · Program Inbound)</span>
-            </button>
-          </div>
-        </div>
-
         <!-- ============ BAGIAN SSO PNJ (DI BAWAH FORM EMAIL & PASSWORD) ============ -->
         <div class="auth-divider">
           <span>ATAU MASUK DENGAN</span>
@@ -108,7 +107,7 @@
               <span class="pill-sso">KHUSUS SIVITAS AKADEMIKA PNJ</span>
             </div>
             
-            <a href="index.php?url=auth/sso" class="btn-sso-pnj" id="btnSsoLogin">
+            <a href="<?= BASE_URL ?>controllers/AuthController.php?action=sso" class="btn-sso-pnj" id="btnSsoLogin">
               <div class="sso-emblem">
                 <span class="pnj-abbr">PNJ</span>
                 <span class="sso-txt">SSO</span>

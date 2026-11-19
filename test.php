@@ -1,4 +1,7 @@
 <?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 // Load konfigurasi dasar (BASE_URL)
 require_once __DIR__ . '/config/config.php';
 

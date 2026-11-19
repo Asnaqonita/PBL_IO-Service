@@ -735,10 +735,7 @@ const abBtn = $('#authBtn'),
 if (abBtn)
   abBtn.onclick = () => {
     if (user) {
-      user = null;
-      syncAuthUI();
-      toast(T('out'));
-      closeDrawer();
+      alertLogout();
     } else {
       closeDrawer();
       go('login');
@@ -750,33 +747,22 @@ if (hlBtn)
     else go('login');
   };
 if (lfForm)
-  lfForm.onsubmit = (e) => {
-    e.preventDefault();
-    const lgU = $('#lgUser');
+  lfForm.addEventListener('submit', (e) => {
+    const lgU = $('#lgUser'),
+      lgP = $('#lgPass');
     const id = lgU ? lgU.value.trim() : '';
-    if (!id) return;
-    const base = id.split('@')[0].replace(/[._-]+/g, ' ');
-    const name = base.replace(/\b\w/g, (c) => c.toUpperCase());
-    user = { name: name || 'Pengguna', id: id };
-    const lm = $('#loginModal');
-    if (lm) lm.classList.remove('open');
-    e.target.reset();
-    syncAuthUI();
-    toast(T('in'));
-    $$('[data-auto=email]').forEach((i) => {
-      if (!i.value && id.includes('@')) i.value = id;
-    });
-    $$('[data-auto=name]').forEach((i) => {
-      if (!i.value) i.value = user.name;
-    });
-  };
+    const pass = lgP ? lgP.value.trim() : '';
+    if (!id || !pass) {
+      e.preventDefault();
+      toast(T('invalid') || 'Silakan masukkan Email/NIP dan Kata Sandi', true);
+    }
+  });
 
 /* ===== AUTH PAGES INTERACTION (LOGIN, SSO, REGISTER) ===== */
-// 1. Submit Form Login Halaman Penuh
+// 1. Validasi UI Form Login Halaman Penuh (Submit POST Murni ke AuthController.php)
 const fLogin = $('#f-login');
 if (fLogin) {
   fLogin.addEventListener('submit', (e) => {
-    e.preventDefault();
     const idInput = $('#loginUser'),
       passInput = $('#loginPassword');
     const id = idInput ? idInput.value.trim() : '';
@@ -786,38 +772,25 @@ if (fLogin) {
     if (!id) {
       if (idInput) idInput.closest('.f').classList.add('invalid');
       valid = false;
+    } else if (idInput) {
+      idInput.closest('.f').classList.remove('invalid');
     }
     if (!pass) {
       if (passInput) passInput.closest('.f').classList.add('invalid');
       valid = false;
+    } else if (passInput) {
+      passInput.closest('.f').classList.remove('invalid');
     }
     if (!valid) {
+      e.preventDefault();
       toast(T('invalid') || 'Silakan lengkapi kolom yang wajib diisi', true);
       return;
     }
-
-    const base = id.split('@')[0].replace(/[._-]+/g, ' ');
-    const name = base.replace(/\b\w/g, (c) => c.toUpperCase());
-    user = { name: name || 'Pengguna', id: id };
-    fLogin.reset();
-    syncAuthUI();
-    toast(T('in') || 'Berhasil masuk');
-    go('home');
+    // Jika valid, JANGAN panggil e.preventDefault() agar form terkirim via POST ke AuthController.php
   });
 }
 
-// 2. Klik Login SSO PNJ
-document.addEventListener('click', (e) => {
-  const ssoBtn = e.target.closest('#btnSsoLogin');
-  if (!ssoBtn) return;
-  e.preventDefault();
-  user = { name: 'Sivitas PNJ (Dosen/Mhs)', id: 'sivitas@pnj.ac.id' };
-  syncAuthUI();
-  toast('Berhasil masuk via Single Sign-On PNJ');
-  go('home');
-});
-
-// 3. Toggle Lihat Password (Eye Icon)
+// 2. Toggle Lihat Password (Eye Icon)
 document.addEventListener('click', (e) => {
   const eyeBtn = e.target.closest('.btn-eye');
   if (!eyeBtn) return;
@@ -833,7 +806,7 @@ document.addEventListener('click', (e) => {
   }
 });
 
-// 4. Tab Switcher Kategori Registrasi (Sivitas PNJ vs Mahasiswa Luar)
+// 3. Tab Switcher Kategori Registrasi (Sivitas PNJ vs Mahasiswa Luar)
 document.addEventListener('click', (e) => {
   const tabBtn = e.target.closest('.reg-cat-card');
   if (!tabBtn) return;
@@ -851,48 +824,105 @@ document.addEventListener('click', (e) => {
   });
 });
 
-// 5. Submit Form Registrasi Sivitas PNJ & Eksternal
+// 4. Toggle Isian Formulir Registrasi Internal Berdasarkan Dropdown Status Sivitas
+function toggleRegisterPnjRole(roleVal) {
+  const mhsBox = document.getElementById('reg-fields-mahasiswa');
+  const dsnBox = document.getElementById('reg-fields-dosen');
+  const tdkBox = document.getElementById('reg-fields-tendik');
+  const placeholder = document.getElementById('reg-role-placeholder');
+  const secTitle = document.getElementById('reg-pnj-sec-title');
+  if (!mhsBox || !dsnBox || !tdkBox) return;
+
+  const validRoles = ['mahasiswa', 'dosen', 'tendik'];
+  const hasValidRole = validRoles.includes(roleVal);
+
+  if (placeholder) {
+    placeholder.style.display = hasValidRole ? 'none' : 'block';
+  }
+
+  const sections = {
+    mahasiswa: mhsBox,
+    dosen: dsnBox,
+    tendik: tdkBox,
+  };
+
+  Object.keys(sections).forEach((key) => {
+    const box = sections[key];
+    const isActive = key === roleVal;
+    box.style.display = isActive ? 'grid' : 'none';
+    $$('input, select, textarea', box).forEach((el) => {
+      el.disabled = !isActive;
+      const f = el.closest('.f');
+      if (f) f.classList.remove('invalid');
+    });
+  });
+
+  if (secTitle) {
+    if (roleVal === 'mahasiswa') secTitle.textContent = 'Data Sivitas PNJ — Mahasiswa';
+    else if (roleVal === 'dosen') secTitle.textContent = 'Data Sivitas PNJ — Dosen';
+    else if (roleVal === 'tendik') secTitle.textContent = 'Data Sivitas PNJ — Tenaga Kependidikan';
+    else secTitle.textContent = 'Data Sivitas PNJ';
+  }
+}
+
+// 5. Validasi UI Submit Form Registrasi Sivitas PNJ & Eksternal (POST Murni ke AuthController.php)
 ['f-register-pnj', 'f-register-ext'].forEach((fid) => {
   const form = $('#' + fid);
   if (!form) return;
   form.addEventListener('submit', (e) => {
-    e.preventDefault();
+    if (fid === 'f-register-pnj') {
+      const roleSel = $('#pnjRole', form);
+      if (roleSel && !roleSel.value) {
+        e.preventDefault();
+        const fWrap = roleSel.closest('.f');
+        if (fWrap) fWrap.classList.add('invalid');
+        toast('Silakan pilih Status Sivitas (Mahasiswa, Dosen, atau Tendik) terlebih dahulu!', true);
+        roleSel.focus();
+        return;
+      }
+    }
+
     let first = null;
+    let passMismatch = false;
     $$('.f', form).forEach((f) => {
-      const c = $('input,select,textarea', f);
-      if (!c || !c.required) return;
+      const c = $('input:not([type=checkbox]),select,textarea', f);
+      if (!c || c.disabled || !c.required) {
+        f.classList.remove('invalid');
+        return;
+      }
       let ok = c.value.trim() !== '';
       if (ok && c.type === 'email') ok = c.checkValidity();
-      if (c.type === 'password' && c.name.includes('confirm')) {
+      if (ok && c.name === 'password' && c.value.length < 8) ok = false;
+      if (c.name === 'password_confirmation') {
         const orig = $('input[name=password]', form);
-        if (orig && orig.value !== c.value) ok = false;
+        if (orig && orig.value !== c.value) {
+          ok = false;
+          passMismatch = true;
+        }
       }
       f.classList.toggle('invalid', !ok);
       if (!ok && !first) first = f;
     });
 
+    if (first) {
+      e.preventDefault();
+      if (passMismatch) {
+        toast('Konfirmasi kata sandi tidak cocok!', true);
+      } else {
+        toast(T('invalid') || 'Silakan lengkapi formulir pendaftaran dengan benar', true);
+      }
+      const targetInput = $('input,select,textarea', first);
+      if (targetInput) targetInput.focus();
+      return;
+    }
+
     const terms = $('input[type=checkbox][required]', form);
     if (terms && !terms.checked) {
+      e.preventDefault();
       toast('Silakan centang pernyataan persetujuan terlebih dahulu', true);
       return;
     }
-
-    if (first) {
-      toast(T('invalid') || 'Silakan lengkapi formulir pendaftaran dengan benar', true);
-      $('input,select,textarea', first).focus();
-      return;
-    }
-
-    const nameInput = $('input[name=nama]', form);
-    const emailInput = $('input[name=email]', form);
-    const userName = nameInput ? nameInput.value.trim() : 'Pendaftar Baru';
-    const userEmail = emailInput ? emailInput.value.trim() : '';
-
-    user = { name: userName, id: userEmail };
-    form.reset();
-    syncAuthUI();
-    toast('Pendaftaran berhasil! Selamat datang, ' + userName);
-    go('home');
+    // Jika semua valid, JANGAN panggil e.preventDefault() agar form terkirim via POST ke AuthController.php
   });
 });
 
@@ -2135,49 +2165,14 @@ const roleDB = {
 
 let currentRole = 'mahasiswa';
 
-/* Helper LocalStorage Database Pengguna */
-function getUsersDB() {
-  try {
-    return JSON.parse(localStorage.getItem('io_users_db')) || [];
-  } catch (e) {
-    return [];
-  }
-}
-
-function saveUserToDB(u) {
-  const db = getUsersDB();
-  const idx = db.findIndex(x => (x.id && x.id === u.id) || (x.email && x.email.toLowerCase() === u.email.toLowerCase()));
-  if (idx >= 0) {
-    db[idx] = Object.assign(db[idx], u);
-  } else {
-    db.push(u);
-  }
-  try {
-    localStorage.setItem('io_users_db', JSON.stringify(db));
-    localStorage.setItem('io_current_user', JSON.stringify(u));
-  } catch (e) {}
-}
-
-function findUserInDB(ident) {
-  if (!ident) return null;
-  const db = getUsersDB();
-  const q = String(ident).trim().toLowerCase();
-  return db.find(u => (u.id && String(u.id).toLowerCase() === q) || (u.email && u.email.toLowerCase() === q) || (u.nama && u.nama.toLowerCase() === q)) || null;
-}
-
-function getCurrentUserSession() {
-  try {
-    const s = localStorage.getItem('io_current_user');
-    if (s) return JSON.parse(s);
-  } catch (e) {}
-  return null;
-}
-
 function changeSystemRole(roleKey, customData, showToast = true) {
-  // Normalisasi role
-  if (roleKey === 'dosen' || roleKey === 'tendik') roleKey = 'civitas';
+  // Normalisasi role 'sivitas' vs 'civitas'
+  if (roleKey === 'dosen' || roleKey === 'tendik' || roleKey === 'civitas' || roleKey === 'sivitas') {
+    roleKey = 'sivitas';
+  }
   if (!roleDB[roleKey]) roleKey = 'mahasiswa';
   currentRole = roleKey;
+  const isSivitas = roleKey === 'sivitas';
 
   const data = roleDB[roleKey];
   const userObj = Object.assign({}, data, customData || {});
@@ -2185,7 +2180,7 @@ function changeSystemRole(roleKey, customData, showToast = true) {
   userObj.name = userObj.nama || userObj.name || data.name;
   userObj.initial = userObj.name ? userObj.name[0].toUpperCase() : data.initial;
 
-  // 1. Sinkronkan Dropdown Selector di Atas Header
+  // 1. Sinkronkan Dropdown Selector di Atas Header (jika ada)
   const sel = document.getElementById('role-selector');
   if (sel) sel.value = roleKey;
 
@@ -2194,34 +2189,54 @@ function changeSystemRole(roleKey, customData, showToast = true) {
   const formCiv = document.getElementById('form-fields-civitas');
   const formExt = document.getElementById('form-fields-eksternal');
   if (formMhs) formMhs.style.display = (roleKey === 'mahasiswa') ? 'grid' : 'none';
-  if (formCiv) formCiv.style.display = (roleKey === 'civitas') ? 'grid' : 'none';
+  if (formCiv) formCiv.style.display = isSivitas ? 'grid' : 'none';
   if (formExt) formExt.style.display = (roleKey === 'eksternal') ? 'grid' : 'none';
 
   // Toggle Judul Seksi Form
   const secT = document.getElementById('pane-profil-sec-title');
   if (secT) secT.textContent = data.secTitle;
 
-  // Isi Field Input Sesuai ERD (Jika ada customData atau dari database/default)
+  // Isi Field Input Sesuai ERD (Dari $_SESSION['user'] PHP atau default)
   if (roleKey === 'mahasiswa') {
     const fNim = document.getElementById('profMhsNim'); if (fNim) fNim.value = userObj.nim || userObj.id || data.idVal;
-    const fNama = document.getElementById('profMhsNama'); if (fNama) fNama.value = userObj.name;
+    const fNama = document.getElementById('profMhsNama'); if (fNama) fNama.value = userObj.nama_lengkap || userObj.name;
     const fEmail = document.getElementById('profMhsEmail'); if (fEmail) fEmail.value = userObj.email || data.email;
-    const fWa = document.getElementById('profMhsWA'); if (fWa) fWa.value = userObj.whatsapp || userObj.no_hp || '081234567890';
+    const fWa = document.getElementById('profMhsWA'); if (fWa) fWa.value = userObj.no_hp || userObj.whatsapp || '081234567890';
+    const fTmp = document.getElementById('profMhsTmpLahir'); if (fTmp && userObj.tempat_lahir) fTmp.value = userObj.tempat_lahir;
+    const fTgl = document.getElementById('profMhsTglLahir'); if (fTgl && userObj.tanggal_lahir) fTgl.value = userObj.tanggal_lahir;
+    const fGen = document.getElementById('profMhsGender'); if (fGen && userObj.jenis_kelamin) fGen.value = userObj.jenis_kelamin;
     const fJur = document.getElementById('profMhsJurusan'); if (fJur && userObj.jurusan) fJur.value = userObj.jurusan;
     const fPro = document.getElementById('profMhsProdi'); if (fPro && userObj.prodi) fPro.value = userObj.prodi;
-  } else if (roleKey === 'civitas') {
+    const fSem = document.getElementById('profMhsSemester'); if (fSem && userObj.angkatan) fSem.value = 'Angkatan ' + userObj.angkatan;
+    const fIpk = document.getElementById('profMhsIpk'); if (fIpk && userObj.ipk) fIpk.value = userObj.ipk;
+    const fAlm = document.getElementById('profMhsAlamat'); if (fAlm && userObj.alamat) fAlm.value = userObj.alamat;
+  } else if (isSivitas) {
     const fNip = document.getElementById('profCivNip'); if (fNip) fNip.value = userObj.nip || userObj.id || data.idVal;
-    const fNama = document.getElementById('profCivNama'); if (fNama) fNama.value = userObj.nama_asli || userObj.name;
-    const fEmail = document.getElementById('profCivEmail'); if (fEmail) fEmail.value = userObj.email || data.email;
-    const fWa = document.getElementById('profCivWA'); if (fWa) fWa.value = userObj.whatsapp || userObj.no_hp || '085678901234';
+    const fNama = document.getElementById('profCivNama'); if (fNama) fNama.value = userObj.nama_asli || userObj.nama_lengkap || userObj.name;
+    const fGd = document.getElementById('profCivGelarDepan'); if (fGd && userObj.gelar_depan !== undefined) fGd.value = userObj.gelar_depan || '';
+    const fGb = document.getElementById('profCivGelarBelakang'); if (fGb && userObj.gelar_belakang !== undefined) fGb.value = userObj.gelar_belakang || '';
+    const fEmail = document.getElementById('profCivEmail'); if (fEmail) fEmail.value = userObj.email_pnj || userObj.email || data.email;
+    const fWa = document.getElementById('profCivWA'); if (fWa) fWa.value = userObj.no_hp || userObj.whatsapp || '085678901234';
+    const fJab = document.getElementById('profCivJabatan');
+    if (fJab && userObj.jabatan) {
+      let optExists = [...fJab.options].some(o => o.value === userObj.jabatan);
+      if (!optExists) {
+        const opt = document.createElement('option');
+        opt.value = userObj.jabatan;
+        opt.textContent = userObj.jabatan;
+        fJab.appendChild(opt);
+      }
+      fJab.value = userObj.jabatan;
+    }
     const fUnit = document.getElementById('profCivUnit'); if (fUnit && (userObj.unit_kerja || userObj.jurusan)) fUnit.value = userObj.unit_kerja || userObj.jurusan;
+    const fAlm = document.getElementById('profCivAlamat'); if (fAlm && userObj.alamat) fAlm.value = userObj.alamat;
   } else if (roleKey === 'eksternal') {
     const fPas = document.getElementById('profExtPaspor'); if (fPas) fPas.value = userObj.no_paspor || userObj.id || data.idVal;
-    const fNama = document.getElementById('profExtNama'); if (fNama) fNama.value = userObj.name;
+    const fNama = document.getElementById('profExtNama'); if (fNama) fNama.value = userObj.full_name || userObj.name;
     const fEmail = document.getElementById('profExtEmail'); if (fEmail) fEmail.value = userObj.email || data.email;
-    const fWa = document.getElementById('profExtPhone'); if (fWa) fWa.value = userObj.whatsapp || userObj.no_telp || '+81 90 1234 5678';
-    const fInst = document.getElementById('profExtInstansi'); if (fInst && userObj.asal_instansi) fInst.value = userObj.asal_instansi;
-    const fNeg = document.getElementById('profExtNegara'); if (fNeg && userObj.negara_asal) fNeg.value = userObj.negara_asal;
+    const fWa = document.getElementById('profExtPhone'); if (fWa) fWa.value = userObj.phone_number || userObj.whatsapp || userObj.no_telp || '+81 90 1234 5678';
+    const fInst = document.getElementById('profExtInstansi'); if (fInst && (userObj.asal_instansi || userObj.home_institution)) fInst.value = userObj.asal_instansi || userObj.home_institution;
+    const fNeg = document.getElementById('profExtNegara'); if (fNeg && (userObj.negara_asal || userObj.nationality)) fNeg.value = userObj.negara_asal || userObj.nationality;
   }
 
   // 3. Update Kolom Kiri: Kartu Profil Sidebar
@@ -2248,14 +2263,14 @@ function changeSystemRole(roleKey, customData, showToast = true) {
     if (btnApply.tagName === 'A') btnApply.href = '#' + data.btnApplyGo;
   }
 
-  // Toggle Kelompok Riwayat
+  // Toggle Kelompok Riwayat (Perhatikan elemen HTML menggunakan id *-civitas)
   const hMhs = document.getElementById('history-items-mahasiswa'); if (hMhs) hMhs.style.display = (roleKey === 'mahasiswa') ? 'block' : 'none';
-  const hCiv = document.getElementById('history-items-civitas'); if (hCiv) hCiv.style.display = (roleKey === 'civitas') ? 'block' : 'none';
+  const hCiv = document.getElementById('history-items-civitas'); if (hCiv) hCiv.style.display = isSivitas ? 'block' : 'none';
   const hExt = document.getElementById('history-items-eksternal'); if (hExt) hExt.style.display = (roleKey === 'eksternal') ? 'block' : 'none';
 
-  // Toggle Kelompok Notifikasi
+  // Toggle Kelompok Notifikasi (Perhatikan elemen HTML menggunakan id *-civitas)
   const nMhs = document.getElementById('notif-items-mahasiswa'); if (nMhs) nMhs.style.display = (roleKey === 'mahasiswa') ? 'block' : 'none';
-  const nCiv = document.getElementById('notif-items-civitas'); if (nCiv) nCiv.style.display = (roleKey === 'civitas') ? 'block' : 'none';
+  const nCiv = document.getElementById('notif-items-civitas'); if (nCiv) nCiv.style.display = isSivitas ? 'block' : 'none';
   const nExt = document.getElementById('notif-items-eksternal'); if (nExt) nExt.style.display = (roleKey === 'eksternal') ? 'block' : 'none';
 
   // 6. Update Virtual ID Card KUI
@@ -2264,179 +2279,36 @@ function changeSystemRole(roleKey, customData, showToast = true) {
   const cardL = document.getElementById('card-id-label'); if (cardL) cardL.textContent = data.idLabel;
   const cardV = document.getElementById('card-id-val'); if (cardV) cardV.textContent = userObj.id || userObj.nim || userObj.nip || userObj.no_paspor || data.idVal;
 
-  // Simpan Sesi Aktif
-  try {
-    localStorage.setItem('io_current_user', JSON.stringify(userObj));
-  } catch (e) {}
-
   if (showToast) {
     toast(`Tampilan akun disesuaikan dengan role: ${data.badge}`);
   }
 }
 
 function initUserRole() {
-  const saved = getCurrentUserSession();
-  if (saved && saved.role && roleDB[saved.role]) {
-    changeSystemRole(saved.role, saved, false);
-    user = { name: saved.name || saved.nama, id: saved.id, role: saved.role };
+  const phpUser = window.PHP_SESSION_USER || null;
+  if (phpUser && phpUser.role) {
+    const normRole =
+      phpUser.role === 'civitas' || phpUser.role === 'dosen' || phpUser.role === 'tendik'
+        ? 'sivitas'
+        : phpUser.role;
+    changeSystemRole(normRole, phpUser, false);
+    user = {
+      name: phpUser.name || phpUser.nama || 'Pengguna',
+      id: phpUser.id || phpUser.nim || phpUser.nip || phpUser.no_paspor || phpUser.email || '',
+      role: normRole,
+    };
   } else {
     changeSystemRole('mahasiswa', null, false);
-    user = { name: roleDB.mahasiswa.name, id: roleDB.mahasiswa.idVal, role: 'mahasiswa' };
+    user = null;
   }
   syncAuthUI();
-}
 
-/* Handler Registrasi Sivitas PNJ */
-function handleRegisterPnj(e) {
-  if (e) e.preventDefault();
-  const fRole = $('#pnjRole') ? $('#pnjRole').value : 'mahasiswa';
-  const fNama = $('#pnjNama') ? $('#pnjNama').value.trim() : '';
-  const fNimNip = $('#pnjNim') ? $('#pnjNim').value.trim() : '';
-  const fJurusan = $('#pnjJurusan') ? $('#pnjJurusan').value : '';
-  const fProdi = $('#pnjProdi') ? $('#pnjProdi').value.trim() : '';
-  const fWa = $('#pnjWa') ? $('#pnjWa').value.trim() : '';
-  const fEmail = $('#pnjEmail') ? $('#pnjEmail').value.trim() : '';
-  const fPass = $('#pnjPass') ? $('#pnjPass').value : '';
-  const fPassConf = $('#pnjPassConf') ? $('#pnjPassConf').value : '';
-
-  if (!fNama || !fNimNip || !fEmail) {
-    toast('Harap lengkapi semua kolom pendaftaran yang wajib!', true);
-    return;
+  if (window.PHP_FLASH_ERROR) {
+    toast(window.PHP_FLASH_ERROR, true);
   }
-  if (fPass && fPassConf && fPass !== fPassConf) {
-    toast('Konfirmasi kata sandi tidak cocok!', true);
-    return;
+  if (window.PHP_FLASH_SUCCESS) {
+    toast(window.PHP_FLASH_SUCCESS, false);
   }
-
-  const role = (fRole === 'mahasiswa') ? 'mahasiswa' : 'civitas';
-  const newUser = {
-    role: role,
-    nama: fNama,
-    name: fNama,
-    id: fNimNip,
-    nim: (role === 'mahasiswa') ? fNimNip : '',
-    nip: (role === 'civitas') ? fNimNip : '',
-    jurusan: fJurusan,
-    unit_kerja: fJurusan,
-    prodi: fProdi,
-    whatsapp: fWa,
-    no_hp: fWa,
-    email: fEmail,
-    jabatan: (role === 'civitas') ? (fRole === 'dosen' ? 'Dosen PNJ' : 'Tenaga Kependidikan') : ''
-  };
-
-  saveUserToDB(newUser);
-  changeSystemRole(role, newUser, false);
-  user = { name: fNama, id: fNimNip, role: role };
-  syncAuthUI();
-  toast(`Pendaftaran berhasil! Selamat datang di Portal I/O, ${fNama}.`);
-  go('profile');
-}
-
-/* Handler Registrasi Mahasiswa Luar / Eksternal */
-function handleRegisterExt(e) {
-  if (e) e.preventDefault();
-  const fNama = $('#extNama') ? $('#extNama').value.trim() : '';
-  const fPaspor = $('#extIdNo') ? $('#extIdNo').value.trim() : '';
-  const fInst = $('#extInst') ? $('#extInst').value.trim() : '';
-  const fNeg = $('#extCountry') ? $('#extCountry').value.trim() : '';
-  const fEmail = $('#extEmail') ? $('#extEmail').value.trim() : '';
-  const fWa = $('#extPhone') ? $('#extPhone').value.trim() : '';
-  const fPass = $('#extPass') ? $('#extPass').value : '';
-  const fPassConf = $('#extPassConf') ? $('#extPassConf').value : '';
-
-  if (!fNama || !fPaspor || !fEmail) {
-    toast('Please complete all required fields!', true);
-    return;
-  }
-  if (fPass && fPassConf && fPass !== fPassConf) {
-    toast('Password confirmation does not match!', true);
-    return;
-  }
-
-  const newUser = {
-    role: 'eksternal',
-    nama: fNama,
-    name: fNama,
-    id: fPaspor,
-    no_paspor: fPaspor,
-    asal_instansi: fInst,
-    negara_asal: fNeg,
-    jurusan_asal: 'International Studies',
-    prodi_tujuan: 'Teknik Informatika dan Komputer',
-    whatsapp: fWa,
-    no_telp: fWa,
-    email: fEmail
-  };
-
-  saveUserToDB(newUser);
-  changeSystemRole('eksternal', newUser, false);
-  user = { name: fNama, id: fPaspor, role: 'eksternal' };
-  syncAuthUI();
-  toast(`Registration successful! Welcome to I/O Service, ${fNama}.`);
-  go('profile');
-}
-
-/* Handler Login Terintegrasi */
-function handleLoginSubmit(e) {
-  if (e) e.preventDefault();
-  const ident = ($('#loginUser') ? $('#loginUser').value : ($('#lgUser') ? $('#lgUser').value : '')).trim();
-  if (!ident) {
-    toast('Silakan masukkan email, NIM, atau NIP Anda!', true);
-    return;
-  }
-
-  // Cek apakah akun terdaftar di localStorage DB
-  const matched = findUserInDB(ident);
-  if (matched) {
-    changeSystemRole(matched.role, matched, false);
-    user = { name: matched.nama || matched.name, id: matched.id, role: matched.role };
-    syncAuthUI();
-    toast(`Selamat datang kembali, ${user.name}!`);
-    go('profile');
-    return;
-  }
-
-  // Deteksi otomatis role jika input baru
-  let role = 'mahasiswa';
-  if (/^19[0-9]{8}/.test(ident) || ident.toLowerCase().includes('dosen') || ident.toLowerCase().includes('hendra')) {
-    role = 'civitas';
-  } else if (/^[A-Za-z]{1,3}[0-9]{5,}/.test(ident) || ident.toLowerCase().includes('kenji') || ident.toLowerCase().includes('ext') || ident.includes('.jp')) {
-    role = 'eksternal';
-  }
-
-  const def = roleDB[role];
-  const logged = {
-    role: role,
-    nama: def.name,
-    name: def.name,
-    id: (ident.includes('@') ? def.idVal : ident),
-    email: (ident.includes('@') ? ident : def.email)
-  };
-
-  changeSystemRole(role, logged, false);
-  user = { name: logged.name, id: logged.id, role: role };
-  syncAuthUI();
-  toast(`Login berhasil sebagai ${def.badge}!`);
-  go('profile');
-}
-
-/* Demo Quick Login */
-function handleDemoLogin(roleKey) {
-  const def = roleDB[roleKey];
-  if (!def) return;
-  const demoUser = {
-    role: roleKey,
-    nama: def.name,
-    name: def.name,
-    id: def.idVal,
-    email: def.email
-  };
-  changeSystemRole(roleKey, demoUser, false);
-  user = { name: def.name, id: def.idVal, role: roleKey };
-  syncAuthUI();
-  toast(`Login Demo: Masuk sebagai ${def.badge}`);
-  go('profile');
 }
 
 function switchProfileTab(tabId) {
@@ -2470,7 +2342,7 @@ function saveProfileData(e) {
   if (currentRole === 'mahasiswa') {
     const el = document.getElementById('profMhsNama');
     if (el) updatedName = el.value.trim();
-  } else if (currentRole === 'civitas') {
+  } else if (currentRole === 'sivitas' || currentRole === 'civitas') {
     const el = document.getElementById('profCivNama');
     if (el) updatedName = el.value.trim();
   } else if (currentRole === 'eksternal') {
@@ -2510,15 +2382,6 @@ function handlePasswordChange(e) {
 
 function saveNotificationPreferences(e) {
   if (e) e.preventDefault();
-  const emailNotif = document.getElementById('chkNotifEmail') ? document.getElementById('chkNotifEmail').checked : true;
-  const waNotif = document.getElementById('chkNotifWA') ? document.getElementById('chkNotifWA').checked : true;
-  const newsNotif = document.getElementById('chkNotifNewsletter') ? document.getElementById('chkNotifNewsletter').checked : false;
-
-  try {
-    const prefs = { emailNotif, waNotif, newsNotif, updatedAt: new Date().toISOString() };
-    localStorage.setItem('io_notif_prefs', JSON.stringify(prefs));
-  } catch(err) {}
-
   toast('Preferensi notifikasi & komunikasi berhasil disimpan.');
 }
 
@@ -2567,11 +2430,8 @@ function handleDeactivateAccount() {
 
 function alertLogout() {
   closeDrawer();
-  try { localStorage.removeItem('io_current_user'); } catch(e) {}
-  user = null;
-  syncAuthUI();
-  toast('Anda telah keluar dari akun.');
-  go('login');
+  const baseUrl = window.BASE_URL || '';
+  window.location.href = baseUrl + 'controllers/AuthController.php?action=logout';
 }
 
 /* ---------- INIT ---------- */
@@ -2579,21 +2439,15 @@ enhance(document);
 setLang(lang);
 $$('form.shell').forEach(updateProgress);
 
-// Inisialisasi Peran Pengguna saat Halaman Pertama Dimuat
+// Inisialisasi Peran Pengguna dari Session PHP saat Halaman Pertama Dimuat
 initUserRole();
 
-// Event Listener Form Registrasi & Login
-const regPnjForm = document.getElementById('f-register-pnj');
-if (regPnjForm) regPnjForm.onsubmit = handleRegisterPnj;
-
-const regExtForm = document.getElementById('f-register-ext');
-if (regExtForm) regExtForm.onsubmit = handleRegisterExt;
-
-const fullLoginForm = document.getElementById('f-login');
-if (fullLoginForm) fullLoginForm.onsubmit = handleLoginSubmit;
-
-const modalLoginForm = document.getElementById('loginForm');
-if (modalLoginForm) modalLoginForm.onsubmit = handleLoginSubmit;
+// Inisialisasi Dropdown Status Sivitas pada Form Registrasi Internal
+const pnjRoleSelect = document.getElementById('pnjRole');
+if (pnjRoleSelect) {
+  toggleRegisterPnjRole(pnjRoleSelect.value);
+  pnjRoleSelect.addEventListener('change', (e) => toggleRegisterPnjRole(e.target.value));
+}
 
 {
   const pages = $$('.page');
