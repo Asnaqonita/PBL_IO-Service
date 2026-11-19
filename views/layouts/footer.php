@@ -1,7 +1,9 @@
 <?php
+// Nyalakan session kalau belum aktif supaya kita bisa baca data login user dan pesan notifikasi
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
+// Pastikan BASE_URL sudah terdefinisi sebelum memanggil file script.js di bagian bawah
 if (!defined('BASE_URL')) {
     $configFile = __DIR__ . '/../../config/config.php';
     if (file_exists($configFile)) {
@@ -10,6 +12,7 @@ if (!defined('BASE_URL')) {
         define('BASE_URL', '/IO_Service/');
     }
 }
+// Ambil data user yang lagi login serta pesan sukses/error sementara (flash message), lalu hapus pesannya dari session biar nggak muncul berulang kali saat halaman di-refresh
 $phpSessionUser  = $_SESSION['user'] ?? null;
 $phpFlashError   = $_SESSION['error'] ?? null;
 $phpFlashSuccess = $_SESSION['success'] ?? null;
@@ -45,6 +48,7 @@ unset($_SESSION['error'], $_SESSION['success']);
 <div class="toasts" id="toasts" aria-live="polite"></div>
 <div class="tip" id="tip" role="tooltip" hidden></div>
 <script>
+  // Oper data BASE_URL, data session user, dan pesan notifikasi dari PHP ke variabel global JavaScript biar bisa langsung dipakai oleh script.js
   window.BASE_URL = <?php echo json_encode(BASE_URL); ?>;
   window.PHP_SESSION_USER = <?php echo json_encode($phpSessionUser); ?>;
   window.PHP_FLASH_ERROR = <?php echo json_encode($phpFlashError); ?>;

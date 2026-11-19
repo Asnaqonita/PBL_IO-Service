@@ -1,4 +1,5 @@
 <?php
+// Pastikan BASE_URL sudah tersedia untuk tab daftar akun pengguna terdaftar di panel admin
 if (!defined('BASE_URL')) {
     $configFile = __DIR__ . '/../../config/config.php';
     if (file_exists($configFile)) {

@@ -1,5 +1,5 @@
 <?php
-// File: views/auth/register.php
+// Nyalakan session untuk mengecek apakah ada pesan error saat proses pendaftaran akun sebelumnya
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -347,6 +347,7 @@ $regError = $_SESSION['error'] ?? null;
 
   <!-- Script Pengubah Formulir Berdasarkan Role Dropdown Status Sivitas -->
   <script>
+    // Munculkan form isian yang pas (Mahasiswa, Dosen, atau Tendik) sesuai pilihan di dropdown Status Sivitas, dan matikan input form lainnya biar nggak ikut terkirim
     function toggleRegisterPnjRole(roleVal) {
       var mhsBox = document.getElementById('reg-fields-mahasiswa');
       var dsnBox = document.getElementById('reg-fields-dosen');
@@ -368,6 +369,7 @@ $regError = $_SESSION['error'] ?? null;
         tendik: tdkBox
       };
 
+      // Sembunyikan sekaligus disable input pada bagian yang tidak dipilih supaya validasi form tidak terganggu
       Object.keys(sections).forEach(function(key) {
         var box = sections[key];
         var isActive = (key === roleVal);
@@ -380,6 +382,7 @@ $regError = $_SESSION['error'] ?? null;
         });
       });
 
+      // Sesuaikan judul seksi formulir mengikuti status sivitas yang sedang dipilih
       if (secTitle) {
         if (roleVal === 'mahasiswa') secTitle.textContent = 'Data Sivitas PNJ — Mahasiswa';
         else if (roleVal === 'dosen') secTitle.textContent = 'Data Sivitas PNJ — Dosen';
@@ -388,6 +391,7 @@ $regError = $_SESSION['error'] ?? null;
       }
     }
 
+    // Pasang pendengar perubahan pada dropdown status sivitas saat halaman pertama kali dimuat
     (function() {
       var sel = document.getElementById('pnjRole');
       if (sel) {

@@ -1,3 +1,6 @@
+<?php
+// Komponen akordeon langkah-langkah panduan singkat pengajuan dokumen PDLN
+?>
 <!-- ===== PANDUAN ===== -->
 <details class="acc" id="acc-panduan">
   <summary><i class="chev"></i><span data-i18n="s_panduan">Panduan</span></summary>

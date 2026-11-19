@@ -1,3 +1,6 @@
+<?php
+// Halaman formulir pengajuan program Inbound bagi mahasiswa asing atau mitra eksternal yang akan berkegiatan di PNJ
+?>
 <section class="page" id="page-inbound">
   <div class="wrap">
     <div class="crumb"><a href="#home" data-go="home" data-i18n="n_home">Beranda</a> / <a href="#inbound" data-go="inbound">Inbound</a> / <b>Form</b></div>

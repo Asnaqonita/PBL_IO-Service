@@ -1,3 +1,6 @@
+<?php
+// Panel formulir pelaporan hasil kegiatan PDLN bagi pemohon yang surat pengajuannya sudah disetujui dan kegiatannya telah selesai dilaksanakan
+?>
 <!-- ===== 4. LAPORAN KEGIATAN ===== -->
 <div class="psub" id="psub-laporan">
   <div class="wrap">

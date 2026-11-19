@@ -1,66 +1,46 @@
 <!-- ===================================================================== -->
 <!-- FORM PROFIL MAHASISWA LUAR / EKSTERNAL (SESUAI ATRIBUT ERD)           -->
-<!-- Atribut ERD: no_paspor (PK), nama, negara_asal, asal_instansi,       -->
-<!-- jurusan_asal, prodi_tujuan, jenis_kelamin, tgl_lahir, no_telp,       -->
-<!-- email, alamat                                                        -->
+<!-- Atribut ERD: no_paspor (PK), full_name, nationality, home_institution,-->
+<!-- country_origin, phone_number, email                                  -->
 <!-- Relasi ERD: Mahasiswa Luar mengajukan Inbound                         -->
 <!-- ===================================================================== -->
+<?php
+// Ambil data profil mahasiswa luar negeri / tamu internasional dari session atau database untuk mengisi form profil eksternal
+$uExt = (!empty($profil) && is_array($profil)) ? $profil : ($_SESSION['user'] ?? []);
+?>
 <div class="f">
   <div class="lrow">
     <label for="profExtPaspor">Passport Number / ID Resmi</label>
   </div>
-  <input type="text" name="no_paspor" id="profExtPaspor" value="TK8891201" readonly style="background:#F2FBFB;font-weight:700;">
+  <input type="text" name="no_paspor" id="profExtPaspor" value="<?= htmlspecialchars((string)($uExt['no_paspor'] ?? $uExt['nomor_induk'] ?? 'TK8891201'), ENT_QUOTES, 'UTF-8') ?>" readonly style="background:#F2FBFB;font-weight:700;">
 </div>
 
 <div class="f">
   <label for="profExtNama">Full Name (as in Passport)</label>
-  <input type="text" name="nama" id="profExtNama" value="Kenji Takahashi" required>
+  <input type="text" name="full_name" id="profExtNama" value="<?= htmlspecialchars((string)($uExt['full_name'] ?? $uExt['nama_lengkap'] ?? $uExt['nama'] ?? 'Kenji Takahashi'), ENT_QUOTES, 'UTF-8') ?>" required>
 </div>
 
 <div class="f">
   <label for="profExtNegara">Country of Origin (Negara Asal)</label>
-  <input type="text" name="negara_asal" id="profExtNegara" value="Japan" required>
+  <input type="text" name="country_origin" id="profExtNegara" value="<?= htmlspecialchars((string)($uExt['country_origin'] ?? $uExt['negara_asal'] ?? 'Japan'), ENT_QUOTES, 'UTF-8') ?>" required>
+</div>
+
+<div class="f">
+  <label for="profExtNationality">Nationality (Kewarganegaraan)</label>
+  <input type="text" name="nationality" id="profExtNationality" value="<?= htmlspecialchars((string)($uExt['nationality'] ?? $uExt['negara_asal'] ?? 'Japan'), ENT_QUOTES, 'UTF-8') ?>" required>
 </div>
 
 <div class="f">
   <label for="profExtInstansi">Home Institution / University (Asal Instansi)</label>
-  <input type="text" name="asal_instansi" id="profExtInstansi" value="National Institute of Technology (NIT), Gunma College" required>
-</div>
-
-<div class="f">
-  <label for="profExtJurusanAsal">Department / Major in Home University (Jurusan Asal)</label>
-  <input type="text" name="jurusan_asal" id="profExtJurusanAsal" value="Electronic &amp; Information Engineering" required>
-</div>
-
-<div class="f">
-  <label for="profExtProdiTujuan">Host Department in PNJ (Prodi Tujuan di PNJ)</label>
-  <input type="text" name="prodi_tujuan" id="profExtProdiTujuan" value="Teknik Informatika dan Komputer" required>
-</div>
-
-<div class="f">
-  <label for="profExtGender">Gender (Jenis Kelamin)</label>
-  <select name="jenis_kelamin" id="profExtGender" required>
-    <option value="Male" selected>Male (Laki-Laki)</option>
-    <option value="Female">Female (Perempuan)</option>
-  </select>
-</div>
-
-<div class="f">
-  <label for="profExtDOB">Date of Birth (Tanggal Lahir)</label>
-  <input type="date" name="tgl_lahir" id="profExtDOB" value="1998-08-22" required>
+  <input type="text" name="home_institution" id="profExtInstansi" value="<?= htmlspecialchars((string)($uExt['home_institution'] ?? $uExt['asal_instansi'] ?? 'National Institute of Technology (NIT), Gunma College'), ENT_QUOTES, 'UTF-8') ?>" required>
 </div>
 
 <div class="f">
   <label for="profExtEmail">Active Email Address</label>
-  <input type="email" name="email" id="profExtEmail" value="kenji.takahashi@gunma.ac.jp" required>
-</div>
-
-<div class="f">
-  <label for="profExtPhone">Contact Number (WhatsApp with Country Code)</label>
-  <input type="tel" name="no_telp" id="profExtPhone" value="+81 90 1234 5678" required>
+  <input type="email" name="email" id="profExtEmail" value="<?= htmlspecialchars((string)($uExt['email'] ?? 'kenji.takahashi@gunma.ac.jp'), ENT_QUOTES, 'UTF-8') ?>" required>
 </div>
 
 <div class="f full">
-  <label for="profExtAlamat">Current Address / Local Accommodation (Alamat)</label>
-  <textarea name="alamat" id="profExtAlamat" rows="2" required>Dormitory Building 3, Gunma College / Guest House PNJ Depok</textarea>
+  <label for="profExtPhone">Contact Number (WhatsApp with Country Code)</label>
+  <input type="tel" name="phone_number" id="profExtPhone" value="<?= htmlspecialchars((string)($uExt['phone_number'] ?? $uExt['no_hp'] ?? $uExt['no_telp'] ?? '+81 90 1234 5678'), ENT_QUOTES, 'UTF-8') ?>" required>
 </div>

@@ -1,3 +1,6 @@
+<?php
+// Panel ringkasan (Dashboard) modul PDLN yang menampilkan kartu aksi cepat, angka statistik status pengajuan, dan daftar aktivitas terbaru
+?>
 <!-- ===== 1. DASHBOARD PDLN ===== -->
 <div class="psub active" id="psub-dash">
   <div class="wrap">

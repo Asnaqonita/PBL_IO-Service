@@ -1,3 +1,6 @@
+<?php
+// Seksi daftar Pertanyaan Umum (FAQ) beserta form pengiriman tiket bantuan ke email tim KUI PNJ
+?>
 <section class="faqsec active" id="faq">
   <div class="faqin">
     <div class="faql">

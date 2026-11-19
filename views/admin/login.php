@@ -1,9 +1,5 @@
 <?php
-/**
- * Halaman Login Administrator KUI
- * I/O Service — Politeknik Negeri Jakarta
- * Kolom formulir: Hanya Email dan Password
- */
+// Halaman login khusus administrator KUI PNJ, pastikan BASE_URL sudah siap dipakai untuk memanggil CSS dan action form
 if (!defined('BASE_URL')) {
     $configFile = __DIR__ . '/../../config/config.php';
     if (file_exists($configFile)) {
@@ -134,6 +130,7 @@ if (!defined('BASE_URL')) {
 </footer>
 
 <script>
+// Ubah tipe input password antara teks biasa dan bintang-bintang saat ikon mata diklik
 function togglePasswordVisibility() {
   const passInput = document.getElementById('adminPassword');
   if (!passInput) return;
@@ -144,6 +141,7 @@ function togglePasswordVisibility() {
   }
 }
 
+// Isi otomatis kolom email dan password dengan akun demo admin untuk mempercepat pengujian
 function fillAdminDemo() {
   const emailInput = document.getElementById('adminEmail');
   const passInput = document.getElementById('adminPassword');

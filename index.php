@@ -1,5 +1,3 @@
 <?php
-/**
- * Root file sementara untuk melihat hasil desain lewat test.php
- */
+// Pintu masuk utama aplikasi yang langsung meneruskan tampilan dan rute ke file test.php
 require_once __DIR__ . '/test.php';

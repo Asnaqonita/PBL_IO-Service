@@ -1,5 +1,5 @@
 <?php
-// Menerima data dari OutboundController
+// Siapkan data mahasiswa dan detail program dari controller untuk mengisi template cetak Surat Rekomendasi Perjalanan Outbound
 $nama          = $data['nama'] ?? '[Nama Mahasiswa]';
 $nim           = $data['nim'] ?? '[NIM]';
 $jurusan       = $data['jurusan'] ?? '[Jurusan]';

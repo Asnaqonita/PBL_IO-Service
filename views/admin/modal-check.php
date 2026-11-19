@@ -1,4 +1,5 @@
 <?php
+// Pastikan BASE_URL sudah tersedia untuk komponen pop-up modal verifikasi dan periksa berkas pemohon
 if (!defined('BASE_URL')) {
     $configFile = __DIR__ . '/../../config/config.php';
     if (file_exists($configFile)) {

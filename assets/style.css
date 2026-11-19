@@ -37,8 +37,20 @@ body {
   color:var(--ink);
   background:#F8FDFD;
   min-height:100vh;
+  display:flex;
+  flex-direction:column;
   overflow-x:hidden;
   line-height:1.5
+}
+
+main {
+  flex:1 0 auto;
+  display:flex;
+  flex-direction:column
+}
+
+main>.page.active {
+  flex:1 0 auto
 }
 
 body::before {
@@ -1227,7 +1239,123 @@ a {
   color:var(--red)
 }
 
-.f input:not([type=file]):not([type=checkbox]),.f select,.f textarea {
+/* Radio card list Program Internasional (Form Outbound) */
+.prog-radio-list {
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  border:1.5px solid var(--t200);
+  background:var(--t50);
+  padding:16px
+}
+
+.prog-radio-card {
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:12px 16px;
+  border:1.5px solid var(--t200);
+  background:#fff;
+  cursor:pointer;
+  transition:border-color .2s,background .2s,box-shadow .2s;
+  position:relative
+}
+
+.prog-radio-card:hover {
+  border-color:var(--t400);
+  background:var(--t50)
+}
+
+.prog-radio-card:has(input[type=radio]:checked) {
+  border-color:var(--t600);
+  background:#fff;
+  box-shadow:4px 4px 0 var(--t200)
+}
+
+.prog-radio-card input[type=radio] {
+  position:absolute;
+  opacity:0;
+  pointer-events:none;
+  width:0;
+  height:0
+}
+
+.prog-radio-mark {
+  width:18px;
+  height:18px;
+  border:2px solid var(--t500);
+  border-radius:50%;
+  background:#fff;
+  flex-shrink:0;
+  display:grid;
+  place-items:center;
+  transition:.2s
+}
+
+.prog-radio-mark::after {
+  content:"";
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:var(--t600);
+  transform:scale(0);
+  transition:transform .2s var(--ease)
+}
+
+.prog-radio-card:has(input[type=radio]:checked) .prog-radio-mark {
+  border-color:var(--t600);
+  background:var(--y)
+}
+
+.prog-radio-card:has(input[type=radio]:checked) .prog-radio-mark::after {
+  background:var(--t900);
+  transform:scale(1)
+}
+
+.prog-radio-txt {
+  font:500 15px/1.4 var(--sans);
+  color:var(--ink)
+}
+
+.prog-radio-card:has(input[type=radio]:checked) .prog-radio-txt {
+  font-weight:700;
+  color:var(--t900)
+}
+
+.prog-radio-other {
+  flex-wrap:wrap;
+  cursor:default
+}
+
+.prog-other-head {
+  display:inline-flex;
+  align-items:center;
+  gap:12px;
+  cursor:pointer;
+  flex-shrink:0
+}
+
+.prog-radio-other .prog-other-input {
+  flex:1 1 240px;
+  width:auto!important;
+  padding:9px 14px!important;
+  font-size:14.5px!important;
+  background:#fff!important
+}
+
+.prog-radio-other .prog-other-input:disabled {
+  background:var(--t50)!important;
+  color:var(--muted);
+  cursor:not-allowed;
+  opacity:.7
+}
+
+.f.invalid .prog-radio-list {
+  border-color:var(--red);
+  background:#FFF6F7
+}
+
+.f input:not([type=file]):not([type=checkbox]):not([type=radio]),.f select,.f textarea {
   width:100%;
   padding:13px 16px;
   border:1.5px solid var(--t200);
@@ -1352,7 +1480,7 @@ a {
 }
 
 .drop .ico::before {
-  content:"â†‘"
+  content:"\2191"
 }
 
 .drop:hover .ico {
@@ -1873,6 +2001,7 @@ a {
 }
 
 footer {
+  margin-top:auto;
   border-top:1px dashed var(--t300);
   padding:26px 28px;
   text-align:center;

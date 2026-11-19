@@ -1,3 +1,6 @@
+<?php
+// Halaman Beranda Utama (Landing Page) yang menampilkan hero banner, galeri dokumentasi, alur layanan, kartu fitur, dan seksi FAQ
+?>
 <section class="page active" id="page-home">
   <div class="hero">
     <div class="hero-l">

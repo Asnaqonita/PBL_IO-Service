@@ -1,29 +1,22 @@
 <?php
-/**
- * AdminController
- * Mengelola autentikasi dan antarmuka pada Panel Administrator KUI (I/O Service)
- */
+// Controller untuk mengatur login dan tampilan halaman Panel Admin KUI (I/O Service)
 require_once __DIR__ . '/../config/config.php';
 
 class AdminController {
 
     public function __construct() {
+        // Pastikan session sudah jalan untuk mengecek status login admin
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
     }
 
-    /**
-     * Memeriksa status login administrator
-     */
+    // Cek apakah admin sudah berhasil login di sesi saat ini
     public function isAuthenticated() {
         return !empty($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true;
     }
 
-    /**
-     * Entry point utama panel admin
-     * Alur: Jika belum login, tampilkan halaman login. Jika sudah, tampilkan dashboard.
-     */
+    // Pengatur alur utama panel admin: kalau belum login diarahkan ke form login, kalau sudah langsung buka dashboard
     public function index() {
         $action = $_GET['action'] ?? '';
 
@@ -37,19 +30,17 @@ class AdminController {
             return;
         }
 
-        // Cek autentikasi
+        // Kalau belum login sebagai admin, tampilkan halaman masuk petugas
         if (!$this->isAuthenticated()) {
             $this->showLogin();
             return;
         }
 
-        // Tampilkan dashboard jika sudah login
+        // Kalau sudah terverifikasi, muat tampilan utama dashboard admin
         require_once __DIR__ . '/../views/admin/index.php';
     }
 
-    /**
-     * Menampilkan view formulir login admin (hanya email & password)
-     */
+    // Tampilkan halaman login khusus admin beserta pesan gagal/berhasil kalau ada
     public function showLogin($error = null, $success = null) {
         if ($this->isAuthenticated()) {
             header('Location: ' . BASE_URL . 'admin.php');
@@ -63,9 +54,7 @@ class AdminController {
         require_once __DIR__ . '/../views/admin/login.php';
     }
 
-    /**
-     * Memproses autentikasi form login admin
-     */
+    // Periksa kecocokan email dan kata sandi yang dikirim dari form login admin
     public function processLogin() {
         $email = trim($_POST['email'] ?? '');
         $password = trim($_POST['password'] ?? '');
@@ -76,7 +65,7 @@ class AdminController {
             exit;
         }
 
-        // Kredensial admin yang valid
+        // Daftar akun admin KUI yang diizinkan masuk
         $validEmails = ['admin@pnj.ac.id', 'admin.io@pnj.ac.id', 'admin.kui@pnj.ac.id', 'admin'];
         $validPasswords = ['admin123', 'admin', 'password', 'kui2026'];
 
@@ -90,6 +79,7 @@ class AdminController {
             $email = 'admin@pnj.ac.id';
         }
 
+        // Kalau cocok, simpan tanda login admin di session dan buka dashboard
         if ($isValid) {
             $_SESSION['admin_logged_in'] = true;
             $_SESSION['admin_user'] = [
@@ -108,9 +98,7 @@ class AdminController {
         }
     }
 
-    /**
-     * Memproses logout admin
-     */
+    // Hapus sesi login admin saat tombol keluar ditekan
     public function logout() {
         unset($_SESSION['admin_logged_in']);
         unset($_SESSION['admin_user']);
@@ -119,65 +107,49 @@ class AdminController {
         exit;
     }
 
-    /**
-     * Menampilkan view Outbound secara spesifik (wajib login)
-     */
+    // Buka tab kelola pengajuan Outbound di panel admin
     public function outbound() {
         if (!$this->isAuthenticated()) { $this->showLogin(); return; }
         require_once __DIR__ . '/../views/admin/index.php';
     }
 
-    /**
-     * Menampilkan view Inbound secara spesifik (wajib login)
-     */
+    // Buka tab kelola pengajuan Inbound di panel admin
     public function inbound() {
         if (!$this->isAuthenticated()) { $this->showLogin(); return; }
         require_once __DIR__ . '/../views/admin/index.php';
     }
 
-    /**
-     * Menampilkan view PDLN secara spesifik (wajib login)
-     */
+    // Buka tab kelola pengajuan PDLN di panel admin
     public function pdln() {
         if (!$this->isAuthenticated()) { $this->showLogin(); return; }
         require_once __DIR__ . '/../views/admin/index.php';
     }
 
-    /**
-     * Menampilkan view Data Akun Pengguna (wajib login)
-     */
+    // Buka tab daftar akun pengguna di panel admin
     public function akun() {
         if (!$this->isAuthenticated()) { $this->showLogin(); return; }
         require_once __DIR__ . '/../views/admin/index.php';
     }
 
-    /**
-     * Menampilkan view FAQ (wajib login)
-     */
+    // Buka tab pengaturan tanya-jawab (FAQ) di panel admin
     public function faq() {
         if (!$this->isAuthenticated()) { $this->showLogin(); return; }
         require_once __DIR__ . '/../views/admin/index.php';
     }
 
-    /**
-     * Menampilkan view Loket (wajib login)
-     */
+    // Buka tab antrean loket pengambilan surat fisik
     public function loket() {
         if (!$this->isAuthenticated()) { $this->showLogin(); return; }
         require_once __DIR__ . '/../views/admin/index.php';
     }
 
-    /**
-     * Menampilkan view Profil Admin (wajib login)
-     */
+    // Buka tab profil petugas admin KUI
     public function profil() {
         if (!$this->isAuthenticated()) { $this->showLogin(); return; }
         require_once __DIR__ . '/../views/admin/index.php';
     }
 
-    /**
-     * Menampilkan view Notifikasi (wajib login)
-     */
+    // Buka tab pusat notifikasi & pengumuman broadcast
     public function notifikasi() {
         if (!$this->isAuthenticated()) { $this->showLogin(); return; }
         require_once __DIR__ . '/../views/admin/index.php';

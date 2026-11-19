@@ -1,4 +1,20 @@
 <!-- ===== 3. PROGRESS ===== -->
+<?php
+// Kalau daftar pengajuan PDLN belum dikirim dari controller, ambil langsung dari database sesuai id_user yang sedang login
+if (!isset($listPengajuanPdln)) {
+    $listPengajuanPdln = [];
+    $currUid = $_SESSION['user']['id_user'] ?? $_SESSION['id_user'] ?? null;
+    if ($currUid) {
+        try {
+            require_once __DIR__ . '/../../model/PdlnModel.php';
+            $pdlnMdl = new PdlnModel();
+            $listPengajuanPdln = $pdlnMdl->getPengajuanByUser($currUid);
+        } catch (Exception $e) {
+            $listPengajuanPdln = [];
+        }
+    }
+}
+?>
 <div class="psub" id="psub-progress">
   <div class="wrap">
     <div class="crumb"><a href="#home" data-go="home" data-i18n="n_home">Beranda</a> / <a href="#pdln" data-go="pdln">PDLN</a> / <b data-i18n="s_progress">Progress</b></div>
@@ -18,10 +34,12 @@
       <div class="f"><select id="fst" aria-label="Status">
         <option value="" data-i18n="f_st">Semua Status</option>
         <option value="proses" data-i18n="f_st_proses">Sedang Proses (semua tahap)</option>
-        <option value="baru" data-i18n="st_baru">Baru Diajukan</option>
-        <option value="verifikasi" data-i18n="st_verifikasi">Verifikasi Dokumen</option>
-        <option value="setneg" data-i18n="st_setneg">Menunggu Setneg</option>
-        <option value="disetujui" data-i18n="st_disetujui">Disetujui</option>
+        <option value="baru" data-i18n="st_baru">Baru Diajukan (0%)</option>
+        <option value="verifikasi" data-i18n="st_verifikasi">Verifikasi Dokumen (20%)</option>
+        <option value="proses_kampus" data-i18n="st_proses_kampus">Proses Pimpinan PNJ (40%)</option>
+        <option value="setneg" data-i18n="st_setneg">Menunggu Setneg (60%)</option>
+        <option value="proses_akhir" data-i18n="st_proses_akhir">Penerbitan Izin (80%)</option>
+        <option value="disetujui" data-i18n="st_disetujui">Disetujui (100%)</option>
         <option value="ditolak" data-i18n="st_ditolak">Ditolak</option></select></div>
       <div class="f"><select id="fso" aria-label="Urutkan">
         <option value="new" data-i18n="so_new">Terbaru</option>
@@ -50,3 +68,7 @@
     </div>
   </div>
 </div>
+<script>
+  // Kirim data pengajuan PDLN asli dari database ke JavaScript supaya tabel progress, filter, dan pagination langsung memakainya
+  window.PDLN_PROGRESS_DATA = <?= json_encode(array_values($listPengajuanPdln), JSON_UNESCAPED_UNICODE) ?>;
+</script>

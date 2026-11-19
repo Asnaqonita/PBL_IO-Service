@@ -1,4 +1,5 @@
 <?php
+// Pastikan konstanta BASE_URL sudah siap dipakai supaya link file CSS di bawah tidak nyasar
 if (!defined('BASE_URL')) {
     $configFile = __DIR__ . '/../../config/config.php';
     if (file_exists($configFile)) {

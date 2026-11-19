@@ -1,3 +1,6 @@
+<?php
+// Kerangka utama modul PDLN yang memuat bar navigasi sub-menu dan menggabungkan panel Dashboard, Input Pengajuan, Progress, serta Laporan
+?>
 <!-- ============ PDLN ============ -->
 <!-- Struktur: submenu (#psubbar) dan 4 panel (.psub: dash, input, progress, laporan) -->
 <section class="page" id="page-pdln">

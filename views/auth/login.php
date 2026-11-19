@@ -1,5 +1,5 @@
 <?php
-// File: views/auth/login.php
+// Nyalakan session dan ambil pesan error atau pesan sukses login (kalau ada) supaya bisa ditampilkan di kotak alert halaman login
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }

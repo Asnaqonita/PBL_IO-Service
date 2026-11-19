@@ -1,3 +1,6 @@
+<?php
+// Tab Riwayat & Pengajuan Saya di halaman akun untuk memantau status berkas permohonan dan jadwal pengambilan dokumen di loket
+?>
 <!-- TAB 2: RIWAYAT & PENGAJUAN SAYA (BERDASARKAN ROLE ERD) -->
 <section id="pane-pengajuan" class="profile-pane" style="display:none;">
   

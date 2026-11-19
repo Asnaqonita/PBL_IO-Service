@@ -1,12 +1,10 @@
 <?php
-/**
- * Admin Panel Master View
- * I/O Service — Kantor Urusan Internasional Politeknik Negeri Jakarta
- */
+// Halaman induk panel admin yang menggabungkan seluruh tab menu pengelolaan layanan KUI PNJ
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+// Pastikan BASE_URL sudah terdefinisi sebelum dipakai untuk redirect atau memanggil layout
 if (!defined('BASE_URL')) {
     $configFile = __DIR__ . '/../../config/config.php';
     if (file_exists($configFile)) {
@@ -16,55 +14,39 @@ if (!defined('BASE_URL')) {
     }
 }
 
-// Perlindungan rute: hanya admin yang sudah login yang dapat mengakses dashboard
+// Tolak akses kalau admin belum login dan arahkan kembali ke halaman login admin
 if (empty($_SESSION['admin_logged_in'])) {
     header('Location: ' . BASE_URL . 'admin.php');
     exit;
 }
 
-// 1. Header Layout
+// Muat bagian header dan bar navigasi atas admin
 require_once __DIR__ . '/../layouts/admin-header.php';
 
-// 2. Sidebar / Right Drawer Layout
+// Muat bagian menu samping (drawer kanan) admin
 require_once __DIR__ . '/../layouts/admin-sidebar.php';
 ?>
 
 <!-- MAIN CONTENT AREA -->
 <main>
   <?php
-  // 3. Modul Dashboard Utama
+  // Muat seluruh modul tab halaman admin supaya bisa berpindah tab secara instan tanpa reload
   require_once __DIR__ . '/dashboard.php';
-
-  // 4. Modul Fitur Outbound
   require_once __DIR__ . '/outbound.php';
-
-  // 5. Modul Fitur Inbound
   require_once __DIR__ . '/inbound.php';
-
-  // 6. Modul Fitur PDLN
   require_once __DIR__ . '/pdln.php';
-
-  // 7. Modul Data Akun Pengguna & Profil Civitas
   require_once __DIR__ . '/akun.php';
-
-  // 8. Modul Fitur Kelola FAQ
   require_once __DIR__ . '/faq.php';
-
-  // 9. Modul Fitur Loket Fisik
   require_once __DIR__ . '/loket.php';
-
-  // 10. Modul Profil Petugas Admin KUI
   require_once __DIR__ . '/profil.php';
-
-  // 11. Modul Notifikasi & Broadcast
   require_once __DIR__ . '/notifikasi.php';
   ?>
 </main>
 
 <?php
-// 12. Modal Verifikasi & Periksa Berkas
+// Muat komponen pop-up modal untuk pemeriksaan berkas pengajuan
 require_once __DIR__ . '/modal-check.php';
 
-// 13. Footer & Script Layout
+// Muat bagian footer beserta script interaksi halaman admin
 require_once __DIR__ . '/../layouts/admin-footer.php';
 ?>

@@ -1,3 +1,6 @@
+<?php
+// Potongan form registrasi khusus Mahasiswa PNJ, kolomnya dibuat disabled secara bawaan dan baru aktif saat user memilih status Mahasiswa
+?>
 <!-- ===================================================================== -->
 <!-- FORM REGISTRASI ROLE 1: MAHASISWA PNJ (SESUAI DDL TABEL mahasiswa)    -->
 <!-- Kolom DDL: nim (PK), nama_lengkap, tempat_lahir, tanggal_lahir,       -->

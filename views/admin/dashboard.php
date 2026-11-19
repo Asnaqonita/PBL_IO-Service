@@ -1,4 +1,5 @@
 <?php
+// Pastikan BASE_URL sudah siap dipakai sebelum merender tampilan beranda utama dashboard admin
 if (!defined('BASE_URL')) {
     $configFile = __DIR__ . '/../../config/config.php';
     if (file_exists($configFile)) {

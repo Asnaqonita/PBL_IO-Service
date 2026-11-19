@@ -1,6 +1,7 @@
-/* ---------- 1. KAMUS BAHASA (EN) ---------- */
+// 1. KAMUS BAHASA INGGRIS & INDONESIA
+// Kumpulan teks terjemahan bahasa Inggris untuk fitur ganti bahasa (ID / EN) tanpa perlu muat ulang halaman
 const EN = {
-  /* --- PDLN: submenu, dashboard, progress, laporan, panduan --- */
+  // Teks untuk sub-menu, dashboard, tabel progress, form laporan, dan panduan PDLN
   s_input: 'Submit Request',
   s_progress: 'Progress',
   s_laporan: 'Activity Report',
@@ -33,12 +34,14 @@ const EN = {
   f_reset: 'Reset',
   st_baru: 'Newly Submitted',
   st_verifikasi: 'Document Verification',
+  st_proses_kampus: 'PNJ Leadership Process',
   st_setneg: 'Awaiting Setneg',
+  st_proses_akhir: 'Permit Issuance',
   st_disetujui: 'Approved',
   st_ditolak: 'Rejected',
   so_new: 'Newest',
   so_old: 'Oldest',
-  so_az: 'Activity name Aâ€“Z',
+  so_az: 'Activity name A–Z',
   so_prog: 'Highest progress',
   th_no: 'No',
   th_keg: 'Activity Name',
@@ -138,7 +141,7 @@ const EN = {
   ph_asal: 'University / organisation',
   ph_keperluan: 'Describe the purpose of travel and the documents you need...',
   ph_agenda: 'Summary of the agenda while at PNJ...',
-  sel_pilih: 'Selectâ€¦',
+  sel_pilih: 'Select…',
   k_studi: 'Benchmarking / Visit',
   k_konf: 'Seminar / Conference',
   k_latih: 'Training / Workshop',
@@ -151,7 +154,7 @@ const EN = {
   d_rab: 'Budget Plan (RAB)',
   d_lain: 'Other Supporting Documents (optional)',
   drop_t: 'Choose a file or drag it here',
-  drop_h: 'PDF / JPG / PNG Â· max 5 MB',
+  drop_h: 'PDF / JPG / PNG · max 5 MB',
   peserta: 'Participant',
   p_nama: 'Full Name & Title',
   p_paspor: 'Passport Number',
@@ -236,7 +239,7 @@ const EN = {
   q1: 'Who can submit a request?',
   a1: 'PNJ community members (lecturers, staff, students) for Outbound and PDLN. External or international parties apply through Inbound.',
   q2: 'How long does verification take?',
-  a2: 'Initial verification usually takes 3â€“5 working days once all documents are complete.',
+  a2: 'Initial verification usually takes 3–5 working days once all documents are complete.',
   q3: 'Which document formats are accepted?',
   a3: 'PDF, JPG, or PNG, up to 5 MB per file.',
   q4: 'Can I edit a request after sending it?',
@@ -279,6 +282,13 @@ const EN = {
   o_s1: 'Student Details',
   o_nama: 'Full Name',
   o_nim: 'Student ID (NIM)',
+  o_tmp_lahir: 'Place of Birth',
+  o_tgl_lahir: 'Date of Birth',
+  o_semester: 'Semester',
+  o_thn_akademik: 'Academic Year',
+  o_doa: 'Date of Admission',
+  o_prog_int: 'International Program Participated In',
+  o_durasi: 'Program Duration',
   u_sipil: 'Civil Engineering',
   u_mesin: 'Mechanical Engineering',
   u_elek: 'Electrical Engineering',
@@ -346,7 +356,7 @@ const EN = {
   i_ph_period: 'e.g. Odd Semester 2026/2027',
   i_period: 'Intended Study Period',
   i_sD: 'Document Uploads (PDF/JPG)',
-  i_h_pass: 'Valid for at least 6â€“12 months',
+  i_h_pass: 'Valid for at least 6–12 months',
   i_d_pass: 'Passport Scan Page',
   i_d_trans: 'Official Academic Transcript',
   i_d_foto: 'Formal Passport Photo (Red/White Background)',
@@ -382,11 +392,14 @@ const EN = {
   tk_ok_d: 'Our reply will be sent to this email:',
   tk_again: 'Send Another Ticket',
 };
+// Kamus teks dinamis dua bahasa (Indonesia & Inggris) untuk label status, tombol tabel, dan pesan pop-up notifikasi
 const J = {
   id: {
     st_baru: 'Baru Diajukan',
     st_verifikasi: 'Verifikasi Dokumen',
+    st_proses_kampus: 'Proses Pimpinan PNJ',
     st_setneg: 'Menunggu Setneg',
+    st_proses_akhir: 'Penerbitan Izin',
     st_disetujui: 'Disetujui',
     st_ditolak: 'Ditolak',
     g_proses: 'Sedang Proses',
@@ -445,7 +458,9 @@ const J = {
   en: {
     st_baru: 'Newly Submitted',
     st_verifikasi: 'Document Verification',
+    st_proses_kampus: 'PNJ Leadership Process',
     st_setneg: 'Awaiting Setneg',
+    st_proses_akhir: 'Permit Issuance',
     st_disetujui: 'Approved',
     st_ditolak: 'Rejected',
     g_proses: 'In Progress',
@@ -503,21 +518,25 @@ const J = {
   },
 };
 
-/* ---------- 2. UTIL ---------- */
+// 2. FUNGSI BANTUAN UMUM (UTILITIES) & PENGATUR BAHASA
+// Shortcut biar lebih ringkas waktu ambil elemen HTML (mirip jQuery)
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 let lang = 'id';
+// Cek bahasa terakhir yang dipilih user dari penyimpanan lokal browser
 try {
   lang = localStorage.getItem('io_lang') || 'id';
 } catch (e) {}
 let user = null;
 const T = (k) => J[lang][k];
+// Bersihkan teks dari karakter khusus HTML supaya aman dari celah XSS saat dimasukkan ke innerHTML
 const esc = (s) =>
   String(s).replace(
     /[&<>"']/g,
     (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c],
   );
 
+// Ganti seluruh teks dan placeholder di halaman sesuai bahasa yang sedang dipilih (ID atau EN)
 function applyLang(root = document) {
   $$('[data-i18n]', root).forEach((el) => {
     if (el.dataset.id === undefined) el.dataset.id = el.innerHTML;
@@ -529,6 +548,7 @@ function applyLang(root = document) {
     el.placeholder = lang === 'en' && EN[k] ? EN[k] : el.dataset.phid;
   });
 }
+// Simpan pilihan bahasa baru ke browser lalu perbarui tampilan seluruh komponen halaman
 function setLang(l) {
   lang = l;
   try {
@@ -541,16 +561,18 @@ function setLang(l) {
   buildTicker();
   if (typeof renderPdln === 'function') renderPdln();
 }
-/* marquee */
+// Buat teks berjalan (ticker) di bagian bawah banner beranda
 const TK_WORDS = ['INTERNATIONAL PNJ', 'EXCHANGE', 'COLLABORATION', 'VISITS', 'RESEARCH'];
 const TK = { id: TK_WORDS, en: TK_WORDS };
 function buildTicker() {
   const tk = $('#tk');
   if (!tk) return;
   const row = TK[lang].map((x) => `<span>${x}</span>`).join('');
+  // Gandakan teks 6 kali supaya animasinya nyambung terus tanpa putus di layar lebar
   tk.innerHTML =
-    row.repeat(6); /* 6 salinan, geser -50% = 3 salinan: selalu penuh di layar lebar */
+    row.repeat(6);
 }
+// Munculkan pesan notifikasi mengambang (toast) di pojok layar selama 3,2 detik
 function toast(msg, warn) {
   const t = document.createElement('div');
   t.className = 'toast' + (warn ? ' warn' : '');
@@ -559,11 +581,12 @@ function toast(msg, warn) {
   setTimeout(() => t.remove(), 3200);
 }
 
-/* ---------- 3. ROUTER ---------- */
+// 3. SISTEM NAVIGASI HALAMAN (ROUTER SPA) & PEMBATASAN AKSES ROLE
 const PAGES = ['home', 'outbound', 'inbound', 'pdln', 'login', 'register', 'profile'];
 const SUBS = ['dash', 'input', 'progress', 'laporan'];
 let curPage = 'home',
   curSub = 'dash';
+// Nyalakan garis bawah (highlight) pada menu navbar atas sesuai halaman atau posisi scroll FAQ saat ini
 function setNav() {
   const faq = $('#faq');
   const atFaq =
@@ -572,12 +595,21 @@ function setNav() {
     a.classList.toggle('active', atFaq ? a.dataset.page === 'faq' : a.dataset.page === curPage),
   );
 }
+// Pindahkan tampilan antar sub-menu di dalam halaman PDLN (Dashboard, Input Pengajuan, Progress, atau Laporan)
 function showSub(sub) {
   curSub = sub;
   $$('.psub').forEach((x) => x.classList.toggle('active', x.id === 'psub-' + sub));
   $$('.psb-main a').forEach((a) => a.classList.toggle('active', a.dataset.sub === sub));
   if (sub === 'dash' || sub === 'progress') renderPdln();
+  if (sub === 'input') {
+    const fPdln = $('#f-pdln');
+    if (fPdln) updateProgress(fPdln);
+  } else if (sub === 'laporan') {
+    const fLap = $('#f-laporan');
+    if (fLap) updateProgress(fLap);
+  }
 }
+// Buka kotak akordeon Panduan atau Template di halaman PDLN lalu gulir layar otomatis ke sana
 function scrollToAcc(id) {
   const d = $('#acc-' + id);
   if (!d) return;
@@ -592,12 +624,28 @@ function scrollToAcc(id) {
     60,
   );
 }
+// Fungsi utama untuk pindah halaman tanpa reload, sekalian mengecek hak akses role user sebelum membuka halaman Outbound atau PDLN
 function go(p) {
   closeDrawer();
   let [base, sub] = String(p || '').split('/');
   const toFaq = base === 'faq';
   if (toFaq) base = 'home';
   if (!PAGES.includes(base)) base = 'home';
+  // Cek pembatasan akses berdasarkan role user yang sedang login
+  if (user && user.role) {
+    // Tolak kalau yang buka menu Outbound bukan Mahasiswa PNJ (misal Dosen, Tendik, atau Tamu Eksternal)
+    if (base === 'outbound' && user.role !== 'mahasiswa') {
+      toast('Layanan Form Outbound khusus untuk Mahasiswa PNJ. Dosen/Tendik silakan menggunakan layanan PDLN.', true);
+      if (curPage && PAGES.includes(curPage) && curPage !== 'outbound') return;
+      base = 'home';
+    }
+    // Tolak kalau Tamu Eksternal mencoba membuka menu PDLN
+    if (base === 'pdln' && !['mahasiswa', 'sivitas'].includes(user.role)) {
+      toast('Layanan PDLN hanya tersedia untuk Mahasiswa dan Sivitas (Dosen & Tendik) PNJ.', true);
+      if (curPage && PAGES.includes(curPage) && curPage !== 'pdln') return;
+      base = 'home';
+    }
+  }
   const changed = curPage !== base;
   curPage = base;
   $$('.page').forEach((x) => x.classList.toggle('active', x.id === 'page-' + base));
@@ -638,10 +686,18 @@ function go(p) {
     }
     hash = sub ? 'profile/' + sub : 'profile';
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  } else window.scrollTo({ top: 0, behavior: 'smooth' });
+  } else {
+    // Hitung ulang persentase progress bar saat user masuk ke halaman Form Outbound
+    if (base === 'outbound') {
+      const fOut = $('#f-outbound');
+      if (fOut) updateProgress(fOut);
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
   if (location.hash !== '#' + hash) history.replaceState(null, '', '#' + hash);
 }
 window.addEventListener('scroll', setNav, { passive: true });
+// Tangkap semua klik pada elemen yang punya atribut data-go supaya berpindah halaman lewat fungsi go()
 document.addEventListener('click', (e) => {
   const g = e.target.closest('[data-go]');
   if (g) {
@@ -650,9 +706,10 @@ document.addEventListener('click', (e) => {
   }
 });
 
-/* ---------- 4. DRAWER & LOGIN ---------- */
+// 4. PANEL SAMPING (DRAWER AKUN), MODAL POP-UP, & TAMPILAN STATUS LOGIN
 const drawer = $('#drawer'),
   scrim = $('#scrim');
+// Buka panel menu akun di sebelah kanan layar
 function openDrawer() {
   if (drawer) {
     drawer.classList.add('open');
@@ -662,6 +719,7 @@ function openDrawer() {
     scrim.classList.add('on');
   }
 }
+// Tutup panel menu akun
 function closeDrawer() {
   if (drawer) {
     drawer.classList.remove('open');
@@ -676,6 +734,7 @@ const burgerBtn = $('#burger'),
 if (burgerBtn) burgerBtn.onclick = openDrawer;
 if (drawerCloseBtn) drawerCloseBtn.onclick = closeDrawer;
 if (scrim) scrim.onclick = closeDrawer;
+// Izinkan user menutup drawer atau modal pop-up cukup dengan menekan tombol Escape di keyboard
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') {
     closeDrawer();
@@ -695,6 +754,7 @@ $$('.modal').forEach((m) =>
 );
 $$('[data-close]').forEach((b) => (b.onclick = () => b.closest('.modal').classList.remove('open')));
 
+// Sesuaikan tampilan avatar, nama user, dan tombol Login/Logout di drawer serta tombol hero beranda sesuai status login saat ini
 function syncAuthUI() {
   const av = $('#avatar'),
     nm = $('#uName'),
@@ -758,8 +818,8 @@ if (lfForm)
     }
   });
 
-/* ===== AUTH PAGES INTERACTION (LOGIN, SSO, REGISTER) ===== */
-// 1. Validasi UI Form Login Halaman Penuh (Submit POST Murni ke AuthController.php)
+// INTERAKSI HALAMAN AUTENTIKASI (LOGIN, SSO, & REGISTRASI)
+// 1. Cek kelengkapan input pada form login halaman penuh sebelum dikirim lewat POST ke AuthController.php
 const fLogin = $('#f-login');
 if (fLogin) {
   fLogin.addEventListener('submit', (e) => {
@@ -926,7 +986,7 @@ function toggleRegisterPnjRole(roleVal) {
   });
 });
 
-/* galeri */
+// Pengaturan slider galeri foto dokumentasi di halaman beranda utama
 (function () {
   const tr = $('#galTrack');
   if (!tr) return;
@@ -1004,7 +1064,7 @@ function toggleRegisterPnjRole(roleVal) {
     }, 4500);
 })();
 
-/* tiket */
+// Pengaturan form pengiriman tiket bantuan pertanyaan di bagian bawah halaman FAQ
 (function () {
   const form = $('#tktForm');
   if (!form) return;
@@ -1056,7 +1116,8 @@ function toggleRegisterPnjRole(roleVal) {
   }
 })();
 
-/* ---------- 5. FORM ---------- */
+// 5. PENANGANAN FORMULIR, UPLOAD FILE DRAG & DROP, DAN PERHITUNGAN PROGRESS BAR
+// Tambahkan pesan error otomatis di bawah setiap kolom input dan batasi tanggal mulai minimal hari ini
 function enhance(root) {
   $$('.f', root).forEach((f) => {
     if (!f.querySelector('.err'))
@@ -1070,12 +1131,15 @@ function enhance(root) {
   });
   applyLang(root);
 }
-function dropHTML(k, label, req) {
+// Buat komponen kotak upload dokumen (dropzone) untuk kartu peserta tambahan
+function dropHTML(k, label, req, nameAttr = '') {
+  const nm = nameAttr ? `name="${nameAttr}"` : '';
   return `<div class="f"><div class="lrow"><label data-i18n="${k}">${label}
-  </label></div><div class="drop"><input type="file" ${req ? 'required' : ''} accept=".pdf,.jpg,.jpeg,.png">
+  </label></div><div class="drop"><input type="file" ${nm} ${req ? 'required' : ''} accept=".pdf,.jpg,.jpeg,.png">
   <div class="drop-ui"><span class="ico"></span><span class="dz-t" data-i18n="drop_t">Pilih file atau seret ke sini</span>
   <small class="mono" data-i18n="drop_h">PDF / JPG / PNG · maks 5 MB</small></div><ul class="files"></ul></div></div>`;
 }
+// Cek ukuran file yang dipilih user (maksimal 5 MB) lalu tampilkan nama serta ukuran berkasnya di kotak upload
 function updateDrop(inp) {
   const d = inp.closest('.drop'),
     ul = $('.files', d),
@@ -1093,6 +1157,7 @@ function updateDrop(inp) {
     ul.innerHTML = '';
   }
 }
+// Pantau perubahan file yang diunggah dan pastikan tanggal selesai kegiatan tidak lebih awal dari tanggal mulai
 document.addEventListener('change', (e) => {
   const t = e.target;
   if (t.matches('.drop input[type=file]')) updateDrop(t);
@@ -1105,6 +1170,7 @@ document.addEventListener('change', (e) => {
     }
   }
 });
+// Hapus file yang sudah terlanjur dipilih saat user menekan tombol silang (✕) di kotak upload
 document.addEventListener('click', (e) => {
   const rm = e.target.closest('.files .rm');
   if (rm) {
@@ -1128,14 +1194,68 @@ document.addEventListener('click', (e) => {
   }),
 );
 
-/* progress */
+// Aktifkan dan wajibkan kotak teks "Sebutkan program lainnya..." pada Form Outbound hanya ketika user memilih radio button "Other"
+function syncProgramOther(form) {
+  if (!form) return;
+  const radios = $$('input[type=radio][name="program_internasional"]', form);
+  const otherInp = $('input[name="program_lainnya"]', form);
+  if (!radios.length || !otherInp) return;
+  const checked = radios.find((r) => r.checked);
+  const isOther = checked && checked.value === 'Other';
+  otherInp.disabled = !isOther;
+  otherInp.required = Boolean(isOther);
+  if (!isOther) {
+    otherInp.value = '';
+  }
+}
+
+// Kumpulkan seluruh kolom wajib (required) yang sedang aktif di dalam form, dan gabungkan radio button yang satu grup supaya dihitung sebagai 1 isian saja
 function requiredCtl(form) {
-  return $$('input[required],select[required],textarea[required]', form);
+  syncProgramOther(form);
+  const raw = $$('input[required]:not(:disabled),select[required]:not(:disabled),textarea[required]:not(:disabled)', form);
+  const list = [];
+  const seenRadioGroups = new Set();
+  raw.forEach((el) => {
+    if (el.type === 'radio') {
+      const grpName = el.name || el.id;
+      if (grpName) {
+        if (seenRadioGroups.has(grpName)) return;
+        seenRadioGroups.add(grpName);
+      }
+      list.push(el);
+    } else {
+      list.push(el);
+    }
+  });
+  return list;
 }
+// Cek apakah sebuah kolom input wajib sudah terisi dengan benar (termasuk validasi file, grup radio, format email, batas angka, dan urutan tanggal)
 function isFilled(c) {
-  return c.type === 'file' ? c.files.length > 0 : c.value.trim() !== '';
+  if (c.type === 'file') return c.files.length > 0;
+  if (c.type === 'radio') {
+    const form = c.closest('form') || document;
+    if (c.name) {
+      return $$('input[type=radio]', form).some((r) => r.name === c.name && r.checked);
+    }
+    return c.checked;
+  }
+  if (c.type === 'checkbox') return c.checked;
+  let ok = c.value.trim() !== '';
+  if (ok && c.type === 'email') ok = c.checkValidity();
+  if (ok && c.dataset.max) {
+    const v = parseFloat(c.value.replace(',', '.'));
+    ok = !isNaN(v) && v >= 0 && v <= parseFloat(c.dataset.max);
+  }
+  if (ok && c.dataset.role === 'end') {
+    const form = c.closest('form');
+    const s = form ? $('input[data-role=start]', form) : null;
+    if (s && s.value && c.value < s.value) ok = false;
+  }
+  return ok;
 }
+// Hitung persentase kolom wajib yang sudah terisi (termasuk yang terisi otomatis dari profil) lalu perbarui lebar dan angka progress bar di atas form
 function updateProgress(form) {
+  if (!form) return;
   const list = requiredCtl(form);
   if (!list.length) return;
   const pct = Math.round((list.filter(isFilled).length / list.length) * 100);
@@ -1149,66 +1269,101 @@ function updateProgress(form) {
   if (bEl) bEl.textContent = pct + '%';
   pg.classList.toggle('full', pct === 100);
 }
+// Setiap kali user mengetik atau mengubah pilihan di form, hapus tanda merah error dan langsung perbarui progress bar
 ['input', 'change'].forEach((ev) =>
   document.addEventListener(ev, (e) => {
-    const form = e.target.closest && e.target.closest('form.shell');
+    const t = e.target;
+    const form = t && t.closest ? t.closest('form.shell') : null;
     if (!form) return;
-    const f = e.target.closest('.f');
+    if (t.matches && t.matches('input[type=radio][name="program_internasional"]')) {
+      syncProgramOther(form);
+      if (t.checked && t.value === 'Other') {
+        const otherInp = $('input[name="program_lainnya"]', form);
+        if (otherInp) setTimeout(() => otherInp.focus(), 20);
+      }
+    }
+    const f = t.closest('.f');
     if (f) f.classList.remove('invalid');
     updateProgress(form);
   }),
 );
 
+// Periksa seluruh kolom wajib sebelum form dikirim dan tandai kolom pertama yang masih kosong atau salah format
 function validate(form) {
+  syncProgramOther(form);
   let first = null;
   $$('.f', form).forEach((f) => {
-    const c = $('input:not([type=checkbox]),select,textarea', f);
-    if (!c || !c.required) {
+    const reqs = $$('input[required]:not([type=checkbox]):not(:disabled),select[required]:not(:disabled),textarea[required]:not(:disabled)', f);
+    if (!reqs.length) {
+      f.classList.remove('invalid');
       return;
     }
-    let ok = isFilled(c);
-    if (ok && c.type === 'email') ok = c.checkValidity();
-    if (ok && c.dataset.max) {
-      const v = parseFloat(c.value.replace(',', '.'));
-      ok = !isNaN(v) && v >= 0 && v <= parseFloat(c.dataset.max);
-    }
-    if (ok && c.dataset.role === 'end') {
-      const s = $('input[data-role=start]', form);
-      if (s && s.value && c.value < s.value) ok = false;
-    }
+    const seenRadios = new Set();
+    let ok = true;
+    reqs.forEach((c) => {
+      if (c.type === 'radio') {
+        const g = c.name || c.id;
+        if (g && seenRadios.has(g)) return;
+        if (g) seenRadios.add(g);
+      }
+      if (!isFilled(c)) ok = false;
+    });
     f.classList.toggle('invalid', !ok);
     if (!ok && !first) first = f;
   });
   return first;
 }
+// Bersihkan isian manual dan file upload pada form, tapi tetap pertahankan nilai auto-fill profil bawaan (defaultValue)
 function resetForm(form) {
+  const pl = $('.plist', form);
+  if (pl) {
+    $$('.pcard', pl).forEach((card, idx) => {
+      if (idx > 0) card.remove();
+    });
+    if (!$$('.pcard', pl).length) {
+      addP(pl, false);
+    }
+    renumber(pl);
+  }
   form.reset();
+  $$('input:not([type=file]):not([type=checkbox]):not([type=radio]),textarea', form).forEach((el) => {
+    el.value = el.defaultValue;
+  });
+  $$('input[type=radio],input[type=checkbox]', form).forEach((el) => {
+    el.checked = el.defaultChecked;
+  });
+  $$('select', form).forEach((sel) => {
+    const defOpt = [...sel.options].find((o) => o.defaultSelected);
+    if (defOpt) sel.value = defOpt.value;
+    else sel.selectedIndex = 0;
+  });
+  syncProgramOther(form);
   $$('.drop', form).forEach((d) => {
     d.classList.remove('has');
     $('.files', d).innerHTML = '';
   });
   $$('.f.invalid', form).forEach((f) => f.classList.remove('invalid'));
-  const pl = $('.plist', form);
-  if (pl) {
-    pl.innerHTML = '';
-    addP(pl, false);
-  }
   updateProgress(form);
 }
 $$('form.shell').forEach((form) => {
   if (form.classList.contains('reg-shell')) return;
   form.addEventListener('submit', (e) => {
-    e.preventDefault();
     const bad = validate(form);
     if (bad) {
+      e.preventDefault();
       toast(T('invalid'), true);
       bad.scrollIntoView({ behavior: 'smooth', block: 'center' });
       const c = $('input,select,textarea', bad);
       if (c && c.type !== 'file') setTimeout(() => c.focus({ preventScroll: true }), 350);
       return;
     }
-    const mod = form.dataset.mod,
-      no = mod + '-2026-' + String(Math.floor(1000 + Math.random() * 9000));
+    const mod = form.dataset.mod;
+    // Untuk form PDLN (#f-pdln), selalu kirim POST ke index.php?url=pdln/store agar tersimpan ke database PostgreSQL!
+    if (mod === 'PDLN') {
+      return; // Biarkan form submit native ke backend PHP
+    }
+    e.preventDefault();
+    const no = mod + '-2026-' + String(Math.floor(1000 + Math.random() * 9000));
     const docs = $$('input[type=file]', form).filter((i) => i.files.length).length;
     const pe = $$('.pcard', form).length || 1;
     const now = new Date().toLocaleString(lang === 'en' ? 'en-GB' : 'id-ID', {
@@ -1256,7 +1411,8 @@ if (okAgain)
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-/* ---------- 6. PESERTA ---------- */
+// 6. PENGELOLAAN DAFTAR PESERTA TAMBAHAN
+// Susun struktur HTML kartu isian peserta atau tamu tambahan
 function pCardHTML(variant, rm) {
   const name = variant === 'inbound' ? 'Tamu' : 'Peserta';
   const key = variant === 'inbound' ? 'tamu' : 'peserta';
@@ -1272,25 +1428,30 @@ function pCardHTML(variant, rm) {
       <div class="full">${dropHTML('g_pasf', 'Scan Paspor (halaman data)', true)}</div>`;
   } else {
     body = `
-      <div class="f"><label data-i18n="p_nama">Nama Lengkap & Gelar</label><input type="text" required data-k="pnama"></div>
-      <div class="f"><label>NIP</label><input type="text" required placeholder="Isi strip (-) jika PPPK/Non PNS" data-i18n-ph="ph_nip"></div>
-      <div class="f"><label data-i18n="p_nik">NIK</label><input type="text" required inputmode="numeric" maxlength="16"></div>
-      <div class="f"><label data-i18n="p_paspor">Nomor Paspor</label><input type="text" required></div>
-      <div class="f"><label data-i18n="p_jenjab">Jenis Jabatan</label>
-        <select required data-k="pjab"><option value="" data-i18n="j_pilih">Pilih jabatan</option><option data-i18n="j_dosen">Dosen</option><option data-i18n="j_tendik">Tenaga Kependidikan</option><option data-i18n="j_pimp">Pimpinan</option><option data-i18n="j_mhs">Mahasiswa</option></select></div>
-      <div class="f"><label data-i18n="p_namajab">Nama Jabatan</label><input type="text" required placeholder="Sesuai tertera dalam surat" data-i18n-ph="ph_namajab"></div>
-      <div class="f"><label data-i18n="p_email">Email Peserta</label><input type="email" required></div>
-      <div class="f"><label data-i18n="p_telp">Nomor Telepon</label><input type="tel" required inputmode="tel"></div>
-      ${dropHTML('p_ktp', 'KTP', false)}
-      ${dropHTML('p_pasf', 'Paspor', false)}`;
+      <div class="f"><label data-i18n="p_nama">Nama Lengkap & Gelar</label><input type="text" name="peserta_nama[]" required data-k="pnama"></div>
+      <div class="f"><label>NIP / NIM</label><input type="text" name="peserta_nomor_induk[]" required placeholder="Isi strip (-) jika PPPK/Non PNS" data-i18n-ph="ph_nip"></div>
+      <div class="f"><label>NIDN (Jika Dosen)</label><input type="text" name="peserta_nidn[]" placeholder="Isi strip (-) jika Mahasiswa / Tendik"></div>
+      <div class="f"><label data-i18n="p_nik">NIK</label><input type="text" name="peserta_nik[]" required inputmode="numeric" maxlength="16"></div>
+      <div class="f"><label data-i18n="p_paspor">Nomor Paspor</label><input type="text" name="peserta_no_paspor[]" required></div>
+      <div class="f"><label data-i18n="p_jenjab">Status / Jenis Jabatan</label>
+        <select name="peserta_status[]" required data-k="pjab"><option value="" data-i18n="j_pilih">Pilih jabatan</option><option value="Dosen" data-i18n="j_dosen">Dosen</option><option value="Tenaga Kependidikan" data-i18n="j_tendik">Tenaga Kependidikan</option><option value="Pimpinan" data-i18n="j_pimp">Pimpinan</option><option value="Mahasiswa" data-i18n="j_mhs">Mahasiswa</option></select></div>
+      <div class="f"><label data-i18n="p_namajab">Nama Jabatan</label><input type="text" name="peserta_jabatan[]" required placeholder="Sesuai tertera dalam surat" data-i18n-ph="ph_namajab"></div>
+      <div class="f"><label>Pangkat / Golongan</label><input type="text" name="peserta_pangkat_golongan[]" placeholder="Cth. Pembina / IV/a (Opsional)"></div>
+      <div class="f full"><label>Unit Kerja / Jurusan / Program Studi</label><input type="text" name="peserta_unit_kerja[]" required placeholder="Contoh: Jurusan Teknik Informatika dan Komputer"></div>
+      <div class="f"><label data-i18n="p_email">Email Peserta (PNJ)</label><input type="email" name="peserta_email[]" required></div>
+      <div class="f"><label data-i18n="p_telp">Nomor WhatsApp / Telepon</label><input type="tel" name="peserta_no_hp[]" required inputmode="tel"></div>
+      ${dropHTML('p_ktp', 'KTP', false, 'peserta_ktp[]')}
+      ${dropHTML('p_pasf', 'Paspor', false, 'peserta_paspor[]')}`;
   }
   return `<div class="pcard"><div class="p-head"><h4><span data-i18n="${key}">${name}</span> <span class="pn">1</span></h4>${rm ? '<button type="button" class="rm-p" data-i18n="rm">Hapus</button>' : ''}</div><div class="grid">${body}</div></div>`;
 }
+// Urutkan ulang nomor kartu peserta setelah ada peserta yang ditambah atau dihapus
 function renumber(pl) {
   $$('.pcard', pl).forEach((c, i) => {
     $('.pn', c).textContent = i + 1;
   });
 }
+// Tambahkan satu kartu peserta baru ke dalam daftar peserta di form
 function addP(pl, rm) {
   const wrap = document.createElement('div');
   wrap.innerHTML = pCardHTML(pl.dataset.variant, rm);
@@ -1301,12 +1462,17 @@ function addP(pl, rm) {
   return card;
 }
 ['pdln'].forEach((mod) => {
-  /* add peserta PDLN */
+  // Pengaturan tombol tambah dan hapus kartu peserta pada form PDLN
   const pl = $('#pl-' + mod),
     add = $('#add-' + mod);
   if (!pl || !add) return;
   const form = pl.closest('form');
-  addP(pl, false);
+  if (!$$('.pcard', pl).length) {
+    addP(pl, false);
+  } else {
+    $$('.pcard', pl).forEach((c) => enhance(c));
+    renumber(pl);
+  }
   add.onclick = () => {
     if ($$('.pcard', pl).length >= 10) return toast(T('max'), true);
     const c = addP(pl, true);
@@ -1322,7 +1488,7 @@ function addP(pl, rm) {
   });
 });
 
-/* ---------- 7. PDLN: data dummy, dashboard, progress ----------*/
+// 7. MODUL PDLN: DATA REAL DARI POSTGRESQL (window.PDLN_PROGRESS_DATA), DASHBOARD, & TABEL PROGRESS
 const NEG = {
   jp: { id: 'Jepang', en: 'Japan' },
   us: { id: 'Amerika Serikat', en: 'United States' },
@@ -1344,168 +1510,61 @@ const dAgo = (n) => {
     String(t.getDate()).padStart(2, '0')
   );
 };
-const PDLN_DATA = [
-  {
-    kegiatan: 'Benchmarking Sistem Penjaminan Mutu',
-    peserta: ['Dr. Rina Kusumawati, M.T.'],
-    jab: 'dosen',
-    kota: 'Beijing',
-    neg: 'cn',
-    d: dAgo(0),
-    st: 'baru',
-    prog: 20,
-    lap: false,
-    note: null,
-  },
-  {
-    kegiatan: 'International Conference on Applied Engineering',
-    peserta: ['Bagas Pratama, M.Kom.', 'Sekar Ayu Lestari, M.T.'],
-    jab: 'dosen',
-    kota: 'Tokyo',
-    neg: 'jp',
-    d: dAgo(0),
-    st: 'verifikasi',
-    prog: 40,
-    lap: false,
-    note: {
-      id: 'Scan paspor halaman data kurang jelas. Mohon unggah ulang dengan resolusi lebih tinggi.',
-      en: 'The passport data page scan is unclear. Please re-upload it in a higher resolution.',
-    },
-  },
-  {
-    kegiatan: 'Student Exchange Program Orientation',
-    peserta: ['Fadli Ramadhan'],
-    jab: 'mahasiswa',
-    kota: 'Kuala Lumpur',
-    neg: 'my',
-    d: dAgo(16),
-    st: 'setneg',
-    prog: 70,
-    lap: false,
-    note: {
-      id: 'Berkas sudah lengkap, saat ini menunggu persetujuan Sekretariat Negara.',
-      en: 'Documents are complete; currently awaiting approval from the State Secretariat.',
-    },
-  },
-  {
-    kegiatan: 'Workshop Kurikulum Vokasi Berbasis Industri',
-    peserta: ['Ir. Hendra Wijaya, M.M.'],
-    jab: 'pimpinan',
-    kota: 'Sydney',
-    neg: 'au',
-    d: dAgo(24),
-    st: 'baru',
-    prog: 20,
-    lap: false,
-    note: null,
-  },
-  {
-    kegiatan: 'Joint Research Meeting Smart Manufacturing',
-    peserta: ['Dewi Anggraini, Ph.D.', 'Yusuf Maulana, M.Sc.'],
-    jab: 'dosen',
-    kota: 'Munich',
-    neg: 'de',
-    d: dAgo(41),
-    st: 'disetujui',
-    prog: 100,
-    lap: true,
-    note: null,
-  },
-  {
-    kegiatan: 'Seminar Internasional Pendidikan Teknik',
-    peserta: ['Nurul Hidayati, M.Pd.'],
-    jab: 'tendik',
-    kota: 'Osaka',
-    neg: 'jp',
-    d: dAgo(58),
-    st: 'disetujui',
-    prog: 100,
-    lap: true,
-    note: null,
-  },
-  {
-    kegiatan: 'Technology Transfer Visit',
-    peserta: ['Prof. Andi Setiawan, Ph.D.'],
-    jab: 'pimpinan',
-    kota: 'Seoul',
-    neg: 'kr',
-    d: dAgo(77),
-    st: 'disetujui',
-    prog: 100,
-    lap: false,
-    note: {
-      id: 'Disetujui. Silakan proses Paspor Dinas dan Exit Permit.',
-      en: 'Approved. Please process the Official Passport and Exit Permit.',
-    },
-  },
-  {
-    kegiatan: 'Pelatihan Pengelolaan Laboratorium Digital',
-    peserta: ['Ayu Wulandari, S.T.'],
-    jab: 'tendik',
-    kota: 'Boston',
-    neg: 'us',
-    d: dAgo(95),
-    st: 'disetujui',
-    prog: 100,
-    lap: true,
-    note: null,
-  },
-  {
-    kegiatan: 'Kunjungan Industri Manufaktur Otomotif',
-    peserta: ['Rizky Maulana', 'Putri Salsabila', 'Dimas Aditya'],
-    jab: 'mahasiswa',
-    kota: 'Nagoya',
-    neg: 'jp',
-    d: dAgo(120),
-    st: 'disetujui',
-    prog: 100,
-    lap: false,
-    note: null,
-  },
-  {
-    kegiatan: 'Konferensi Energi Terbarukan Asia',
-    peserta: ['Dr. Maya Puspita, M.Eng.'],
-    jab: 'dosen',
-    kota: 'Delft',
-    neg: 'nl',
-    d: dAgo(150),
-    st: 'disetujui',
-    prog: 100,
-    lap: false,
-    note: null,
-  },
-  {
-    kegiatan: 'Studi Banding Pusat Karier',
-    peserta: ['Eko Prasetyo, S.Kom.'],
-    jab: 'tendik',
-    kota: 'California',
-    neg: 'us',
-    d: dAgo(175),
-    st: 'disetujui',
-    prog: 100,
-    lap: false,
-    note: null,
-  },
-  {
-    kegiatan: 'Pameran Inovasi Teknologi Terapan',
-    peserta: ['Lukman Hakim, M.T.'],
-    jab: 'dosen',
-    kota: 'Shanghai',
-    neg: 'cn',
-    d: dAgo(200),
-    st: 'ditolak',
-    prog: 40,
-    lap: false,
-    note: {
-      id: 'Surat Tugas belum ditandatangani pimpinan. Mohon lengkapi, lalu ajukan kembali sebagai pengajuan baru.',
-      en: 'The Assignment Letter has not been signed by the leader. Please complete it and resubmit as a new request.',
-    },
-  },
-];
+
+// Aturan tahapan status & persentase progress PDLN (Kelipatan 20%, Mulai dari 0%)
+const PDLN_STAGE_PROGRESS = {
+  baru: 0,           // Baru Diajukan = 0%
+  verifikasi: 20,    // Verifikasi Dokumen (Tahap 1) = 20%
+  proses_kampus: 40, // Proses Pimpinan PNJ (Tahap 2) = 40%
+  setneg: 60,        // Menunggu Setneg (Tahap 3) = 60%
+  proses_akhir: 80,  // Penerbitan Izin (Tahap 4) = 80%
+  disetujui: 100,    // Disetujui / Selesai = 100%
+};
+
+// Rapikan dan seragamkan struktur data pengajuan PDLN dari database PostgreSQL sekaligus hitung persentase progress-nya
+function normalizePdlnRecord(item) {
+  const stRaw = String(item.st || item.status_pdln || 'baru').toLowerCase().trim();
+  let st = 'baru';
+  if (stRaw === 'baru' || stRaw.includes('baru')) st = 'baru';
+  else if (stRaw === 'verifikasi' || stRaw.includes('verifikasi') || stRaw.includes('tahap 1') || stRaw.includes('tahap awal')) st = 'verifikasi';
+  else if (stRaw === 'proses_kampus' || stRaw.includes('pimpinan') || stRaw.includes('kampus') || stRaw.includes('tahap 2')) st = 'proses_kampus';
+  else if (stRaw === 'setneg' || stRaw.includes('setneg') || stRaw.includes('tahap 3')) st = 'setneg';
+  else if (stRaw === 'proses_akhir' || stRaw.includes('penerbitan') || stRaw.includes('izin') || stRaw.includes('tahap 4')) st = 'proses_akhir';
+  else if (stRaw === 'disetujui' || stRaw.includes('disetujui') || stRaw.includes('selesai') || stRaw.includes('sp terbit')) st = 'disetujui';
+  else if (stRaw === 'ditolak' || stRaw.includes('tolak')) st = 'ditolak';
+
+  const prog =
+    st === 'ditolak'
+      ? (typeof item.prog === 'number' ? item.prog : 0)
+      : (PDLN_STAGE_PROGRESS[st] !== undefined ? PDLN_STAGE_PROGRESS[st] : 0);
+
+  return Object.assign({}, item, {
+    kegiatan: item.kegiatan || item.nama_kegiatan || '-',
+    peserta: Array.isArray(item.peserta) && item.peserta.length
+      ? item.peserta
+      : [item.nama_peserta || '-'],
+    jab: item.jab || 'dosen',
+    kota: item.kota || item.institusi_tujuan || '',
+    neg: item.neg || item.negara_tujuan || '-',
+    d: (item.d || item.tgl_pengajuan || dAgo(0)).slice(0, 10),
+    st,
+    prog,
+    lap: Boolean(item.lap),
+    note: item.note || (item.catatan_admin ? { id: item.catatan_admin, en: item.catatan_admin } : null),
+  });
+}
+
+// Data dummy dimatikan: hanya memuat data asli milik user dari database PostgreSQL
+const PDLN_DATA = Array.isArray(window.PDLN_PROGRESS_DATA)
+  ? window.PDLN_PROGRESS_DATA.map(normalizePdlnRecord)
+  : [];
+
 const GRP = {
   baru: 'proses',
   verifikasi: 'proses',
+  proses_kampus: 'proses',
   setneg: 'proses',
+  proses_akhir: 'proses',
   disetujui: 'disetujui',
   ditolak: 'ditolak',
 };
@@ -1523,7 +1582,7 @@ const pct = (n, t) => (t ? Math.round((n / t) * 100) : 0);
 let PG = { q: '', jab: '', st: '', so: 'new', page: 1 };
 const PSZ = 6;
 
-/* tooltip grafik (textContent) */
+// Fungsi untuk menampilkan kotak info kecil (tooltip) saat kursor diarahkan ke grafik donut atau daftar negara di dashboard PDLN
 function tipShow(x, y, title, sub) {
   const tip = $('#tip');
   if (!tip) return;
@@ -1557,11 +1616,12 @@ function bindTip(el, title, sub) {
   el.addEventListener('blur', tipHide);
 }
 
+// Render seluruh komponen visual di tab Dashboard PDLN (kartu angka KPI, grafik donut status, top 5 negara tujuan, dan highlight bulan ini)
 function renderDash() {
   if (!$('#donutBox')) return;
   const D = PDLN_DATA,
     tot = D.length;
-  /* KPI */
+  // Hitung angka ringkasan KPI dari daftar pengajuan PDLN user
   const k = {
     'kp-setneg': D.filter((x) => x.st === 'disetujui').length,
     'kp-paspor': D.filter((x) => x.st === 'disetujui').length,
@@ -1584,7 +1644,7 @@ function renderDash() {
       if (r < 1) requestAnimationFrame(f);
     })(t0);
   });
-  /* donut */
+  // Bangun grafik lingkaran (donut chart) distribusi status pengajuan
   const groups = ['proses', 'disetujui', 'ditolak'].map((g) => ({
     g,
     n: D.filter((x) => GRP[x.st] === g).length,
@@ -1614,7 +1674,7 @@ function renderDash() {
   };
   $$('.arc', box).forEach((a) => {
     const x = groups.find((q) => q.g === a.dataset.g);
-    bindTip(a, T('g_' + x.g), `${x.n} ${T('unit')} Â· ${pct(x.n, tot)}%`);
+    bindTip(a, T('g_' + x.g), `${x.n} ${T('unit')} · ${pct(x.n, tot)}%`);
     a.addEventListener('mouseenter', () => hl(x.g));
     a.addEventListener('mouseleave', () => hl(null));
     a.addEventListener('focus', () => hl(x.g));
@@ -1630,7 +1690,7 @@ function renderDash() {
       go('pdln/progress');
     });
   });
-  /* negara */
+  // Hitung dan urutkan 5 negara tujuan dengan jumlah pengajuan terbanyak
   const cnt = {};
   D.forEach((x) => {
     cnt[x.neg] = (cnt[x.neg] || 0) + 1;
@@ -1649,7 +1709,7 @@ function renderDash() {
       go('pdln/progress');
     });
   });
-  /* highlight */
+  // Tampilkan kartu sorotan jumlah pengajuan bulan ini beserta kartu pengajuan paling baru
   const now = new Date(),
     ym = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
   const month = D.filter((x) => x.d.startsWith(ym)).length;
@@ -1669,6 +1729,7 @@ function stChip(x) {
   return `<span class="st g-${g}">${ICON(STIC[g])}${esc(T('st_' + x.st))}</span>`;
 }
 
+// Saring dan urutkan data pengajuan PDLN sesuai kata kunci pencarian, filter jabatan, filter status, dan pilihan urutan di tab Progress
 function filtered() {
   const q = PG.q.trim().toLowerCase();
   let L = PDLN_DATA.filter((x) => {
@@ -1699,6 +1760,7 @@ function filtered() {
   );
   return L;
 }
+// Tampilkan baris-baris tabel Progress PDLN milik user lengkap dengan bar persentase, catatan admin, dan tombol navigasi halaman (pagination)
 function renderProgress() {
   if (!$('#ptb')) return;
   const L = filtered(),
@@ -1731,14 +1793,14 @@ function renderProgress() {
         `<td data-l="${L10('th_aju')}">${fmtD(x.d)}</td>` +
         `<td data-l="${L10('th_st')}">${stChip(x)}</td>` +
         `<td data-l="${L10('th_prog')}"><div class="pb g-${g}"><span class="pbt"><i style="width:${x.prog}%"></i></span><em>${x.prog}%</em></div></td>` +
-        `<td class="cv" data-l="${L10('th_cat')}">${act || (rep ? '' : '<span class="dsh">â€“</span>')}${rep}</td></tr>`
+        `<td class="cv" data-l="${L10('th_cat')}">${act || (rep ? '' : '<span class="dsh">–</span>')}${rep}</td></tr>`
       );
     })
     .join('');
   $('#pEmpty').hidden = L.length > 0;
   $('.twrap', $('#psub-progress')).hidden = L.length === 0;
   $('#pInfo').textContent = L.length
-    ? `${T('show')} ${from + 1}â€“${from + rows.length} ${T('of')} ${L.length}`
+    ? `${T('show')} ${from + 1}–${from + rows.length} ${T('of')} ${L.length}`
     : '';
   const pg = $('#pPager');
   pg.innerHTML = '';
@@ -1756,12 +1818,13 @@ function renderProgress() {
       };
       pg.appendChild(b);
     };
-    mk('â€¹', PG.page - 1, '', PG.page === 1, T('prev'));
+    mk('‹', PG.page - 1, '', PG.page === 1, T('prev'));
     for (let p = 1; p <= pages; p++)
       mk(String(p), p, p === PG.page ? 'on' : '', false, T('page') + ' ' + p);
-    mk('â€º', PG.page + 1, '', PG.page === pages, T('next'));
+    mk('›', PG.page + 1, '', PG.page === pages, T('next'));
   }
 }
+// Isi pilihan dropdown Pengajuan Terkait di tab Laporan Kegiatan dengan daftar pengajuan PDLN yang statusnya sudah Disetujui
 function renderLapSelect() {
   if (!$('#lpRel')) return;
   const sel = $('#lpRel'),
@@ -1772,7 +1835,7 @@ function renderLapSelect() {
   sel.innerHTML =
     `<option value="">${esc(opts.length ? T('lpPick') : T('lpNone'))}</option>` +
     opts
-      .map((o) => `<option value="${o.i}">${esc(o.x.kegiatan)} â€” ${esc(place(o.x))}</option>`)
+      .map((o) => `<option value="${o.i}">${esc(o.x.kegiatan)} — ${esc(place(o.x))}</option>`)
       .join('');
   if (opts.some((o) => String(o.i) === prev)) sel.value = prev;
 }
@@ -1782,7 +1845,7 @@ function renderPdln() {
   renderLapSelect();
 }
 
-/* filter */
+// Pengaturan kotak pencarian, dropdown filter, dan tombol reset di halaman Progress PDLN
 (function () {
   const fq = $('#fq');
   if (!fq) return;
@@ -1841,12 +1904,23 @@ function renderPdln() {
 })();
 
 function pdlnAdd(form) {
-  const names = $$('[data-k=pnama]', form)
+  const names = $$('[data-k=pnama]:not(:disabled)', form)
     .map((i) => i.value.trim())
     .filter(Boolean);
-  const jabs = ['', 'dosen', 'tendik', 'pimpinan', 'mahasiswa'];
-  const sel = $('[data-k=pjab]', form),
-    tmp = ($('[data-k=tempat]', form).value || '').trim(),
+  const katInp = $('input[name="kategori_pemohon"]', form);
+  let jabKey = 'dosen';
+  if (katInp && katInp.value === 'mahasiswa') {
+    jabKey = 'mahasiswa';
+  } else {
+    const jabEl = $('[data-k=pjab]:not(:disabled)', form);
+    const rawJab = jabEl ? String(jabEl.value || '').toLowerCase() : '';
+    if (rawJab.includes('tendik') || rawJab.includes('tenaga kependidikan')) jabKey = 'tendik';
+    else if (rawJab.includes('pimpinan') || rawJab.includes('direktur')) jabKey = 'pimpinan';
+    else if (rawJab.includes('mahasiswa')) jabKey = 'mahasiswa';
+    else jabKey = 'dosen';
+  }
+  const tmpEl = $('[data-k=tempat]', form);
+  const tmp = (tmpEl ? tmpEl.value : '').trim(),
     parts = tmp
       .split(',')
       .map((x) => x.trim())
@@ -1858,15 +1932,16 @@ function pdlnAdd(form) {
       NEG[k].id.toLowerCase() === neg.toLowerCase() ||
       NEG[k].en.toLowerCase() === neg.toLowerCase(),
   );
+  const kegEl = $('[data-k=kegiatan]', form);
   PDLN_DATA.unshift({
-    kegiatan: $('[data-k=kegiatan]', form).value.trim(),
+    kegiatan: kegEl ? kegEl.value.trim() : '-',
     peserta: names.length ? names : ['-'],
-    jab: jabs[sel ? sel.selectedIndex : 1] || 'dosen',
+    jab: jabKey,
     kota: kota,
     neg: found || neg,
     d: dAgo(0),
     st: 'baru',
-    prog: 20,
+    prog: 0,
     lap: false,
     note: null,
   });
@@ -1907,7 +1982,7 @@ function okSetup(form) {
   applyLang($('#okModal'));
 }
 
-/*link unduhan template PDLN di sini */
+// Daftar link unduhan file template dokumen resmi PDLN (kalau masih kosong, tampilkan pesan bahwa template belum tersedia)
 const TPL_LINK = {
   tor: '',
   memo: '',
@@ -1929,7 +2004,8 @@ document.addEventListener('click', (e) => {
   else toast(T('tplSoon'));
 });
 
-/* ---------- PROFIL & ROLE SYSTEM ---------- */
+// 8. SISTEM PROFIL PENGGUNA, AUTO-FILL FORM, & PENYESUAIAN ROLE (MAHASISWA, SIVITAS, EKSTERNAL)
+// Data referensi bawaan untuk setiap kategori role pengguna
 const roleDB = {
   mahasiswa: {
     initial: "A",
@@ -1988,8 +2064,8 @@ const roleDB = {
         <input type="text" id="profProdi" value="Teknik Informatika" required>
       </div>
       <div class="f">
-        <label>Semester / Angkatan</label>
-        <input type="text" id="profSemester" value="Semester 5 / 2024" required>
+        <label>Tahun Akademik</label>
+        <input type="text" id="profSemester" value="2026/2027" required>
       </div>
       <div class="f full">
         <label>Alamat Domisili Sekarang</label>
@@ -2165,6 +2241,7 @@ const roleDB = {
 
 let currentRole = 'mahasiswa';
 
+// Sesuaikan seluruh tampilan halaman profil, kartu identitas, drawer akun, serta auto-fill form Outbound dan PDLN mengikuti data user yang sedang login
 function changeSystemRole(roleKey, customData, showToast = true) {
   // Normalisasi role 'sivitas' vs 'civitas'
   if (roleKey === 'dosen' || roleKey === 'tendik' || roleKey === 'civitas' || roleKey === 'sivitas') {
@@ -2184,13 +2261,23 @@ function changeSystemRole(roleKey, customData, showToast = true) {
   const sel = document.getElementById('role-selector');
   if (sel) sel.value = roleKey;
 
-  // 2. Toggle Tampilan Blok Form Sesuai ERD
+  // 2. Toggle Tampilan Blok Form Sesuai ERD & Nonaktifkan Input Role yang Tidak Aktif
   const formMhs = document.getElementById('form-fields-mahasiswa');
   const formCiv = document.getElementById('form-fields-civitas');
   const formExt = document.getElementById('form-fields-eksternal');
-  if (formMhs) formMhs.style.display = (roleKey === 'mahasiswa') ? 'grid' : 'none';
-  if (formCiv) formCiv.style.display = isSivitas ? 'grid' : 'none';
-  if (formExt) formExt.style.display = (roleKey === 'eksternal') ? 'grid' : 'none';
+  const roleInp = document.getElementById('profActiveRoleInput');
+  if (roleInp) roleInp.value = roleKey;
+
+  const setSectionActive = (secEl, active) => {
+    if (!secEl) return;
+    secEl.style.display = active ? 'grid' : 'none';
+    $$('input, select, textarea', secEl).forEach((el) => {
+      el.disabled = !active;
+    });
+  };
+  setSectionActive(formMhs, roleKey === 'mahasiswa');
+  setSectionActive(formCiv, isSivitas);
+  setSectionActive(formExt, roleKey === 'eksternal');
 
   // Toggle Judul Seksi Form
   const secT = document.getElementById('pane-profil-sec-title');
@@ -2198,20 +2285,27 @@ function changeSystemRole(roleKey, customData, showToast = true) {
 
   // Isi Field Input Sesuai ERD (Dari $_SESSION['user'] PHP atau default)
   if (roleKey === 'mahasiswa') {
-    const fNim = document.getElementById('profMhsNim'); if (fNim) fNim.value = userObj.nim || userObj.id || data.idVal;
+    const fNim = document.getElementById('profMhsNim'); if (fNim) fNim.value = userObj.nim || userObj.nomor_induk || userObj.id || data.idVal;
     const fNama = document.getElementById('profMhsNama'); if (fNama) fNama.value = userObj.nama_lengkap || userObj.name;
     const fEmail = document.getElementById('profMhsEmail'); if (fEmail) fEmail.value = userObj.email || data.email;
     const fWa = document.getElementById('profMhsWA'); if (fWa) fWa.value = userObj.no_hp || userObj.whatsapp || '081234567890';
-    const fTmp = document.getElementById('profMhsTmpLahir'); if (fTmp && userObj.tempat_lahir) fTmp.value = userObj.tempat_lahir;
+    const fTmp = document.getElementById('profMhsTmpLahir'); if (fTmp && userObj.tempat_lahir !== undefined && userObj.tempat_lahir !== null) fTmp.value = userObj.tempat_lahir;
     const fTgl = document.getElementById('profMhsTglLahir'); if (fTgl && userObj.tanggal_lahir) fTgl.value = userObj.tanggal_lahir;
     const fGen = document.getElementById('profMhsGender'); if (fGen && userObj.jenis_kelamin) fGen.value = userObj.jenis_kelamin;
     const fJur = document.getElementById('profMhsJurusan'); if (fJur && userObj.jurusan) fJur.value = userObj.jurusan;
     const fPro = document.getElementById('profMhsProdi'); if (fPro && userObj.prodi) fPro.value = userObj.prodi;
-    const fSem = document.getElementById('profMhsSemester'); if (fSem && userObj.angkatan) fSem.value = 'Angkatan ' + userObj.angkatan;
-    const fIpk = document.getElementById('profMhsIpk'); if (fIpk && userObj.ipk) fIpk.value = userObj.ipk;
+    const fAng = document.getElementById('profMhsAngkatan'); if (fAng && userObj.angkatan) fAng.value = userObj.angkatan;
+    const fSem = document.getElementById('profMhsSemester');
+    if (fSem) {
+      const thnAkad = userObj.tahun_akademik || userObj.academic_year || userObj.semester_aktif || userObj.semester || '';
+      if (thnAkad) fSem.value = thnAkad;
+    }
+    const fIpk = document.getElementById('profMhsIpk'); if (fIpk && userObj.ipk !== undefined && userObj.ipk !== null) fIpk.value = userObj.ipk;
+    const fPasp = document.getElementById('profMhsPaspor'); if (fPasp && userObj.no_paspor !== undefined && userObj.no_paspor !== null) fPasp.value = userObj.no_paspor;
     const fAlm = document.getElementById('profMhsAlamat'); if (fAlm && userObj.alamat) fAlm.value = userObj.alamat;
   } else if (isSivitas) {
-    const fNip = document.getElementById('profCivNip'); if (fNip) fNip.value = userObj.nip || userObj.id || data.idVal;
+    const fNip = document.getElementById('profCivNip'); if (fNip) fNip.value = userObj.nip || userObj.nomor_induk || userObj.id || data.idVal;
+    const fNidn = document.getElementById('profCivNidn'); if (fNidn && userObj.nidn !== undefined) fNidn.value = userObj.nidn || '';
     const fNama = document.getElementById('profCivNama'); if (fNama) fNama.value = userObj.nama_asli || userObj.nama_lengkap || userObj.name;
     const fGd = document.getElementById('profCivGelarDepan'); if (fGd && userObj.gelar_depan !== undefined) fGd.value = userObj.gelar_depan || '';
     const fGb = document.getElementById('profCivGelarBelakang'); if (fGb && userObj.gelar_belakang !== undefined) fGb.value = userObj.gelar_belakang || '';
@@ -2228,25 +2322,150 @@ function changeSystemRole(roleKey, customData, showToast = true) {
       }
       fJab.value = userObj.jabatan;
     }
+    const fPgk = document.getElementById('profCivPangkat'); if (fPgk && userObj.pangkat_golongan !== undefined) fPgk.value = userObj.pangkat_golongan || '';
     const fUnit = document.getElementById('profCivUnit'); if (fUnit && (userObj.unit_kerja || userObj.jurusan)) fUnit.value = userObj.unit_kerja || userObj.jurusan;
+    const fPasp = document.getElementById('profCivPaspor'); if (fPasp && userObj.no_paspor !== undefined) fPasp.value = userObj.no_paspor || '';
     const fAlm = document.getElementById('profCivAlamat'); if (fAlm && userObj.alamat) fAlm.value = userObj.alamat;
   } else if (roleKey === 'eksternal') {
-    const fPas = document.getElementById('profExtPaspor'); if (fPas) fPas.value = userObj.no_paspor || userObj.id || data.idVal;
-    const fNama = document.getElementById('profExtNama'); if (fNama) fNama.value = userObj.full_name || userObj.name;
+    const fPas = document.getElementById('profExtPaspor'); if (fPas) fPas.value = userObj.no_paspor || userObj.nomor_induk || userObj.id || data.idVal;
+    const fNama = document.getElementById('profExtNama'); if (fNama) fNama.value = userObj.full_name || userObj.nama_lengkap || userObj.name;
     const fEmail = document.getElementById('profExtEmail'); if (fEmail) fEmail.value = userObj.email || data.email;
-    const fWa = document.getElementById('profExtPhone'); if (fWa) fWa.value = userObj.phone_number || userObj.whatsapp || userObj.no_telp || '+81 90 1234 5678';
+    const fWa = document.getElementById('profExtPhone'); if (fWa) fWa.value = userObj.phone_number || userObj.no_hp || userObj.whatsapp || userObj.no_telp || '+81 90 1234 5678';
     const fInst = document.getElementById('profExtInstansi'); if (fInst && (userObj.asal_instansi || userObj.home_institution)) fInst.value = userObj.asal_instansi || userObj.home_institution;
-    const fNeg = document.getElementById('profExtNegara'); if (fNeg && (userObj.negara_asal || userObj.nationality)) fNeg.value = userObj.negara_asal || userObj.nationality;
+    const fNeg = document.getElementById('profExtNegara'); if (fNeg && (userObj.negara_asal || userObj.country_origin || userObj.nationality)) fNeg.value = userObj.negara_asal || userObj.country_origin || userObj.nationality;
+    const fNat = document.getElementById('profExtNationality'); if (fNat && (userObj.nationality || userObj.negara_asal)) fNat.value = userObj.nationality || userObj.negara_asal;
   }
 
-  // 3. Update Kolom Kiri: Kartu Profil Sidebar
+  // 3. Update Kolom Kiri: Kartu Profil Sidebar (Sesuai Role)
   const sideAv = document.getElementById('side-avatar'); if (sideAv) sideAv.textContent = userObj.initial;
-  const sideNm = document.getElementById('side-name'); if (sideNm) sideNm.textContent = userObj.name;
-  const sideEm = document.getElementById('side-email'); if (sideEm) sideEm.textContent = userObj.email || data.email;
+  const sideNm = document.getElementById('side-name'); if (sideNm) sideNm.textContent = userObj.nama_lengkap || userObj.name;
+  const sideEm = document.getElementById('side-email'); if (sideEm) sideEm.textContent = userObj.email_pnj || userObj.email || data.email;
   const sideBdg = document.getElementById('side-badge'); if (sideBdg) sideBdg.textContent = data.badge;
   const sideLbl = document.getElementById('side-id-label'); if (sideLbl) sideLbl.textContent = data.idLabel;
-  const sideVal = document.getElementById('side-id-val'); if (sideVal) sideVal.textContent = userObj.id || userObj.nim || userObj.nip || userObj.no_paspor || data.idVal;
+  const sideVal = document.getElementById('side-id-val'); if (sideVal) sideVal.textContent = userObj.nim || userObj.nip || userObj.no_paspor || userObj.nomor_induk || userObj.id || data.idVal;
+  const sideM1L = document.getElementById('side-meta1-label');
+  const sideM1V = document.getElementById('side-meta1-val');
+  const sideM2L = document.getElementById('side-meta2-label');
+  const sideM2V = document.getElementById('side-meta2-val');
+  const sideHpV = document.getElementById('side-hp-val');
+
+  if (roleKey === 'mahasiswa') {
+    const jur = userObj.jurusan || 'Teknik Informatika dan Komputer';
+    const prd = userObj.prodi || 'Teknik Informatika';
+    if (sideM1L) sideM1L.textContent = 'Jurusan & Program Studi';
+    if (sideM1V) sideM1V.textContent = (jur && prd) ? `${jur} · ${prd}` : (jur || prd || '-');
+    if (sideM2L) sideM2L.textContent = 'Tahun Akademik';
+    if (sideM2V) sideM2V.textContent = userObj.tahun_akademik || userObj.academic_year || userObj.semester_aktif || '2026/2027';
+    if (sideHpV) sideHpV.textContent = userObj.no_hp || userObj.whatsapp || '-';
+  } else if (isSivitas) {
+    if (sideM1L) sideM1L.textContent = 'Jabatan';
+    if (sideM1V) sideM1V.textContent = userObj.jabatan || 'Lektor Kepala';
+    if (sideM2L) sideM2L.textContent = 'Unit Kerja';
+    if (sideM2V) sideM2V.textContent = userObj.unit_kerja || 'Jurusan Teknik Elektro';
+    if (sideHpV) sideHpV.textContent = userObj.no_hp || userObj.whatsapp || '-';
+  } else {
+    if (sideM1L) sideM1L.textContent = 'Asal Institusi';
+    if (sideM1V) sideM1V.textContent = userObj.asal_instansi || userObj.home_institution || '-';
+    if (sideM2L) sideM2L.textContent = 'Negara Asal';
+    if (sideM2V) sideM2V.textContent = userObj.negara_asal || userObj.country_origin || userObj.nationality || '-';
+    if (sideHpV) sideHpV.textContent = userObj.no_hp || userObj.phone_number || userObj.no_telp || userObj.whatsapp || '-';
+  }
+
   const menuPeng = document.getElementById('menu-txt-pengajuan'); if (menuPeng) menuPeng.textContent = data.navPengajuanTitle;
+
+  // Sinkronkan juga Auto-Fill Form Outbound jika user memiliki data terbaru
+  const fOut = document.getElementById('f-outbound');
+  if (fOut && (roleKey === 'mahasiswa' || isSivitas)) {
+    const setOutVal = (selector, val) => {
+      const el = fOut.querySelector(selector);
+      if (!el || val === undefined || val === null || val === '') return;
+      if (el.tagName === 'SELECT') {
+        const match = [...el.options].find((o) => o.value.toLowerCase() === String(val).trim().toLowerCase());
+        if (match) {
+          el.value = match.value;
+          [...el.options].forEach((o) => (o.defaultSelected = o === match));
+        }
+      } else {
+        el.value = val;
+        el.defaultValue = val;
+      }
+    };
+    setOutVal('input[name="nama"]', userObj.nama_lengkap || userObj.name);
+    setOutVal('input[name="nim"]', userObj.nim || userObj.nomor_induk || userObj.id);
+    setOutVal('input[name="tempat_lahir"]', userObj.tempat_lahir);
+    setOutVal('input[name="tanggal_lahir"]', userObj.tanggal_lahir);
+    setOutVal('select[name="jurusan"]', userObj.jurusan);
+    setOutVal('input[name="prodi"]', userObj.prodi);
+    setOutVal('input[name="tahun_akademik"]', userObj.tahun_akademik || userObj.academic_year || userObj.semester_aktif);
+    setOutVal('input[name="whatsapp"]', userObj.no_hp || userObj.whatsapp);
+    setOutVal('input[name="email_pnj"]', userObj.email);
+    setOutVal('input[name="no_paspor"]', userObj.no_paspor);
+    updateProgress(fOut);
+  }
+
+  // Sinkronkan juga Auto-Fill & Tampilan Kolom Form PDLN sesuai Role (Mahasiswa vs Sivitas)
+  const fPdln = document.getElementById('f-pdln');
+  if (fPdln && (roleKey === 'mahasiswa' || isSivitas)) {
+    const isMhs = roleKey === 'mahasiswa';
+    const katInp = document.getElementById('pdlnKategoriPemohon');
+    if (katInp) {
+      katInp.value = isMhs ? 'mahasiswa' : 'sivitas';
+      katInp.defaultValue = katInp.value;
+    }
+    const sec1Title = document.getElementById('pdln-sec1-title');
+    if (sec1Title) {
+      sec1Title.textContent = isMhs
+        ? 'Identitas Pemohon (Mahasiswa PNJ)'
+        : 'Identitas Pemohon (Sivitas PNJ — Dosen & Tendik)';
+    }
+
+    const boxMhs = document.getElementById('pdln-fields-mahasiswa');
+    const boxCiv = document.getElementById('pdln-fields-sivitas');
+    const togglePdlnRoleBox = (box, active) => {
+      if (!box) return;
+      box.style.display = active ? 'grid' : 'none';
+      $$('input, select, textarea', box).forEach((el) => {
+        el.disabled = !active;
+        const f = el.closest('.f');
+        if (f) f.classList.remove('invalid');
+      });
+    };
+    togglePdlnRoleBox(boxMhs, isMhs);
+    togglePdlnRoleBox(boxCiv, !isMhs);
+
+    const setPdlnVal = (id, val) => {
+      const el = document.getElementById(id);
+      if (!el || val === undefined || val === null) return;
+      el.value = val;
+      el.defaultValue = val;
+    };
+
+    const pdlnEmail = userObj.email_pnj || userObj.email || '';
+    const pdlnHp = userObj.no_hp || userObj.whatsapp || '';
+    const pdlnPaspor = userObj.no_paspor || '';
+
+    if (isMhs) {
+      setPdlnVal('pdlnMhsNama', userObj.nama_lengkap || userObj.name || '');
+      setPdlnVal('pdlnMhsNim', userObj.nim || userObj.nomor_induk || userObj.id || '');
+      setPdlnVal('pdlnMhsJurusan', userObj.jurusan || '');
+      setPdlnVal('pdlnMhsProdi', userObj.prodi || '');
+      if (pdlnPaspor) setPdlnVal('pdlnMhsPaspor', pdlnPaspor);
+      if (pdlnHp) setPdlnVal('pdlnMhsHp', pdlnHp);
+      if (pdlnEmail) setPdlnVal('pdlnMhsEmail', pdlnEmail);
+    } else {
+      setPdlnVal('pdlnCivNama', userObj.nama_lengkap || userObj.name || '');
+      setPdlnVal('pdlnCivNip', userObj.nip || userObj.nomor_induk || userObj.id || '');
+      setPdlnVal('pdlnCivNidn', userObj.nidn || '');
+      setPdlnVal('pdlnCivJabatan', userObj.jabatan || 'Dosen PNJ');
+      setPdlnVal('pdlnCivPangkat', userObj.pangkat_golongan || '');
+      setPdlnVal('pdlnCivUnit', userObj.unit_kerja || userObj.instansi || '');
+      if (pdlnPaspor) setPdlnVal('pdlnCivPaspor', pdlnPaspor);
+      if (pdlnHp) setPdlnVal('pdlnCivHp', pdlnHp);
+      if (pdlnEmail) setPdlnVal('pdlnCivEmail', pdlnEmail);
+    }
+
+    updateProgress(fPdln);
+  }
 
   // 4. Update Header Drawer Akun
   const drwAv = document.getElementById('drawer-avatar') || document.getElementById('avatar'); if (drwAv) { drwAv.textContent = userObj.initial; drwAv.classList.remove('guest'); }
@@ -2284,6 +2503,7 @@ function changeSystemRole(roleKey, customData, showToast = true) {
   }
 }
 
+// Baca data session user dan pesan notifikasi (flash message) yang dikirim dari PHP saat halaman pertama kali dibuka
 function initUserRole() {
   const phpUser = window.PHP_SESSION_USER || null;
   if (phpUser && phpUser.role) {
@@ -2311,6 +2531,7 @@ function initUserRole() {
   }
 }
 
+// Pindahkan tampilan antar tab di halaman Akun Pengguna (Profil Saya, Riwayat Pengajuan, Notifikasi, dan Pengaturan Akun)
 function switchProfileTab(tabId) {
   const panes = ['profil', 'pengajuan', 'notifikasi', 'pengaturan'];
   panes.forEach(p => {
@@ -2342,6 +2563,20 @@ function saveProfileData(e) {
   if (currentRole === 'mahasiswa') {
     const el = document.getElementById('profMhsNama');
     if (el) updatedName = el.value.trim();
+    const semEl = document.getElementById('profMhsSemester');
+    if (semEl) {
+      const valThn = semEl.value.trim();
+      if (window.PHP_SESSION_USER) {
+        window.PHP_SESSION_USER.tahun_akademik = valThn;
+        window.PHP_SESSION_USER.academic_year = valThn;
+      }
+      const outThn = document.querySelector('#f-outbound input[name="tahun_akademik"]');
+      if (outThn) {
+        outThn.value = valThn;
+        outThn.defaultValue = valThn;
+        updateProgress(document.getElementById('f-outbound'));
+      }
+    }
   } else if (currentRole === 'sivitas' || currentRole === 'civitas') {
     const el = document.getElementById('profCivNama');
     if (el) updatedName = el.value.trim();
@@ -2428,16 +2663,20 @@ function handleDeactivateAccount() {
   }, 2000);
 }
 
+// Arahkan user ke AuthController untuk menghapus session dan keluar dari sistem saat tombol Logout ditekan
 function alertLogout() {
   closeDrawer();
   const baseUrl = window.BASE_URL || '';
   window.location.href = baseUrl + 'controllers/AuthController.php?action=logout';
 }
 
-/* ---------- INIT ---------- */
+// 9. INISIALISASI AWAL SAAT HALAMAN DIMUAT
 enhance(document);
 setLang(lang);
 $$('form.shell').forEach(updateProgress);
+document.addEventListener('DOMContentLoaded', () => {
+  $$('form.shell').forEach(updateProgress);
+});
 
 // Inisialisasi Peran Pengguna dari Session PHP saat Halaman Pertama Dimuat
 initUserRole();

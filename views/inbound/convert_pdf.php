@@ -1,5 +1,5 @@
 <?php
-// Menerima data dari InboundController
+// Siapkan data pemohon Inbound yang dikirim dari controller untuk dicetak ke template surat penerimaan (Letter of Acceptance)
 $nama_pemohon = $data['nama_lengkap'] ?? '[Nama Pemohon]';
 $paspor       = $data['no_paspor'] ?? '[No Paspor]';
 $univ_asal    = $data['univ_asal'] ?? '[Universitas Asal]';

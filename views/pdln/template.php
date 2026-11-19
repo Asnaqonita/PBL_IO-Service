@@ -1,3 +1,6 @@
+<?php
+// Komponen akordeon daftar tautan unduhan template dokumen resmi persyaratan PDLN
+?>
 <!-- ===== TEMPLATE ===== -->
 <details class="acc" id="acc-template">
   <summary><i class="chev"></i><span data-i18n="s_template">Template</span></summary>

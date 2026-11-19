@@ -1,3 +1,6 @@
+<?php
+// Tab Pusat Notifikasi di halaman akun pengguna yang menampilkan riwayat pemberitahuan verifikasi berkas sesuai role
+?>
 <!-- TAB 3: PUSAT NOTIFIKASI (BERDASARKAN ROLE ERD) -->
 <section id="pane-notifikasi" class="profile-pane" style="display:none;">
   <div class="shell">

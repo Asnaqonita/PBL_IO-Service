@@ -1,4 +1,5 @@
 <?php
+// Pastikan BASE_URL sudah siap digunakan bila dibutuhkan di bagian footer admin
 if (!defined('BASE_URL')) {
     $configFile = __DIR__ . '/../../config/config.php';
     if (file_exists($configFile)) {
@@ -18,7 +19,7 @@ if (!defined('BASE_URL')) {
 
 <!-- ============ JAVASCRIPT LOGIC ============ -->
 <script>
-// Tab Switching
+// Pindahkan tampilan antar tab menu di dashboard admin sekaligus ubah highlight menu yang sedang aktif
 function switchTab(key) {
   document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
   const target = document.getElementById('tab-' + key);
@@ -26,7 +27,7 @@ function switchTab(key) {
     target.classList.add('active');
   }
 
-  // Update navbar links active status
+  // Perbarui status tombol aktif di bar navigasi atas
   ['dashboard', 'outbound', 'inbound', 'pdln', 'akun', 'faq', 'loket', 'profil', 'notifikasi'].forEach(k => {
     const btn = document.getElementById('nav-' + k);
     if (!btn) return;
@@ -40,7 +41,7 @@ function switchTab(key) {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// Drawer Toggle
+// Buka atau tutup panel menu samping (drawer) akun admin beserta layar gelap di belakangnya
 function toggleDrawer(open) {
   const drawer = document.getElementById('drawer');
   const scrim = document.getElementById('scrim');
@@ -51,7 +52,7 @@ function toggleDrawer(open) {
   drawer.setAttribute('aria-hidden', !isOpen);
 }
 
-// Modal Check Handlers
+// Tampilkan pop-up modal pemeriksaan berkas dan isi otomatis detail nama pemohon serta kegiatan yang diklik
 function openCheckModal(name, role, cat, title, country) {
   const mdlName = document.getElementById('mdl-name');
   const mdlRole = document.getElementById('mdl-role');
@@ -66,18 +67,20 @@ function openCheckModal(name, role, cat, title, country) {
   if (modal) modal.classList.add('open');
 }
 
+// Tutup pop-up modal pemeriksaan berkas
 function closeCheckModal() {
   const modal = document.getElementById('checkModal');
   if (modal) modal.classList.remove('open');
 }
 
+// Tangani proses simpan verifikasi berkas dari modal lalu munculkan pesan notifikasi berhasil
 function handleCheckModalSubmit(e) {
   e.preventDefault();
   closeCheckModal();
   toast('Status berkas berhasil diperbarui & notifikasi terkirim!');
 }
 
-// Gallery Carousel Logic
+// Jalankan slider galeri dokumentasi di beranda admin lengkap dengan fitur geser otomatis
 (function initGallery() {
   const tr = document.getElementById('galTrack');
   if (!tr) return;
@@ -128,7 +131,7 @@ function handleCheckModalSubmit(e) {
   }, 4500);
 })();
 
-// Build Ticker Text
+// Buat teks berjalan (ticker) otomatis di bagian banner dashboard admin
 (function buildTicker() {
   const words = ['INTERNATIONAL PNJ', 'EXCHANGE', 'COLLABORATION', 'VISITS', 'RESEARCH'];
   const row = words.map(x => `<span>${x}</span>`).join('');
@@ -136,7 +139,7 @@ function handleCheckModalSubmit(e) {
   if (tk) tk.innerHTML = row.repeat(6);
 })();
 
-// Filter User in Data Akun Tab
+// Saring baris tabel daftar akun pengguna berdasarkan kategori role yang dipilih admin
 function filterUser(role) {
   document.querySelectorAll('.u-row').forEach(row => {
     row.style.display = (role === 'all' || row.dataset.role === role) ? '' : 'none';
@@ -150,7 +153,7 @@ function filterUser(role) {
   });
 }
 
-// Add FAQ Form
+// Tambahkan item pertanyaan & jawaban baru ke daftar FAQ saat admin menekan tombol simpan
 function handleFaqSubmit(e) {
   e.preventDefault();
   const kat = document.getElementById('faqKat').value;
@@ -177,11 +180,12 @@ function handleFaqSubmit(e) {
   toast('FAQ baru berhasil ditambahkan!');
 }
 
+// Amankan teks input dari karakter HTML berbahaya sebelum ditampilkan ke layar
 function escapeHtml(str) {
   return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
-// Toggle Ambil Surat di Loket
+// Ubah status pengambilan dokumen fisik di menu Loket antara Belum Diambil dan Sudah Diambil
 function toggleAmbil(btn) {
   const row = btn.closest('tr');
   const badge = row.querySelector('.status-ambil');
@@ -202,7 +206,7 @@ function toggleAmbil(btn) {
   }
 }
 
-// Toast Notification
+// Munculkan pesan pop-up kecil (toast) di pojok layar yang otomatis hilang setelah beberapa detik
 function toast(msg, warn = false) {
   const wrap = document.getElementById('toasts');
   if (!wrap) return;

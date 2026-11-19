@@ -1,4 +1,5 @@
 <?php
+// Pastikan BASE_URL sudah siap untuk link tombol logout admin di bagian bawah drawer
 if (!defined('BASE_URL')) {
     $configFile = __DIR__ . '/../../config/config.php';
     if (file_exists($configFile)) {

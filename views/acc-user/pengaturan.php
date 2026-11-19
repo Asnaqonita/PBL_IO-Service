@@ -1,3 +1,6 @@
+<?php
+// Tab Pengaturan Akun & Keamanan untuk mengganti kata sandi, melihat status tautan SSO PNJ, dan mengatur preferensi notifikasi email
+?>
 <!-- ========================================================= -->
 <!-- TAB 4: PENGATURAN AKUN & KEAMANAN                         -->
 <!-- ========================================================= -->

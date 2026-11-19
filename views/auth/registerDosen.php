@@ -1,3 +1,6 @@
+<?php
+// Potongan form registrasi khusus Dosen PNJ (lengkap dengan NIDN dan jabatan fungsional), baru diaktifkan ketika status Dosen dipilih
+?>
 <!-- ===================================================================== -->
 <!-- FORM REGISTRASI ROLE 2: DOSEN PNJ (SESUAI DDL TABEL civitas)          -->
 <!-- Kolom DDL: nip (PK), nidn, nama_lengkap, gelar_depan, gelar_belakang, -->

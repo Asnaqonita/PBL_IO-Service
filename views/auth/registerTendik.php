@@ -1,3 +1,6 @@
+<?php
+// Potongan form registrasi khusus Tenaga Kependidikan (Tendik) PNJ, otomatis aktif saat user memilih status Tendik di dropdown registrasi
+?>
 <!-- ===================================================================== -->
 <!-- FORM REGISTRASI ROLE 3: TENDIK PNJ (SESUAI DDL TABEL civitas)         -->
 <!-- Kolom DDL: nip (PK), nidn (NULL), nama_lengkap, gelar_depan,          -->
