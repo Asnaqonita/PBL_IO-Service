@@ -1,0 +1,2 @@
+# Aturan buat GitHub supaya semua file .php dibaca sebagai bahasa PHP murni (biar nggak salah deteksi jadi bahasa "Hack" di statistik repo)
+*.php linguist-language=PHP
